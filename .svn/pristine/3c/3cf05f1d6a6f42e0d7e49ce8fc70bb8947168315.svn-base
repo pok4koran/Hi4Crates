@@ -1,0 +1,40 @@
+package kr.or.ddit.vo;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import lombok.Data;
+
+@Data
+public class ChartVO {
+	
+	private int chartNo;
+	
+	private String chartDate;
+	private String chartRecord;
+	private int receiptNo;
+	private int patntNo;
+	
+	//상병가져오기 위한 컬럼추가
+	private String disNo;
+	private String disNameEn;
+	private String disNameKr;
+	private String disMain;
+	
+	// 의사이름 가져오기
+	private String memName;	
+	
+	//차트등록과 오더 입력을 위한 컬럼추가
+	private String primaryDiseaseNo;
+	private List<String> secondaryDiseaseNoList;
+	
+	
+	private String mdcinNo;
+	private List<String> medicineNoList;
+	
+	private List<String> selectPt;
+	private String selectBody;
+	
+}

@@ -1,0 +1,16 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class PatientNoticeVO {
+
+	private int patntNoticeNo;
+	private String patntNoticeTitle;
+	private String patntNoticeWriter;
+	private String patntNoticeDate;
+	private String patntNoticeContent;
+	private int patntNoticeHit;
+	private String patntNoticeFix;
+	private int attachmentGroupNo;
+}

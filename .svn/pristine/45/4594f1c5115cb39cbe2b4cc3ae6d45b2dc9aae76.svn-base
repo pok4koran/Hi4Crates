@@ -1,0 +1,108 @@
+package kr.or.ddit.controller.patient;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.IAdminReservService;
+import kr.or.ddit.service.IMainAdminService;
+import kr.or.ddit.service.IPatientBookService;
+import kr.or.ddit.vo.ClinicReservationVO;
+import kr.or.ddit.vo.MemberVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/book")
+@Slf4j
+public class bookController {
+
+	@Inject
+	private IPatientBookService service;
+	
+	@Inject
+	private IAdminReservService calService;
+	
+	@GetMapping("/do")
+	public String bookJ() {
+		
+		return "patient/book";
+	}
+	
+	@PostMapping("/click")
+	public ResponseEntity<List<MemberVO>> book(@RequestBody Map<String, String> requestData) {
+		String date = requestData.get("calendarStartDate");
+		System.out.println("##date" + date);
+		
+		List<MemberVO> chooseDoctor = service.doctor(date);
+	    
+//	    log.info("####chooseDoctor: " + chooseDoctor);
+	    
+	    return new ResponseEntity<List<MemberVO>>(chooseDoctor, HttpStatus.OK);
+	}
+	
+	@PostMapping("/time")
+	public ResponseEntity<List<ClinicReservationVO>> time(@RequestBody ClinicReservationVO data) {
+		
+		
+//		log.info("####empNo" + empNo);
+		
+		List<ClinicReservationVO> time = service.time(data);
+//		log.info("####time" + time);
+		
+		return new ResponseEntity<List<ClinicReservationVO>>(time, HttpStatus.OK);
+	}
+	
+	@PostMapping("/do")
+	public String insertBook(ClinicReservationVO clinicReservationVO, Model model) {
+	    String calStartdate = clinicReservationVO.getReservDate() + " " + clinicReservationVO.getReservTime();
+	    log.info("####cRVO" + clinicReservationVO);
+	    
+	    clinicReservationVO.setReservMemo("온라인예약");
+	    clinicReservationVO.setCalStartdate(calStartdate);
+	    // 나중에 setMemNo 없애야함
+	    clinicReservationVO.setMemNo(90);
+	//  System.out.println("###calStartdate" + calStartdate);
+	    
+	    
+	    log.info("예약 컨 진입");
+	    
+	    // 이벤트 등록 여부 flag. 기본값 false
+	    boolean insertFlag = false;
+	    
+	    // calendar테이블 (calendarKey가 생김)
+	    calService.insertCalendar(clinicReservationVO);
+	    log.info("#키" + clinicReservationVO.getCalendarKey());
+	    
+	    
+	    // insert 성공 여부 상태 값 (calendar테이블 fk도 같이 추가)
+	    int status = calService.insertEvent(clinicReservationVO);
+	    log.info("**********insert성공여부:" + status);
+	    
+	    if (status > 0) {    // insert에 성공했다면
+	        // flag값을 true로 변경
+	        insertFlag = true;
+	    }
+	    
+	    if (insertFlag) {
+	        model.addAttribute("successMessage", "예약이 완료되었습니다.");
+	    } else {
+	        model.addAttribute("errorMessage", "예약에 실패했습니다.");
+	    }
+
+	    return "redirect:/home";
+	    
+	}
+}

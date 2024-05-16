@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IPatientBookMapper">
+	
+	<select id="doctor" resultType="MemberVO" parameterType="String">
+		SELECT 
+			mem_name
+		FROM member m, emp e
+		WHERE m.mem_no = e.mem_no
+			AND e.emp_no NOT IN (
+			SELECT q.emp_no 
+			FROM vacation_request q, vacation_result s
+			WHERE #{date} BETWEEN vacation_start_date AND vacation_end_date
+				and q.vacation_request_no = s.vacation_request_no
+				and vacation_request_status ='Y'
+				and vacation_result_agree='Y'
+			)
+			and e.emp_job='의사'
+	</select>                                                            
+
+</mapper>

@@ -1,0 +1,23 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class CalendarVO {
+	private int id;
+	private String title;
+	private String start;
+	private String end;
+	private boolean allDay;
+	
+	//새로운 캘린더
+	private int calendarKey;
+	private String calendarTitle;
+	private String calendarContent;
+	private String calendarStartDate;
+	private String calendarEndDate;
+	private boolean calendarAllDay;
+	private String calendarColor;
+	private String calendarCate;
+	private int empNo;
+}

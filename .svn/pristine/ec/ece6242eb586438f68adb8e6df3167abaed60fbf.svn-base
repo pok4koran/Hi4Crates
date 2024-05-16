@@ -1,0 +1,15 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.GroupOrderDetailVO;
+import kr.or.ddit.vo.GroupOrderVO;
+
+public interface IOrderSetService {
+
+	List<GroupOrderVO> getOrderSetName(int empNo);
+
+	List<GroupOrderDetailVO> getOrderSetDetail(int groupOrderNo);
+
+
+}

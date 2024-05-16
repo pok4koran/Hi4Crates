@@ -1,0 +1,73 @@
+package kr.or.ddit.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.mapper.ICalendarMapper;
+import kr.or.ddit.service.ICalendarService;
+import kr.or.ddit.vo.CalendarVO;
+
+@Service
+public class CalendarServiceImpl implements ICalendarService {
+
+	@Inject
+	ICalendarMapper mapper;
+	
+	@Override
+	public ServiceResult insertEvent(CalendarVO calendarVO) {
+		
+		ServiceResult result = null;
+		
+		int status= mapper.insertEvent(calendarVO);
+		
+		if(status>0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<CalendarVO> getCalendar() {
+		return mapper.getCalendar();
+	}
+
+	@Override
+	public ServiceResult deleteEvent(int calendarKey) {
+		
+		ServiceResult result = null;
+		
+		int status=  mapper.deleteEvent(calendarKey);
+		
+		if(status>0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+		
+	}
+
+	@Override
+	public ServiceResult updateEvent(CalendarVO calendarVO) {
+		ServiceResult result = null;
+		
+		int status=  mapper.updateEvent(calendarVO);
+		
+		if(status>0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+
+}

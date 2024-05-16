@@ -1,0 +1,14 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.GroupOrderDetailVO;
+import kr.or.ddit.vo.GroupOrderVO;
+
+public interface IOrderSetMapper {
+
+	List<GroupOrderVO> getOrderSetName(int empNo);
+
+	List<GroupOrderDetailVO> getOrderSetDetail(int groupOrderNo);
+
+}

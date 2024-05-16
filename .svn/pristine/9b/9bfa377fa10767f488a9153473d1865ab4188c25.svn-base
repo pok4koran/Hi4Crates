@@ -1,0 +1,76 @@
+package kr.or.ddit.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.INurseMapper;
+import kr.or.ddit.service.INurseService;
+import kr.or.ddit.vo.BedVO;
+import kr.or.ddit.vo.MedicineRequestResultVO;
+import kr.or.ddit.vo.MedicineVO;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.OrderVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class NurseServiceImpl implements INurseService {
+
+	@Inject
+	private INurseMapper nurseMapper;
+
+	@Override
+	public List<BedVO> getBedList() {
+		return nurseMapper.getBedList();
+	}
+
+	@Override
+	public List<MemberVO> getHospitalizeList() {
+		return nurseMapper.getHospitalizeList();
+	}
+
+	@Override
+	public OrderVO getPatntOrder(int patntNo) {
+		return nurseMapper.getPatntOrder(patntNo);
+	}
+
+	@Override
+	public MemberVO getHospitalizePatntInfo(int patntNo) {
+		return nurseMapper.getHospitalizePatntInfo(patntNo);
+	}
+
+	@Override
+	public List<MedicineVO> getMedicineList() {
+		return nurseMapper.getMedicineList();
+	}
+
+	@Override
+	public boolean requestMedicine(List<MedicineVO> mdcinList) {
+		boolean flag = false;
+		int status = nurseMapper.requestMedicine(mdcinList);
+		
+		log.info("status : " + status);
+		if (status != 0) {
+			flag = true;
+		}
+		return flag;
+	}
+
+	@Override
+	public List<MedicineRequestResultVO> getRequestResultList() {
+		return nurseMapper.getRequestResultList();
+	}
+
+	@Override
+	public List<MemberVO> getWardInfo() {
+		return nurseMapper.getWardInfo();
+	}
+
+	@Override
+	public List<MemberVO> getHospitalizeOrder() {
+		return nurseMapper.getHospitalizeOrder();
+	}
+}

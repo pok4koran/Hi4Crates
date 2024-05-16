@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ICalendarMapper">
+
+	<insert id="insertEvent" parameterType="calendarVO">
+		<selectKey keyProperty="calendarKey" resultType="int" order="BEFORE">
+			select calendar_SEQ.nextval from dual
+		</selectKey>
+	
+		INSERT INTO calendar (
+		    calendar_key
+		    ,calendar_title
+		    ,calendar_content
+		    ,calendar_startdate
+		    ,calendar_enddate
+		    ,calendar_allday
+		    ,calendar_color
+		    ,calendar_cate
+		    ,emp_no
+		) VALUES (
+		    #{calendarKey}
+		    ,#{calendarTitle}
+		    ,#{calendarContent}
+		    ,TO_DATE(#{calendarStartDate}, 'YYYY-MM-DD HH24:MI')
+		    ,TO_DATE(#{calendarEndDate}, 'YYYY-MM-DD HH24:MI')
+		    ,#{calendarAllDay}
+		    ,#{calendarColor}
+		    ,#{calendarCate}
+		    ,#{empNo}
+		)
+		
+	</insert>
+	
+	<select id="getCalendar" resultType="calendarVO">
+		SELECT
+		    calendar_key 
+		   	,calendar_title as title
+		    ,calendar_content 
+		    ,calendar_startdate as "START"
+		    ,calendar_enddate as "END"
+		    ,calendar_allday as allDay
+		    ,calendar_color as backgroundColor
+		    ,calendar_cate
+		    ,emp_no
+		    ,patnt_no
+		FROM
+		    calendar
+		WHERE
+			CALENDAR_CATE='CD001'
+	</select>
+	
+	<delete id="deleteEvent" parameterType="int">
+		DELETE FROM calendar
+    	WHERE
+        calendar_key = #{calendarKey}
+	
+	</delete>
+	
+	<update id="updateEvent" parameterType="calendarVO">
+		UPDATE calendar
+		SET
+		    calendar_title=#{calendarTitle}
+		    ,calendar_content=#{calendarContent}
+		    ,calendar_startdate= TO_DATE(#{calendarStartDate}, 'YYYY-MM-DD HH24:MI')
+		    ,calendar_enddate= TO_DATE(#{calendarEndDate}, 'YYYY-MM-DD HH24:MI')
+		    ,calendar_allday=#{calendarAllDay}
+		    ,calendar_color=#{calendarColor}   
+	
+		WHERE
+        calendar_key = #{calendarKey}
+	
+	
+	</update>
+
+</mapper>

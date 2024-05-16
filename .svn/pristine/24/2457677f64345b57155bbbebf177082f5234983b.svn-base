@@ -1,0 +1,77 @@
+package kr.or.ddit.controller.patient;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import kr.or.ddit.service.IPatientMypageService;
+import kr.or.ddit.vo.ClinicReservationVO;
+import kr.or.ddit.vo.CounselVO;
+import kr.or.ddit.vo.EvaluationVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/pMypage")
+@Slf4j
+public class myPageController {
+	@Inject
+	public IPatientMypageService service;
+	
+//	@PreAuthorize("hasRole('ROLE_USER')")
+	@GetMapping("/home")
+	public String myPage(Model model) {
+		
+		// 예약리스트
+		int memNo = 4;
+		List<ClinicReservationVO> reserList = service.list(memNo);
+//		System.out.println("####reserList" + reserList);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String currentDate = sdf.format(new Date());
+//		log.info("##currentDate" + currentDate);
+		
+		model.addAttribute("currentDate", currentDate);
+		model.addAttribute("reserList", reserList);
+		
+		// 상담내역
+		int patntNo = 5;
+		List<CounselVO> CounsList = service.cList(patntNo);
+//		System.out.println("###CounsList찾아옴ㅋㅋ" + CounsList);
+		model.addAttribute("CounsList", CounsList);
+		
+		// 서비스 평가
+		List<EvaluationVO> EvaluList = service.eList(patntNo);
+//		System.out.println("###EvList" + EvaluList);
+		
+		model.addAttribute("EvaluList", EvaluList);
+		
+		
+		return "patient/myPage";
+	}
+	
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@PostMapping("/delClinicReserv")
+	public ResponseEntity<Boolean> delReservation(ClinicReservationVO clinicReservationVO,
+			Model model) {
+//		System.out.println("하이ㅜㄹ~~" + clinicReservationVO);
+		boolean deleteFlag = false;
+		
+		int status = service.delCReserv(clinicReservationVO);
+		log.info("###하이루" + status);
+		
+		if(status > 0) {
+			deleteFlag = true;
+		}
+		log.info("###하이루" + deleteFlag);
+		
+		return new ResponseEntity<Boolean>(deleteFlag, HttpStatus.OK);
+	}
+	
+}

@@ -1,0 +1,11 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.DocumentStorageVO;
+
+public interface IDocumentStorageService {
+
+	public List<DocumentStorageVO> getList();
+
+}

@@ -1,0 +1,25 @@
+package kr.or.ddit.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.IDocumentStorageMapper;
+import kr.or.ddit.service.IDocumentStorageService;
+import kr.or.ddit.vo.DocumentStorageVO;
+
+@Service
+public class DocumentStorageServiceImpl implements IDocumentStorageService {
+	
+	@Inject
+	IDocumentStorageMapper mapper;
+	
+	@Override
+	public List<DocumentStorageVO> getList() {
+		return mapper.getList();
+	}
+	
+
+}

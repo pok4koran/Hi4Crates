@@ -1,0 +1,96 @@
+package kr.or.ddit.vo;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import lombok.Data;
+
+@Data
+public class MemberVO {
+	private int memNo;
+	private String memId;
+	private String memPw;
+	private String memPw2;
+	private String oldMemPw;
+	private String memEmail;
+	private String memName;
+	private int memAge;
+	private String memGender;
+	private String memRegno;
+	private String memRegno1;
+	private String memRegno2;
+	private String memTel;
+	private String memAddtel;
+	private String memPostcode;
+	private String memAddress1;
+	private String memAddress2;
+	private String memSignupDate;
+	private String memType;
+	private String memSocial;
+	private String empJob;
+	private String memWithDraw;
+	private String memWithDrawReason;
+	private String memWithDrawDate;
+	
+	
+	private List<MemberAuth> authList;
+	
+	// patntNo 가져오기 위한 컬럼 추가
+	private PatientVO patientVO;
+	
+	//대기환자불러오기 위한 컬럼 추가
+	private String codeName;
+	private String ccodeName;
+	
+	// 대기환자 order name불러오기 위한 컬럼 추가
+	private String orderName;
+	
+	// chart 정보 불러오기 위한 컬럼 추가
+	private String chartDate;
+	private String chartRecord;
+	
+	// order bodyCode 임시추가
+	private String bodyCode;
+	
+	// 의사 이름 컬럼 임시추가
+	private String docName;
+	
+	// 의사 전문 분야 담기 위한 리스트
+	private List<RealmVO> realmList;
+	private List<DoctorCareerVO> careerList;
+	
+	// 첨부파일 그룹번호
+	private int attachmentGroupNo;
+	// 첨부파일 
+	private MultipartFile file;
+	private String imgData;
+	
+	private AttachmentVO fileVO;
+	
+	// 의사 개인정보 불러오기
+	private EmpVO empVO;
+	//진료차트 불러오기 위한 컬럼 추가
+	private String patntNo;
+	private String receiptNo;
+	
+	//접수하기위해 담당의컬럼 추가
+	private int empNo;
+	private String clinicNo;//진료실번호 
+	
+	// 입원환자 리스트 불러오기 위한 컬럼 추가
+	private BedVO bedVO;
+	private String empName;
+	
+	// 환자 바이탈 정보 불러오기위한 vo추가
+	private VitalVO vitalVO;
+	
+	// 입원 정보 가져오기위한  vo추가
+	private HospitalizationRecordVO hsptlzRecordVO;
+	
+	// 환자 오더 정보 담기위한 vo추가
+	private OrderVO orderVO;
+	
+
+}

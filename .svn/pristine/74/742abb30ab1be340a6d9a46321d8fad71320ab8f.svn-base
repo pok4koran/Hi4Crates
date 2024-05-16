@@ -1,0 +1,41 @@
+package kr.or.ddit.controller.admin;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.IMainAdminService;
+import kr.or.ddit.vo.MedicineRequestVO;
+
+@Controller
+@RequestMapping("/public/admin")
+public class MainRequestController {
+	
+	@Inject
+	IMainAdminService mainAdminService;
+	
+	//의약품신청리스트페이지 뜨기
+	@GetMapping("/medicineRequestList")
+	public String showMedicineRequestList() {
+		return "admin/medicineRequestList";
+	}
+	
+	//ajax: 의약품신청리스트가져오기
+	@PostMapping("/getMedicineRequestList")
+	public ResponseEntity <List<MedicineRequestVO>> getMedicineRequestList(){
+		List<MedicineRequestVO> list =  mainAdminService.getMedicineRequestList();
+		
+		System.out.println(list);
+		return new ResponseEntity<List<MedicineRequestVO>>(list,HttpStatus.OK);
+		
+	}
+	
+	
+}

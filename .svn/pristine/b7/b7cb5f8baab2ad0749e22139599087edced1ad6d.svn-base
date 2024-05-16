@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IDoctorRoundMapper">
+
+	<!-- resultMap으로 변경 -->
+	<select id="getPatntRecordsList" parameterType="int" resultType="memberVO">
+		SELECT 
+		    m.mem_no,
+		    p.patnt_no,
+		    m.mem_name, 
+		    hr.hsptlz_start_date, 
+		    mem.mem_name,
+		    ch.chart_no, 
+		    o.order_no,
+		    o.body_code
+		FROM 
+		    chart ch
+		INNER JOIN 
+		    "ORDER" o ON ch.chart_no = o.chart_no
+		INNER JOIN 
+		    patient p ON ch.patnt_no = p.patnt_no
+		INNER JOIN 
+		    member m ON p.mem_no = m.mem_no
+		INNER JOIN 
+		    emp e ON o.emp_no = e.emp_no
+		INNER JOIN 
+		    member mem ON e.mem_no = mem.mem_no
+		LEFT JOIN 
+		    hospitalization_record hr ON o.order_no = hr.order_no
+		WHERE p.patnt_no = #{patntNo}
+	</select>
+	
+	<select id="getPatntRecordInfo" parameterType="int" resultType="memberVO">
+		select
+		    m.mem_name
+		    , m.mem_age
+		    , m.mem_gender
+		    , mem.mem_name
+		    , hr.hsptlz_start_date
+		from hospitalization_record hr, "ORDER" o, chart ch, patient p, emp e, member m, member mem
+		where hr.order_no = o.order_no
+		    and o.chart_no = ch.chart_no
+		    and o.emp_no = e.emp_no
+		    and e.mem_no = mem.mem_no
+		    and ch.patnt_no = p.patnt_no
+		    and p.mem_no = m.mem_no
+		    and o.emp_no = 2
+		    and ch.chart_no = #{chartNo};
+	</select>
+
+</mapper>

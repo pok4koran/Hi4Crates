@@ -1,0 +1,33 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ClinicReservationVO;
+import kr.or.ddit.vo.MedicineRequestVO;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ReceiptVO;
+
+public interface IMainAdminService {
+
+	public void enrollMember(MemberVO member);
+
+	public List<MemberVO> findReceiptDoctor();
+
+	public void enrollPatient(MemberVO member);
+
+	public void insertReceipt(ReceiptVO receiptVO);
+
+	public void insertPreDiagnosis(ReceiptVO receiptVO);
+
+	public void insertHistory(ReceiptVO receiptVO);
+
+	public List<MedicineRequestVO> getMedicineRequestList();
+
+	public List<MemberVO> getTodayDoctors();
+
+	public List<ClinicReservationVO> getDoctorsReservList(ClinicReservationVO clVO);
+
+	public void insertEvaluation(ReceiptVO receiptVO);
+
+
+}

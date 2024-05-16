@@ -1,0 +1,13 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.VacationRequestVO;
+
+public interface IVacationMapper {
+
+	public List<VacationRequestVO> getVacationRequestMine(int memNo);
+
+	public int vacationRequest(VacationRequestVO vacationVO);
+
+}

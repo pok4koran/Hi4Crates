@@ -1,0 +1,118 @@
+package kr.or.ddit.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.IPhysicalMapper;
+import kr.or.ddit.service.IPhysicalService;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PtRecordVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class PhysicalServiceImpl implements IPhysicalService {
+
+	@Inject
+	private IPhysicalMapper physicalMapper;
+	
+	@Override
+	public List<MemberVO> getPhysicalWaitingList() {
+		log.info("[서비스][getPhysicalWaitingList] 실행!");
+		return physicalMapper.selectPhysicalWaitingList();
+	}
+
+	@Override
+	public MemberVO getPhysicalOrder(
+			int memNo
+			) {
+		log.info("[서비스][getPhysicalOrder] 실행!");
+		MemberVO memberVO = new MemberVO();
+		memberVO = physicalMapper.selectPhysicalOrder(memNo);
+		return memberVO;
+	}
+
+	@Override
+	public String getDoctorsName(
+			MemberVO memOrderInfo
+			) {
+		log.info("[서비스][getDoctorsName] 실행!");
+		// chartNo 구하는 걸로 바꾸기
+		int chartNo = memOrderInfo.getOrderVO().getChartNo();
+		log.info("[서비스][getDoctorsName] chartNo?" + chartNo);
+		
+		String docName = "";
+		
+		if (chartNo != 0) {
+			docName = physicalMapper.selectDocName(chartNo);
+			log.info("[서비스][getDoctorsName] docName: " + docName);
+			return docName;
+		} else {
+			log.error("[서비스][getDoctorsName] orderList가 null입니다.");
+			return null;
+		}
+	}
+
+	@Override
+	public List<MemberVO> getBodyCodes(
+			int chartNo
+			) {
+		log.info("[서비스][getBodyCodes] 실행!");
+//		List<String> bodyCodes = new ArrayList<String>();
+		List<MemberVO> bodyCodes = physicalMapper.selectBodyCodes(chartNo);
+		log.info("[서비스][getBodyCodes] bodyCodes: " + bodyCodes);
+		return bodyCodes;
+	}
+	
+
+	@Override
+	public int changeStatusStart(
+			int memNo
+			, int empNo
+			) {
+		log.info("[서비스][changeStatusStart] 실행!");
+		int receiptNo = physicalMapper.selectReceiptNo(memNo, empNo);
+		log.info("[서비스][changeStatusStart] receiptNo: " + receiptNo);
+		int res = physicalMapper.updateStatusStart(receiptNo);
+		if (res > 0) {
+			log.info("[서비스][changeStatusStart] 업데이트 성공!: " + res);
+			return res;
+		}else {
+			log.error("[서비스][changeStatusStart] 업데이트 실패!: " + res);
+			return 0;
+		}
+	}
+
+	@Override
+	public int postPhysicalTherapyRecord(PtRecordVO recordVO) {
+		log.info("[서비스][postPhysicalTherapyRecord] 실행!");
+		int res = physicalMapper.insertPhysicalTherapyRecord(recordVO);
+		if (res > 0) {
+			log.info("[서비스][postPhysicalTherapyRecord] 업데이트 성공!: " + res);
+			return res;
+		}else {
+			log.error("[서비스][postPhysicalTherapyRecord] 업데이트 실패!: " + res);
+			return 0;
+		}
+	}
+
+	@Override
+	public int changeStatusDone(int memNo, int empNo) {
+		log.info("[서비스][changeStatusDone] 실행!");
+		int receiptNo = physicalMapper.selectReceiptNo(memNo, empNo);
+		log.info("[서비스][changeStatusDone] receiptNo: " + receiptNo);
+		int res = physicalMapper.updateStatusDone(receiptNo);
+		if (res > 0) {
+			log.info("[서비스][changeStatusDone] 업데이트 성공!: " + res);
+			return res;
+		}else {
+			log.error("[서비스][changeStatusDone] 업데이트 실패!: " + res);
+			return 0;
+		}
+	}
+	
+
+}

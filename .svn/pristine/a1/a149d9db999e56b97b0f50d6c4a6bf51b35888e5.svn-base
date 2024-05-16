@@ -1,0 +1,26 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.CommentVO;
+import kr.or.ddit.vo.EquipmentVO;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.RadiationRoomVO;
+import kr.or.ddit.vo.RepairRequestVO;
+
+public interface IRadiationMapper {
+	public List<CommentVO> getCommentList();
+	public List<RadiationRoomVO> getRadiationRoomList();
+	public RadiationRoomVO getRadiationRoomInfo(int roomNo);
+	public List<EquipmentVO> getEqList();
+	public EquipmentVO getEqInfo(int eqNo);
+	public int updateEqInfo(EquipmentVO equipmentVO);
+	public String getCommonCode(String codeName);
+	public int updateEqDescription(EquipmentVO equipmentVO);
+	public int requestRepair(RepairRequestVO repairRequestVO);
+	public int insertComment(CommentVO commentVO);
+	public int deleteComment(int commentNo);
+	public List<MemberVO> radiationWaitingList();
+	public MemberVO getPatntOrder(int memNo);
+	public int updateComment(CommentVO commentVO);
+}

@@ -1,0 +1,101 @@
+ package kr.or.ddit.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.mapper.IEmpNoticeMapper;
+import kr.or.ddit.service.IEmpNoticeService;
+import kr.or.ddit.vo.EmpNoticeVO;
+import kr.or.ddit.vo.PaginationVO;
+
+@Service
+public class EmpNoticeServiceImpl implements IEmpNoticeService {
+
+	@Inject
+	private IEmpNoticeMapper noticeMapper;
+	
+	@Override
+	public ServiceResult postEmpNotice(EmpNoticeVO empNoticeVO) {
+		ServiceResult result = null;
+		
+		int status = noticeMapper.insertEmpNotice(empNoticeVO);
+		
+		if(status > 0 ) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public int getEmpNoticeCount(PaginationVO<EmpNoticeVO> pagingVO) {
+		return noticeMapper.selectEmpNoticeCount(pagingVO);
+	}
+
+	@Override
+	public List<EmpNoticeVO> getEmpNoticeList(PaginationVO<EmpNoticeVO> pagingVO) {
+		return noticeMapper.selectEmpNoticeList(pagingVO);
+	}
+
+	@Override
+	public EmpNoticeVO selectEmpNoticeDetail(int empNoticeNo) {
+		noticeMapper.incrementViewCount(empNoticeNo);
+		return noticeMapper.selectEmpNoticeDetail(empNoticeNo);
+	}
+
+	@Override
+	public ServiceResult updateNotice(HttpServletRequest req, EmpNoticeVO empNoticeVO) {
+		ServiceResult result = null;
+		int status = noticeMapper.updateNotice(empNoticeVO);
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult updateNoticeModal(EmpNoticeVO empNoticeVO) {
+		ServiceResult result = null;
+		int status = noticeMapper.updateNotice(empNoticeVO);
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	@Override
+	public ServiceResult deleteNotice(HttpServletRequest req, int empNoticeNo) {
+		ServiceResult result = null;
+		int status = noticeMapper.deleteNotice(empNoticeNo);
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult deleteNoticeModal(int empNoticeNo) {
+		ServiceResult result = null;
+		int status = noticeMapper.deleteNotice(empNoticeNo);
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+}

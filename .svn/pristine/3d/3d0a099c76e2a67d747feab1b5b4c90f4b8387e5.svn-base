@@ -1,0 +1,411 @@
+package kr.or.ddit.controller.doctor;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections.map.HashedMap;
+import org.springframework.core.OrderComparator;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.server.util.matcher.OrServerWebExchangeMatcher;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.controller.utils.UploadFileUtils;
+import kr.or.ddit.service.IMainChartService;
+import kr.or.ddit.service.IOrderSetService;
+import kr.or.ddit.vo.ChartVO;
+import kr.or.ddit.vo.CommonCodeVO;
+import kr.or.ddit.vo.DiagnosisVO;
+import kr.or.ddit.vo.DiseaseVO;
+import kr.or.ddit.vo.GroupOrderDetailVO;
+import kr.or.ddit.vo.GroupOrderVO;
+import kr.or.ddit.vo.MedicineVO;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.OrderVO;
+import kr.or.ddit.vo.PrescriptionVO;
+import lombok.extern.slf4j.Slf4j;
+import oracle.jdbc.proxy.annotation.GetProxy;
+
+@Controller
+@RequestMapping("/doctor")
+@Slf4j
+public class mainChartController {
+	
+	@Inject
+	IMainChartService mainChartService;
+	
+	@Inject
+	IOrderSetService orderSetService;
+	
+	/**
+	 * 메인차트실행
+	 * @author jjinny
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/mainChart")
+	public String mainChart(Model model) {
+		
+		log.info("mainChart() 실행...!");
+		int empNo=1;
+		
+		List<MemberVO> watingList = mainChartService.getWatingList(empNo);
+
+		List<GroupOrderVO> orderSetList = orderSetService.getOrderSetList(empNo);
+		
+		model.addAttribute("orderSetList",orderSetList);
+	
+		model.addAttribute("watingList", watingList);
+		
+		return "doctor/mainChart";
+		
+	}
+	
+	/**
+	 * 동적으로 환자목록 불러오기
+	 * @author jjinny
+	 * @return
+	 */
+	@GetMapping("/getWatingList")
+	@ResponseBody 
+	public ResponseEntity<List<MemberVO>> getWatingList(){
+		
+		log.info("getWatingList() 실행...!");
+		
+		int empNo=1;
+		List<MemberVO> watingList = mainChartService.getWatingList(empNo);
+		
+		return new ResponseEntity<List<MemberVO>>(watingList, HttpStatus.OK);
+	}
+	
+	
+	/**
+	 * 대기환자에서 환자이름 클릭시 미리보기 나오게 하기
+	 * @author jjinny
+	 * @param map
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping("/patientPreview")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<MemberVO> patientPreview(@RequestBody Map<String, String> map){
+		log.info("getPatientChart() 실행...!");
+		
+		int memNo = Integer.parseInt(map.get("memNo"));
+		
+		log.info("회원번호 : " +memNo);
+		
+		MemberVO patientPreview= mainChartService.patientPreview(memNo);
+		
+		
+		return new ResponseEntity<MemberVO>(patientPreview, HttpStatus.OK);
+		
+		
+	}
+	
+	/**
+	 * 대기환자에서 환자이름 클릭시 환자차트 불러오기
+	 * @author jjinny
+	 * @param map
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping("/patientChart")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<Map<String, Object>> getPatientChart(@RequestBody Map<String, String> map){
+		log.info("getPatientChart() 실행...!");
+		
+		//여러개 담을 리스트
+//		List chartList = new ArrayList();
+		Map<String, Object> chartMap = new HashMap<String, Object>();
+		
+		int memNo = Integer.parseInt(map.get("memNo"));
+		
+		log.info("회원번호 : " +memNo);
+		
+		//차트번호, 차트날짜, 진료이력 가져옴
+		List<ChartVO> patientChartList= mainChartService.getPatientChart(memNo);
+		Collections.sort(patientChartList, Comparator.comparingInt(ChartVO::getChartNo).reversed());
+	
+		//각 차트 번호에 대한 상병 목록을 담는 맵을 선언
+		Map<Integer, List<DiagnosisVO>> allDiseaseMap = new HashMap<>();
+	
+		//각 차트 번호에 대한 약물 목록을 담는 맵을 선언
+		Map<Integer, List<MedicineVO>> allMedicineMap = new HashMap<>();
+		
+		//물리치료 처방 가져와서 담는 맵을 선언
+		Map<Integer, List<CommonCodeVO>> allPtMap= new HashMap<>();
+		
+			for(ChartVO chartVO : patientChartList) {
+				int chartNo = chartVO.getChartNo();
+				
+				//주상병코드, 주상병명, 부상병코드, 부상병명 가져옴
+				List<DiagnosisVO> diseaseList = mainChartService.getDiseaseList(chartNo);
+				
+				allDiseaseMap.put(chartNo, diseaseList);
+				
+				//약물처방 가져오기
+				List<MedicineVO> medicineList = mainChartService.getMedicineList(chartNo);
+				allMedicineMap.put(chartNo, medicineList);
+				
+				//물리치료 처방 가져오기
+				List<CommonCodeVO> ptList = mainChartService.getPtList(chartNo);
+				allPtMap.put(chartNo, ptList);
+			}
+			chartMap.put("chartList", patientChartList);
+			chartMap.put("diseaseMap", allDiseaseMap);
+			chartMap.put("medicineMap", allMedicineMap);
+			chartMap.put("ptMap", allPtMap);
+			
+			
+//			chartList.add(patientChartList);	
+//			chartList.add(allDiseaseMap);	
+//			chartList.add(allMedicineMap);	
+//			chartList.add(allPtMap);
+		
+		
+		return new ResponseEntity<Map<String, Object>>(chartMap, HttpStatus.OK);
+		
+	}
+	
+	/**
+	 * 방사선 검사 요청하기
+	 * @author jjinny
+	 * @param orderVO
+	 * @param model
+	 * @param ra
+	 * @return
+	 */
+	@PostMapping("/orderRadiation")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public String orderRadiation(OrderVO orderVO, Model model, RedirectAttributes ra) {
+		
+		String message="";
+		
+		log.info("orderRadiation() 실행...!");
+		log.info("orderVO정보" + orderVO.getPatntNo());
+		log.info("receiptNo정보 " + orderVO.getReceiptNo());
+		
+		
+		int patntNo = Integer.parseInt(orderVO.getPatntNo());
+		int receiptNo = Integer.parseInt(orderVO.getReceiptNo());
+		
+		ChartVO chartVO = new ChartVO();
+		chartVO.setPatntNo(patntNo);
+		chartVO.setReceiptNo(receiptNo);
+		
+		log.info("선택된 바디파트 " + orderVO.getBodyPartList());
+		log.info("선택된 검사장비 " + orderVO.getCheckTechnique());
+		
+		orderVO.setOrderCode(orderVO.getCheckTechnique());
+		orderVO.setBodyCode(orderVO.getBodyPartList());
+		
+		ServiceResult result1 = mainChartService.createChart(chartVO);
+		
+		log.info("생성된 차트 번호 " + chartVO.getChartNo());
+		
+		orderVO.setChartNo(chartVO.getChartNo());
+		
+//		if(result1.equals(ServiceResult.OK)) {
+//			message="성공";
+//			
+//			
+//		}else {
+//			message="실패";
+//		}
+//		
+		orderVO.setEmpNo(1);
+		
+		ServiceResult result = mainChartService.orderRadiation(orderVO);
+		
+		return "redirect:/doctor/mainChart";
+	}
+	
+	/**
+	 * 상병 찾는 오토컴플릿 목록 불러오기
+	 * @author jjinny
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/diseaseSearch" , method = RequestMethod.GET, produces = "application/json;charset=utf-8")
+	public ResponseEntity<List<DiseaseVO>> searchDisease(){
+		log.info("searchDisease 실행...!");
+		
+		List<DiseaseVO> list = mainChartService.searchDisease();
+		
+		return new ResponseEntity<List<DiseaseVO>>(list, HttpStatus.OK);
+	}
+	
+	
+	/**
+	 * 약품 찾는 오토컴플릿 목록 불러오기
+	 * @author jjinny
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/medicineSearch" , method = RequestMethod.GET, produces = "application/json;charset=utf-8")
+	public ResponseEntity<List<MedicineVO>> searchMedicine(){
+		log.info("searchMedicine 실행...!");
+		
+		List<MedicineVO> list = mainChartService.searchMedicine();
+		
+		return new ResponseEntity<List<MedicineVO>>(list, HttpStatus.OK);
+	}
+	
+	/**
+	 * 진료완료시 진료차트 생성
+	 * @author jjinny
+	 * @param chartVO
+	 * @param medicine 
+	 * @param ra
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping(value="/insertChart", produces = "text/plain;charset=utf-8")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<String> insertChart(HttpServletRequest req, ChartVO chartVO){
+
+		//의사사번
+		int empNo=1;
+		
+		//차트생성
+		ServiceResult result1 = mainChartService.insertChart(req, chartVO);
+		int chartNo = chartVO.getChartNo();	//생성된 차트번호
+		
+		//진단내역 인서트
+		///주상병 인서트
+		DiagnosisVO primaryDiagnosisVO = new DiagnosisVO();
+		primaryDiagnosisVO.setChartNo(chartNo);
+		primaryDiagnosisVO.setDisNo(chartVO.getPrimaryDiseaseNo());	//주상병번호
+		primaryDiagnosisVO.setDisMain("Y");
+		ServiceResult result2 = mainChartService.insertDiagnosis(primaryDiagnosisVO);
+		
+		///부상병 인서트
+		
+		List<String> secondaryNoList = chartVO.getSecondaryDiseaseNoList();//부상병번호리스트
+		for(String secondDisease : secondaryNoList) {
+			DiagnosisVO secondaryDiagnosisVO = new DiagnosisVO();
+			secondaryDiagnosisVO.setChartNo(chartNo);
+			secondaryDiagnosisVO.setDisNo(secondDisease);
+			ServiceResult result3 = mainChartService.insertSecondDiagnosis(secondaryDiagnosisVO);
+		}
+		
+		//약물처방 오더 인서트
+		OrderVO orderMedicine = new OrderVO();
+		orderMedicine.setChartNo(chartNo);
+		orderMedicine.setOrderCode("OD007");
+		orderMedicine.setEmpNo(empNo);
+		
+		ServiceResult result4 = mainChartService.insertMedicineOrder(orderMedicine);
+		
+		//약물처방 테이블 인서트
+		int orderNo = orderMedicine.getOrderNo();
+		List<String> medicineNoList = chartVO.getMedicineNoList();
+		for(String medicine : medicineNoList) {
+			PrescriptionVO prescriptionVO = new PrescriptionVO();
+			prescriptionVO.setOrderNo(orderNo);
+			prescriptionVO.setMdcinNo(medicine);
+			ServiceResult result5 = mainChartService.insertPrescription(prescriptionVO);
+		}
+		
+		//물리치료 처방 테이블 인서트
+		List<String> selectPtList = chartVO.getSelectPt();	//치료방법
+		String selectBody = chartVO.getSelectBody();	//치료부위
+		
+		for(String pt : selectPtList) {
+			OrderVO orderPt = new OrderVO();
+			orderPt.setChartNo(chartNo);
+			orderPt.setEmpNo(empNo);
+			orderPt.setBodyCode(selectBody);
+			orderPt.setOrderCode(pt);
+			ServiceResult result6 = mainChartService.insertPtOrder(orderPt);
+			
+		}
+		return new ResponseEntity<String>("SUCCESS",HttpStatus.OK);
+		
+	}
+	
+	/**
+	 * 진단시 오더세트 추가
+	 * @author jjinny
+	 * @param map
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping("/insertGroupOrder")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<String> insertGroupOrder(@RequestBody Map<String, Object> map ){
+
+		log.info("insertGroupOrder 실행...!");
+		
+		String groupOrderName = (String) map.get("groupOrderName");	//그룹 오더 이름
+		
+		//그륩오더 테이블 생성
+		int empNo=1;
+		GroupOrderVO groupOrderVO = new GroupOrderVO();
+		groupOrderVO.setEmpNo(empNo);
+		groupOrderVO.setGroupOrderName(groupOrderName);
+		ServiceResult result1 = mainChartService.createGroupOrder(groupOrderVO);
+		
+		//생성된 그룹오더 번호
+		int groupOrderNo = groupOrderVO.getGroupOrderNo();	
+		
+		//상병코드 그룹오더 디테일 생성
+		//주상병입력
+		String primaryDisease = (String) map.get("primaryDiseaseNo");	//주상병코드
+		GroupOrderDetailVO groupOrderPrimaryDisease = new GroupOrderDetailVO();
+		groupOrderPrimaryDisease.setGroupOrderNo(groupOrderNo);
+		groupOrderPrimaryDisease.setGroupOrderDetailContent(primaryDisease);
+		groupOrderPrimaryDisease.setGroupOrderDetailCategory("GO001");
+		ServiceResult result2 = mainChartService.insertGroupOrderDetail(groupOrderPrimaryDisease);
+		
+		//부상병입력
+		List<String> secondaryDiseaseNoList = (List<String>) map.get("secondaryDiseaseNoList");
+		for(String groupOrderDetailContent : secondaryDiseaseNoList) {
+			GroupOrderDetailVO groupOrderSecondaryDisease = new GroupOrderDetailVO();
+			groupOrderSecondaryDisease.setGroupOrderNo(groupOrderNo);
+			groupOrderSecondaryDisease.setGroupOrderDetailContent(groupOrderDetailContent);
+			groupOrderSecondaryDisease.setGroupOrderDetailCategory("GO002");
+			ServiceResult result3 = mainChartService.insertGroupOrderDetail(groupOrderSecondaryDisease);
+		}
+
+		
+		//약물처방 그룹오더 디테일 인서트
+		List<String> medicineNoList = (List<String>) map.get("medicineNoList");
+		for(String groupOrderDetailContent : medicineNoList) {
+			GroupOrderDetailVO groupOrderPrescription = new GroupOrderDetailVO();
+			groupOrderPrescription.setGroupOrderNo(groupOrderNo);
+			groupOrderPrescription.setGroupOrderDetailContent(groupOrderDetailContent);
+			groupOrderPrescription.setGroupOrderDetailCategory("GO003");
+			ServiceResult result4 = mainChartService.insertGroupOrderDetail(groupOrderPrescription);
+		}
+
+		
+		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);		
+	}
+
+}

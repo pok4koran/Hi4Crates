@@ -1,0 +1,16 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.MemberVO;
+
+public interface IPhysicalService {
+	public List<MemberVO>getPhysicalWaitingList();
+	public MemberVO getPhysicalOrder(int memNo);
+//	public String getDoctorsName(int empNo, int orderNo);
+	public String getDoctorsName(MemberVO memOrderInfo);
+//	public List<String> getBodyCodes(int chartNo);
+	public List<MemberVO> getBodyCodes(int chartNo);
+//	public List<String> getBodyCommonCodes();
+//	public List<String> getBodyCommonNames();
+}

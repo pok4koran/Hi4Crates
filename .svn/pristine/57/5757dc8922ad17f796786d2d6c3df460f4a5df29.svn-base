@@ -1,0 +1,16 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class MedicineRequestResultVO {
+	
+	private int medicineResultno;
+	private String medicineResultagree;
+	private String medicineResultdisagree;
+	private String medicineResultDate;
+
+	private MedicineRequestVO medicineRequestVO;
+	private MemberVO resultEmp;
+	
+}

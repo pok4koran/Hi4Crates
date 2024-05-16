@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IPhysicalMapper">
+
+	<resultMap type="memberVO" id="orderMap">
+		<id property="memNo" column="MEM_NO"/>
+		<result property="memNo" column="MEM_NO"/>
+		<result property="memName" column="MEM_NAME"/>
+		<result property="memAge" column="MEM_AGE"/>
+		<result property="memGender" column="MEM_GENDER"/>
+		<result property="docName" column="MEM_NAME"/>
+
+		<association property="empVO" javaType="empVO">
+			<result property="empNo" column="EMP_NO"/>
+			<result property="empJob" column="EMP_JOB"/>
+			<result property="memNo" column="MEM_NO"/>
+			<result property="empStatus" column="EMP_STATUS"/>
+		</association>
+		
+		<association property="historyVO" javaType="historyVO">
+			<result property="historyNo" column="HISTORY_NO"/>
+			<result property="historyDate" column="HISTORY_DATE"/>
+			<result property="historyLoc" column="HISTORY_LOC"/>
+			<result property="historyStatus" column="HISTORY_STATUS"/>
+			<result property="receiptNo" column="RECEIPT_NO"/>
+		</association>
+		
+		<association property="chartVO" javaType="chartVO">
+			<result property="chartNo" column="CHART_NO"/>
+			<result property="chartDate" column="CHART_DATE"/>
+			<result property="chartRecord" column="CHART_RECORD"/>
+			<result property="receiptNo" column="RECEIPT_NO"/>
+			<result property="patntNo" column="PATNT_NO"/>
+			<result property="attachmentGroupNo" column="ATTACHMENT_GROUP_NO"/>
+		</association>
+		
+		<association property="orderVO" javaType="orderVO">
+			<result property="orderNo" column="ORDER_NO"/>
+			<result property="orderCode" column="ORDER_CODE"/>
+			<result property="bodyCode" column="BODY_CODE"/>
+			<result property="chartNo" column="CHART_NO"/>
+			<result property="empNo" column="EMP_NO"/>
+		</association>
+		
+		<collection property="orderList" resultMap="orderListMap"/>
+	</resultMap>
+	
+	
+	<resultMap type="memberVO" id="waitingListMap">
+		<id property="chartNo" column="chart_no"/>
+		<result property="memNo" column="mem_no"/>
+		<result property="memName" column="mem_name"/>
+		<result property="memAge" column="mem_age"/>
+		<result property="memGender" column="mem_gender"/>
+		<result property="receiptNo" column="receipt_no"/>
+		<result property="codeName" column="code_name"/>
+		<result property="historyLoc" column="history_loc"/>
+		<result property="historyStatus" column="history_status"/>
+		<collection property="orderList" resultMap="orderListMap"/>
+	</resultMap>
+	
+	<resultMap type="orderVO" id="orderListMap">
+		<id property="orderNo" column="order_no"/>
+		<result property="chartNo" column="chart_no"/>
+		<result property="orderCode" column="order_code"/>
+		<result property="bodyCode" column="body_code"/>
+		<result property="empNo" column="emp_no"/>
+	</resultMap>
+	
+
+	
+	<select id="selectPhysicalWaitingList" resultMap="waitingListMap">
+		SELECT
+				m.mem_no
+			, m.mem_name
+			, m.mem_age
+			, m.mem_gender
+			, o.order_no
+			, o.order_code
+			, o.body_code
+			, o.chart_no
+			, h.history_date
+			, h.history_loc
+			, h.history_status
+			, h.receipt_no
+			, ch.patnt_no
+			, ch.receipt_no
+		FROM
+				member		m
+			, patient	 p
+			, "HISTORY" h
+			, chart		 ch
+			, "ORDER"	 o
+			, "RECEIPT" r
+		WHERE
+				( h.history_loc = 'LOC008'
+					OR h.history_loc = 'LOC009' )
+				AND ( h.history_status = 'HS001'
+							OR h.history_status = 'HS003' )
+				AND p.patnt_no = ch.patnt_no
+				AND p.patnt_no = r.patnt_no
+				AND o.chart_no = ch.chart_no
+				AND p.mem_no = m.mem_no
+				AND h.receipt_no = r.receipt_no
+		ORDER BY
+				h.history_date
+	</select>
+
+	<select id="selectPhysicalOrder" resultMap="orderMap" parameterType="int">
+		SELECT
+			m.mem_no
+			, m.mem_name
+			, m.mem_age
+			, m.mem_gender
+			, o.order_no
+			, o.order_code
+			, o.body_code
+			, o.chart_no
+			, o.emp_no
+			, ch.chart_date
+			, ch.chart_record
+		FROM
+			member m
+			, patient p
+			, chart ch
+			, "ORDER" o
+			, "RECEIPT" r
+			, emp e
+		WHERE
+			( o.order_code = 'OD003'
+				OR o.order_code = 'OD008'
+				OR o.order_code = 'OD009' )
+			AND o.chart_no = ch.chart_no
+			AND ch.receipt_no = r.receipt_no
+			AND o.emp_no = r.emp_no
+			AND o.emp_no = e.emp_no
+			AND p.patnt_no = ch.patnt_no
+			AND p.patnt_no = r.patnt_no
+			AND p.mem_no = m.mem_no
+			and m.mem_no = #{memNo}
+	</select>
+	
+	<select id="selectDocName" resultType="String" parameterType="int">
+		SELECT
+			m.mem_name
+		FROM
+			member m
+			, "ORDER" o
+			, emp e
+			, chart ch
+		WHERE
+			e.mem_no = m.mem_no
+			AND o.emp_no = e.emp_no
+			AND o.chart_no = ch.chart_no
+			AND o.order_no = #{orderNo}
+	</select>
+	
+	<select id="selectBodyCodes" resultType="MemberVO" parameterType="int">
+		select
+			o.body_code
+			, c.code_name
+		from
+			"ORDER" o
+			, chart ch
+			, common_code c
+		where
+			o.chart_no = ch.chart_no
+			and c.code_no = o.body_code
+			and o.chart_no = #{chartNo}
+	</select>
+	
+<!-- 	<insert id="" parameterType="ptRecordVO"> -->
+<!-- 		INSERT INTO pt_record ( -->
+<!-- 			pt_record_no -->
+<!-- 			, pt_eq_no -->
+<!-- 			, pt_record_content -->
+<!-- 			, pt_record_date -->
+<!-- 			, pt_no -->
+<!-- 			, emp_no -->
+<!-- 			, order_no -->
+<!-- 		) VALUES ( -->
+<!-- 			시퀀스 사용 -->
+<!-- 			, (장비번호) -->
+<!-- 			, #{ptRecordContent} -->
+<!-- 			, sysdate -->
+<!-- 			, '1' -->
+<!-- 			, 의사번호? 치료사번호? -->
+<!-- 			, 오더넘버 -->
+<!-- 		); -->
+<!-- 	</insert> -->
+	
+	
+	
+</mapper>

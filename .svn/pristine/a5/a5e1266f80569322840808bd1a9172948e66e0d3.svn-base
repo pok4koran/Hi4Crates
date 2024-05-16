@@ -1,0 +1,36 @@
+package kr.or.ddit.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.IPhysicalMapper;
+import kr.or.ddit.service.IPhysicalService;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.OrderVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class PhysicalServiceImpl implements IPhysicalService {
+
+	@Inject
+	private IPhysicalMapper physicalMapper;
+	
+	@Override
+	public List<MemberVO> getPhysicalWaitingList() {
+		log.info("[서비스][getPhysicalWaitingList] 실행!");
+		return physicalMapper.selectPhysicalWaitingList();
+	}
+
+	@Override
+	public MemberVO getPhysicalOrder(
+			int memNo
+			) {
+		log.info("[서비스][getPhysicalOrder] 실행!");
+		return physicalMapper.selectPhysicalOrder(memNo);
+	}
+
+}

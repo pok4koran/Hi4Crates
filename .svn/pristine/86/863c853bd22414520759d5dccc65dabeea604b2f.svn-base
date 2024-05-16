@@ -1,0 +1,105 @@
+
+/* 로그인 시 알림 전부 띄워주기 */
+function getNotiList(event){
+	let dis2 = event.data.indexOf("#", event.data.indexOf("#")+1)
+	let content = event.data.substring(event.data.indexOf("#")+1, dis2);
+	let notiNo = event.data.substring(dis2+1);
+	console.log(content);
+	let newAlarm = '';
+	
+	 newAlarm += '<li class="dropdown-item">';
+	 newAlarm += '<div class="d-flex align-items-start">';
+	 newAlarm += '<div class="pe-2">';
+	 if(content === "당신의 연가신청이 승인되었습니다.")
+	 	newAlarm += '<span class="avatar avatar-md bg-success-transparent avatar-rounded"><i	class="bx bxs-comment-check fs-18"></i></span>';
+	 else if(content != "당신의 연가신청이 승인되었습니다.")	
+	 	newAlarm += '<span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i	class="bx bxs-comment-x fs-18"></i></span>';
+	 newAlarm += '</div>';
+	 newAlarm += '<div class="flex-grow-1 d-flex align-items-center justify-content-between">';
+	 newAlarm += '<div>';
+	 newAlarm += '<p class="mb-0 fw-semibold"';
+	 if(content === "당신의 연가신청이 승인되었습니다.")
+	 	newAlarm += '<a href="notifications.html">신청이 승인되었습니다!</a>';
+	 else if(content != "당신의 연가신청이 승인되었습니다.")
+	 	newAlarm += '<a href="notifications.html">신청이 반려되었습니다!</a>';
+	 newAlarm += '</p>';
+	 if(content === "당신의 연가신청이 승인되었습니다.")
+	 newAlarm += '<span class="text-muted fw-normal fs-12 header-notification-text">'+content+'</span>';
+	else if(content != "당신의 연가신청이 승인되었습니다.")
+	newAlarm += '<span class="text-muted fw-normal fs-12 header-notification-text">반려 사유 : '+content+'</span>';
+	 newAlarm += '</div>';
+	 newAlarm += '<div>';
+	 newAlarm += '<a href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close1" data-notino="'+notiNo+'"><i class="ti ti-x fs-16" ></i></a>';
+	 newAlarm += '</div>';
+	 newAlarm += '</div>';
+	 newAlarm += '</div>';
+	 newAlarm += '</li>';
+	 notiBox.append(newAlarm);
+
+	 $("#notification-icon-badge").text($(".dropdown-item-close1").length+"+");
+	 $("#notifiation-data").text("안읽은 알림 (" + $(".dropdown-item-close1").length + ")개");
+     $(".empty-item1").addClass("d-none");
+	 
+	 
+	 
+	 if($(".dropdown-item-close1").length === 0) {
+        $(".empty-item1").removeClass("d-none");
+		$("#notifiation-data").text("알림이 존재하지 않습니다.")
+	 }
+}
+
+
+function vacationResult(event){
+	let result = event.data.split('#')[1];
+	let notiNo = event.data.split('#')[2];
+	let content;
+	if(result === "disagree"){
+		content = event.data.substring(event.data.lastIndexOf("#")+1);
+	}
+	let newAlarm = '';
+	
+	 newAlarm += '<li class="dropdown-item">';
+	 newAlarm += '<div class="d-flex align-items-start">';
+	 newAlarm += '<div class="pe-2">';
+	 if(result === "agree")
+	 	newAlarm += '<span class="avatar avatar-md bg-success-transparent avatar-rounded"><i	class="bx bxs-comment-check fs-18"></i></span>';
+	 else if(result ==="disagree")	
+	 	newAlarm += '<span class="avatar avatar-md bg-pink-transparent avatar-rounded"><i	class="bx bxs-comment-x fs-18"></i></span>';
+	 newAlarm += '</div>';
+	 newAlarm += '<div class="flex-grow-1 d-flex align-items-center justify-content-between">';
+	 newAlarm += '<div>';
+	 newAlarm += '<p class="mb-0 fw-semibold"';
+	 if(result === "agree")
+	 	newAlarm += '<a href="notifications.html">신청이 승인되었습니다!</a>';
+	 else if(result === "disagree")
+	 	newAlarm += '<a href="notifications.html">신청이 반려되었습니다!</a>';
+	 newAlarm += '</p>';
+	 if(result === "agree")
+	 newAlarm += '<span class="text-muted fw-normal fs-12 header-notification-text">당신의 연가 신청이 승인되었습니다!</span>';
+	 else if(result === "disagree")
+	 newAlarm += '<span class="text-muted fw-normal fs-12 header-notification-text">반려 사유 : '+content+'</span>';
+	 newAlarm += '</div>';
+	 newAlarm += '<div>';
+	 newAlarm += '<a href="javascript:void(0);" class="min-w-fit-content text-muted me-1 dropdown-item-close1" data-notino="'+notiNo+'"><i class="ti ti-x fs-16" ></i></a>';
+	 newAlarm += '</div>';
+	 newAlarm += '</div>';
+	 newAlarm += '</div>';
+	 newAlarm += '</li>';
+	 notiBox.append(newAlarm);
+	 
+	 $("#notification-icon-badge").text($(".dropdown-item-close1").length+"+");
+	 $("#notifiation-data").text("안읽은 알림 (" + $(".dropdown-item-close1").length + ")개");
+     $(".empty-item1").addClass("d-none");
+	 if(result === "agree"){
+		 $('#infoToast').toast('show');
+	 }
+	 if(result === "disagree"){
+		 $('#dangerToast').toast('show');
+	 }
+}
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.MemberVO;
+
+public interface IPhysicalMapper {
+	public List<MemberVO> selectPhysicalWaitingList();
+	public MemberVO selectPhysicalOrder(int memNo);
+//	public String selectDocName(int empNo, int orderNo);
+	public String selectDocName(int chartNo);
+//	public List<String> selectBodyCodes(int chartNo);
+	public List<MemberVO> selectBodyCodes(int chartNo);
+//	public MemberVO selectDocName(int empNo, int orderNo);
+//	public List<String> selectBodyCommonCodes();
+//	public List<String> selectBodyCommonNames();
+}

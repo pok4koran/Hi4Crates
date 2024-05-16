@@ -1,0 +1,17 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class EmpNoticeVO {
+	private int empNoticeNo;
+	private String empNoticeTitle;
+	private String empNoticeWriter;
+	private String empNoticeDate;
+	private String empNoticeContent;
+	private int empNoticeHit;
+	private String empNoticeFix;
+	
+//	private Integer[] 
+//	private MultipartFile[] empNoticeFile
+}

@@ -1,0 +1,31 @@
+package kr.or.ddit.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.IOrderSetMapper;
+import kr.or.ddit.service.IOrderSetService;
+import kr.or.ddit.vo.GroupOrderDetailVO;
+import kr.or.ddit.vo.GroupOrderVO;
+
+@Service
+public class OrderSetServiceImpl implements IOrderSetService {
+	
+	@Inject
+	IOrderSetMapper mapper;
+
+	@Override
+	public List<GroupOrderVO> getOrderSetName(int empNo) {
+		return mapper.getOrderSetName(empNo);
+	}
+
+	@Override
+	public List<GroupOrderDetailVO> getOrderSetDetail(int groupOrderNo) {
+		return mapper.getOrderSetDetail(groupOrderNo);
+	}
+
+
+}

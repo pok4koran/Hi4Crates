@@ -1,0 +1,172 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="light" data-menu-styles="dark" data-toggled="close">
+
+<!-- 헤드: 메타 데이터, CDN, CSS, JS 등등 -->
+<head>
+
+    <!-- Meta Data -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> YNEX - Bootstrap 5 Premium Admin &amp; Dashboard Template </title>
+    <meta name="Description" content="Bootstrap Responsive Admin Web Dashboard HTML5 Template">
+    <meta name="Author" content="Spruko Technologies Private Limited">
+	<meta name="keywords" content="admin,admin dashboard,admin panel,admin template,bootstrap,clean,dashboard,flat,jquery,modern,responsive,premium admin templates,responsive admin,ui,ui kit.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="${pageContext.request.contextPath }/resources/assets/images/brand-logos/favicon.ico" type="image/x-icon">
+
+    <!-- Choices JS -->
+    <script src="${pageContext.request.contextPath }/resources/assets/libs/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Main Theme Js -->
+    <script src="${pageContext.request.contextPath }/resources/assets/js/main.js"></script>
+
+    <!-- Bootstrap Css -->
+    <link id="style" href="${pageContext.request.contextPath }/resources/assets/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
+
+    <!-- Style Css -->
+    <link href="${pageContext.request.contextPath }/resources/assets/css/styles.min.css" rel="stylesheet" >
+
+    <!-- Icons Css -->
+    <link href="${pageContext.request.contextPath }/resources/assets/css/icons.css" rel="stylesheet" >
+
+    <!-- Node Waves Css -->
+    <link href="${pageContext.request.contextPath }/resources/assets/libs/node-waves/waves.min.css" rel="stylesheet" >
+
+    <!-- Simplebar Css -->
+    <link href="${pageContext.request.contextPath }/resources/assets/libs/simplebar/simplebar.min.css" rel="stylesheet" >
+
+    <!-- Color Picker Css -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/assets/libs/flatpickr/flatpickr.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/assets/libs/@simonwep/pickr/themes/nano.min.css">
+
+    <!-- Choices Css -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath }/resources/assets/libs/choices.js/public/assets/styles/choices.min.css">
+
+
+</head>
+
+<body>
+
+
+
+    <div class="page">
+        
+        <!-- 본문 시작 -->
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- 페이지 헤더 -->
+                <!-- Page Header -->
+                <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                    <h1 class="page-title fw-semibold fs-18 mb-0">빈 페이지Empty</h1>
+                    <div class="ms-md-1 ms-0">
+                        <nav>
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Pages</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Empty</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+                <!-- Page Header Close -->
+                <!-- 페이지 헤더 끝 -->
+
+                <!-- 본문의 본문 -->
+                <!-- Start::row-1 -->
+                <div class="row">
+                    
+                    
+                    
+                    
+                                        <!-- <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+                        <label for="input-label" class="form-label">Form Input With Label</label>
+                        <input type="text" class="form-control" id="input-label">
+                    </div> -->
+                    
+                    <div class="row mb-3">
+                        <label for="input-name"
+                            class="col-sm-2 col-form-label">이름(Name): </label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="input-name">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                   		<label for="input-sex"
+                            class="col-sm-2 col-form-label">성별(Sex): </label>
+                        <div class="form-check col-sm-2">
+                            <input type="radio" class="form-check-input" name="input-sex" id="input-sex-male">
+                            <label class="form-check-label" for="input-sex-male">male</label>
+                        </div>
+                        <div class="form-check col-sm-2">
+                            <input type="radio" class="form-check-input" name="input-sex" id="input-sex-female">
+                            <label class="form-check-label" for="input-sex-female">female</label>
+                        </div>
+                        <div class="form-check col-sm-2">
+                            <input type="radio" class="form-check-input" name="input-sex" id="input-sex-other">
+                            <label class="form-check-label" for="input-sex-other">other</label>
+                        </div>
+                    </div>
+					
+                    
+                    
+                    
+                    
+                    
+                    
+                </div>
+                <!--End::row-1 -->
+                <!-- 본문의 본문 끝 -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+        <!--본문 끝-->
+    
+    </div>
+
+    
+    <!-- Scroll To Top -->
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+    <!-- Scroll To Top -->
+
+    <!-- Popper JS -->
+    <script src="${pageContext.request.contextPath }/resources/assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="${pageContext.request.contextPath }/resources/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="${pageContext.request.contextPath }/resources/assets/js/defaultmenu.min.js"></script>
+
+    <!-- Node Waves JS-->
+    <script src="${pageContext.request.contextPath }/resources/assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- Sticky JS -->
+    <script src="${pageContext.request.contextPath }/resources/assets/js/sticky.js"></script>
+
+    <!-- Simplebar JS -->
+    <script src="${pageContext.request.contextPath }/resources/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="${pageContext.request.contextPath }/resources/assets/js/simplebar.js"></script>
+
+    <!-- Color Picker JS -->
+    <script src="${pageContext.request.contextPath }/resources/assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+
+    
+    <!-- Custom-Switcher JS -->
+    <script src="${pageContext.request.contextPath }/resources/assets/js/custom-switcher.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="${pageContext.request.contextPath }/resources/assets/js/custom.js"></script>
+
+</body>
+
+</html>

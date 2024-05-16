@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.INurseMapper">
+	
+	<resultMap type="memberVO" id="hospitalizeMemberMap">
+		<id property="memNo" column="mem_no"/>
+		<result property="memNo" column="mem_no"/>
+		<result property="memName" column="mem_name"/>
+		<result property="memAge" column="mem_age"/>
+		<result property="memGender" column="mem_gender"/>
+		<result property="empName" column="emp_name"/>
+		<result property="patientVO.patntNo" column="patnt_no"/>
+		<result property="bedVO.bedNo" column="bed_no"/>
+		<result property="empVO.empNo" column="emp_no"/>
+		<collection property="bedVO.wardVO" resultMap="wardMap"/>
+	</resultMap>
+	
+	<resultMap type="wardVO" id="wardMap">
+		<id property="wardNo" column="ward_no"/>
+		<result property="wardNo" column="ward_no"/>
+	</resultMap>
+	
+	<resultMap type="medicineRequestResultVO" id="medicineRequestResultMap">
+		<result property="medicineResultdate" column="medicine_result_date"/>
+		<result property="medicineResultagree" column="code_name"/>
+		<result property="medicineResultdisagree" column="medicine_result_disagree"/>
+		<result property="resultEmp.memName" column="result_name"/>
+		<collection property="medicineRequestVO" resultMap="medicineRequestMap"/>
+	</resultMap>
+	
+	<resultMap type="medicineRequestVO" id="medicineRequestMap">
+		<result property="medicineRequestno" column="medicine_request_no"/>
+		<result property="medicineRequestquantity" column="medicine_request_quantity"/>
+		<result property="memName" column="mem_name"/>
+		<result property="medicineRequestdate" column="medicine_request_date"/>
+		<result property="medicineVO.mdcinName" column="mdcin_name"/>
+	</resultMap>
+	
+	<resultMap type="memberVO" id="wardInfoMap">
+		<result property="memName" column="mem_name"/>
+		<result property="memAge" column="mem_age"/>
+		<result property="memGender" column="mem_gender"/>
+		<result property="bedVO.bedNo" column="bed_no"/>
+		<result property="bedVO.wardVO.wardNo" column="ward_no"/>
+	</resultMap>
+	
+	<resultMap type="memberVO" id="hospitalizePatntInfoMap">
+		<result property="hsptlzRecordVO.hsptlzStartdate" column="hsptlz_start_date"/>
+		<result property="bedVO.bedStatus" column="code_name"/>
+		<result property="bedVO.wardVO.wardNo" column="wardNo"/>
+		<result property="memName" column="mem_name"/>
+		<result property="memAge" column="mem_age"/>
+		<result property="memGender" column="mem_gender"/>
+		<result property="empName" column="emp_name"/>
+		<result property="vitalVO.pressureMax" column="pressure_max"/>
+		<result property="vitalVO.pressureMin" column="pressure_min"/>
+		<result property="vitalVO.vitalPulse" column="vital_pulse"/>
+		<result property="vitalVO.vitalHeat" column="vital_heat"/>
+		<result property="vitalVO.vitalDate" column="vital_date"/>
+	</resultMap>
+	
+	<resultMap type="memberVO" id="hospitalizeOrderMap">
+		<id property="orderVO.orderNo" column="order_no"/>
+		<result property="orderVO.orderNo" column="order_no"/>
+		<result property="orderVO.orderCode" column="order_code"/>
+		<result property="orderVO.bodyCode" column="body_code"/>
+		<result property="empName" column="emp_name"/>
+		<result property="memName" column="mem_name"/>
+	</resultMap>
+	
+	<select id="getBedList" parameterType="bedVO">
+		select
+		    b.bed_no
+		    , b.bed_status
+		    , b.ward_no
+		    , c.code_name
+		from bed b, common_code c
+		where b.bed_status = c.code_no
+	</select>
+	
+	<select id="getHospitalizeList" resultMap="hospitalizeMemberMap">
+		select
+		    p.patnt_no
+		    , m.mem_no
+		    , b.bed_no
+		    , w.ward_no
+		    , m.mem_name
+		    , m.mem_age
+		    , m.mem_gender
+		    , mm.mem_name as emp_name
+		    , e.emp_no
+		from hospitalization_record hr, bed b, "ORDER" o, chart ch, patient p, member m, ward w, emp e, member mm
+		where hr.bed_no = b.bed_no
+		    and b.ward_no = w.ward_no
+		    and hr.order_no = o.order_no
+		    and o.chart_no = ch.chart_no
+		    and ch.patnt_no = p.patnt_no
+		    and p.mem_no = m.mem_no
+		    and o.emp_no = e.emp_no
+		    and e.mem_no = mm.mem_no
+		order by ward_no, bed_no
+	</select>
+	
+	<select id="getPatntOrder" parameterType="int" resultType="orderVO">
+		select 
+			c.code_name
+			, o.body_code
+			, ch.chart_date
+			, ch.chart_record
+			, m.mem_name, m.mem_gender
+			, m.mem_age
+			, mm.mem_name as emp_name
+		from "ORDER" o, chart ch, patient p, member m, member mm, emp e, common_code c
+		where o.chart_no = ch.chart_no
+			and ch.patnt_no = p.patnt_no
+			and p.mem_no = m.mem_no
+			and o.emp_no = e.emp_no
+			and e.mem_no = mm.mem_no
+			and (o.order_code = 'OD001' OR o.order_code = 'OD002')
+			and o.order_code = c.code_no
+			and m.mem_no = #{patntNo}
+	</select>
+	
+	<select id="getHospitalizePatntInfo" parameterType="int" resultMap="hospitalizePatntInfoMap">
+		select 
+		    hr.HSPTLZ_START_DATE
+		    , b.bed_no
+		    , c.code_name
+		    , w.ward_no
+		    , m.mem_name
+		    , m.mem_age
+		    , m.mem_gender
+		    , mm.mem_name as emp_name
+		    , v.pressure_max
+		    , v.pressure_min
+		    , v.vital_pulse
+		    , v.vital_heat
+		    , v.vital_date
+		from hospitalization_record hr, bed b, ward w, "ORDER" o, chart ch, patient p, member m, common_code c, emp e, member mm, vital v
+		where hr.order_no = o.order_no
+		    and hr.bed_no = b.bed_no
+		    and b.ward_no = w.ward_no
+		    and o.chart_no = ch.chart_no
+		    and ch.patnt_no = p.patnt_no
+		    and p.mem_no = m.mem_no
+		    and o.emp_no = e.emp_no
+		    and e.mem_no = mm.mem_no
+		    and b.bed_status = c.code_no
+		    and v.hsptlz_no = hr.hsptlz_no
+		    and p.patnt_no = #{patntNo}
+	</select>
+	
+	<select id="getMedicineList" resultType="medicineVO">
+		select
+    		mdcin_no
+    		, mdcin_name
+    		, mdcin_quantity
+    		, mdcin_unit
+    		, mdcin_company
+    		, mdcin_course
+    		, mdcin_price
+		from medicine
+	</select>
+	
+	
+	<insert id="requestMedicine" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";" open="DECLARE BEGIN" close="; END;">
+	    	INSERT INTO medicine_request (
+	           	medicine_request_no
+	      		,medicine_request_quantity
+	      		,MEDICINE_REQUEST_PERSON
+	      		,medicine_request_date
+	      		,mdcin_no
+	      		,medicine_request_unit
+	      	)
+	      	SELECT MEDICINE_REQUEST_SEQ.NEXTVAL
+	      		,#{item.mdcinQuantity}
+	      		, 2 <!-- 테스트용 empNo -->
+	      		,sysdate
+	      		,#{item.mdcinNo}
+	      		,#{item.mdcinUnit}
+	      	FROM DUAL
+		</foreach>
+	</insert>
+	
+	<select id="getRequestResultList" resultMap="medicineRequestResultMap">
+		SELECT
+		    mr.medicine_request_no,
+		    m.mdcin_name,
+		    mr.medicine_request_quantity,
+		    mr.medicine_request_date,
+		    cc.code_name,
+		    mrr.medicine_result_date,
+		    mrr.medicine_result_disagree,
+		    mem.mem_name,
+		    mm.mem_name AS result_name
+		FROM
+		    medicine m
+		    INNER JOIN medicine_request mr ON m.mdcin_no = mr.mdcin_no
+		    LEFT JOIN medicine_request_result mrr ON mr.medicine_request_no = mrr.medicine_result_no
+		    LEFT JOIN emp e ON mrr.medicine_result_emp = e.emp_no
+		    LEFT JOIN member mem ON e.mem_no = mem.mem_no
+		    LEFT JOIN common_code cc ON mrr.medicine_result_agree = cc.code_no
+		    LEFT JOIN emp emp ON mr.medicine_request_person = emp.emp_no
+		    LEFT JOIN member mm ON emp.mem_no = mm.mem_no
+		    order by mr.medicine_request_no
+	</select>
+	
+	<select id="getWardInfo" resultMap="wardInfoMap">
+		select
+		    w.ward_no
+		    , b.bed_no
+		    , m.mem_name
+		    , mem_age
+		    , mem_gender
+		from ward w, bed b, hospitalization_record hr, "ORDER" o, chart ch, patient p, member m
+		where w.ward_no = b.ward_no
+		    and b.bed_no = hr.bed_no
+		    and hr.order_no = o.order_no
+		    and o.chart_no = ch.chart_no
+		    and ch.patnt_no = p.patnt_no
+		    and p.mem_no = m.mem_no
+		order by w.ward_no, b.bed_no
+	</select>
+	
+	<select id="getHospitalizeOrder" resultMap="hospitalizeOrderMap">
+		SELECT
+		    o.order_no
+		    , c.code_name AS order_code
+		    , cc.code_name AS body_code
+		    , mem.mem_name AS emp_name
+		    , m.mem_name
+		FROM
+		    "ORDER" o
+		JOIN
+		    chart ch ON o.chart_no = ch.chart_no
+		JOIN
+		    patient p ON ch.patnt_no = p.patnt_no
+		JOIN
+		    member m ON p.mem_no = m.mem_no
+		JOIN
+		    emp e ON o.emp_no = e.emp_no
+		JOIN
+		    member mem ON e.mem_no = mem.mem_no
+		LEFT OUTER JOIN
+		    common_code c ON o.order_code = c.code_no
+		LEFT OUTER JOIN
+		    common_code cc ON o.body_code = cc.code_no
+		LEFT OUTER JOIN
+		    hospitalization_record hr ON hr.order_no = o.order_no
+		WHERE
+		    o.order_code = 'OD004'
+		AND
+		    hr.order_no IS NULL
+	</select>
+</mapper>

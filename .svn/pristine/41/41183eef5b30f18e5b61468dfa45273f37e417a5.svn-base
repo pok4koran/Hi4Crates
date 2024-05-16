@@ -1,0 +1,30 @@
+package kr.or.ddit.service.impl;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.IStatisticsMapper;
+import kr.or.ddit.service.IStatisticsService;
+import kr.or.ddit.vo.MemberVO;
+
+@Service
+public class StatisticsServcieImpl implements IStatisticsService {
+
+	@Inject
+	private IStatisticsMapper mapper;
+	
+
+	@Override
+	public int mCount(MemberVO rVO) {
+		
+		return mapper.manCount(rVO);
+	}
+
+
+	@Override
+	public int wCount(MemberVO rVO) {
+		return mapper.wCount(rVO);
+	}
+
+}

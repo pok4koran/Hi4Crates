@@ -1,0 +1,32 @@
+package kr.or.ddit.controller.admin;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.IDocumentStorageService;
+import kr.or.ddit.vo.DocumentStorageVO;
+
+@Controller
+@RequestMapping("/document")
+public class DocumentStorageCotroller {
+	
+	@Inject
+	IDocumentStorageService documentService;
+	
+	@GetMapping("/getList")
+	public String showDocumentStorage(Model model) {
+		
+		List<DocumentStorageVO> documentList = documentService.getList();
+//		List<DocumentStorageVO> diagnosisPaperList = documentService.getDiagnosisPaperList();
+		
+		model.addAttribute("documentList",documentList);
+		
+		return "admin/documentStorage";
+	}
+}

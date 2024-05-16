@@ -1,0 +1,12 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.MemberVO;
+
+public interface IDoctorRoundMapper {
+
+	public List<MemberVO> getPatntRecordsList(int patntNo);
+	public MemberVO getPatntRecordInfo(int chartNo);
+
+}

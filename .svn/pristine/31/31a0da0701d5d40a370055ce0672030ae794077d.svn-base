@@ -1,0 +1,17 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class TreeViewVO {
+	
+	private int level;
+	private int empNo;
+	private String empDepartment;
+	private int leaf;
+	private String empJob;
+	private String empName;
+	private int empSuperior;
+	private String superiorName;
+	
+}

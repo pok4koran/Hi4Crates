@@ -1,0 +1,784 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+    <div class="page">
+         <!-- app-header -->
+        <!-- /app-header -->
+
+        <!-- Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+                <div class="main-chart-wrapper p-2 gap-2 d-lg-flex">
+                    <div class="chat-info border">
+                        <a aria-label="anchor" href="javascript:void(0)" class="btn btn-secondary btn-icon rounded-circle chat-add-icon">
+                            <i class="ri-add-line"></i>
+                        </a>
+                        <div class="d-flex align-items-center justify-content-between w-100 p-3 border-bottom">
+                            <div>
+                                <h5 class="fw-semibold mb-0">채팅</h5>
+                            </div>
+                            <!-- <div class="dropdown">
+                                <button aria-label="button" class="btn btn-icon btn-secondary-light btn-wave waves-light"
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ri-settings-3-line"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:void(0);">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);">Another action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);">Something else here</a></li>
+                                </ul>
+                            </div> -->
+                        </div>
+                        <div class="chat-search p-3 border-bottom">
+                            <div class="input-group">
+                                <input type="text" class="form-control bg-light border-0" placeholder="검색"
+                                    aria-describedby="button-addon2">
+                                <button aria-label="button" class="btn btn-light" type="button" id="button-addon2"><i
+                                        class="ri-search-line text-muted"></i></button>
+                            </div>
+                        </div>
+                        <ul class="nav nav-tabs tab-style-2 nav-justified mb-0 border-bottom d-flex"
+                            id="myTab1" role="tablist">
+                            <li class="nav-item border-end me-0" role="presentation">
+                                <button class="nav-link active h-100" id="users-tab" data-bs-toggle="tab"
+                                    data-bs-target="#users-tab-pane" type="button" role="tab"
+                                    aria-controls="users-tab-pane" aria-selected="true"><i
+                                        class="ri-history-line me-1 align-middle d-inline-block"></i>개인</button>
+                            </li>
+                            <li class="nav-item border-end me-0" role="presentation">
+                                <button class="nav-link h-100" id="groups-tab" data-bs-toggle="tab"
+                                    data-bs-target="#groups-tab-pane" type="button" role="tab"
+                                    aria-controls="groups-tab-pane" aria-selected="false"><i
+                                        class="ri-group-2-line me-1 align-middle d-inline-block"></i>그룹</button>
+                            </li>
+                            <li class="nav-item border-end me-0" role="presentation">
+                                <button class="nav-link h-100" id="calls-tab" data-bs-toggle="tab"
+                                    data-bs-target="#calls-tab-pane" type="button" role="tab"
+                                    aria-controls="calls-tab-panee" aria-selected="false"><i
+                                        class="ri-group-fill me-1 align-middle d-inline-block"></i>회원</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active border-0 chat-users-tab" id="users-tab-pane"
+                                role="tabpanel" aria-labelledby="users-tab" tabindex="0">
+                                <ul class="list-unstyled mb-0 mt-2 chat-users-tab" id="chat-msg-scroll">
+                                    <li class="pb-0">
+                                        <p class="text-muted fs-11 fw-semibold mb-2 op-7">읽지 않은 메세지</p>
+                                    </li>
+                                    <li class="checkforactive">
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Sujika','5','online')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md online me-2 avatar-rounded">
+                                                        <img  src="${pageContext.request.contextPath }/resources/assets/images/faces/5.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Sujika <span
+                                                            class="float-end text-muted fw-normal fs-11">1:32PM</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span class="chat-msg text-truncate">Need to go for lunch?</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="pb-0">
+                                        <p class="text-muted fs-11 fw-semibold mb-2 op-7">모든</p>
+                                    </li>
+                                    <li class="chat-inactive checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Andreas','11','offline')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md offline me-2 avatar-rounded" >
+                                                        <img  src="${pageContext.request.contextPath }/resources/assets/images/faces/11.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Andreas <span
+                                                            class="float-end text-muted fw-normal fs-11">11:54AM</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span class="chat-msg text-truncate">Congratulations on your new
+                                                            project</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="chat-inactive checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Melissa Sean','3','offline')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                        <img  src="${pageContext.request.contextPath }/resources/assets/images/faces/3.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Melissa Sean <span
+                                                            class="float-end text-muted fw-normal fs-11">9:45AM</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span class="chat-msg text-truncate">Nice work,Congrats
+                                                            &#128079;</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="chat-inactive checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Samantha Paul','6','offline')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                        <img  src="${pageContext.request.contextPath }/resources/assets/images/faces/6.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Samantha Paul <span
+                                                            class="float-end text-muted fw-normal fs-11">8:31AM</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span class="chat-msg text-truncate">Great work keep it up
+                                                            :-)</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="chat-inactive checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Megan Fox','4','offline')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                        <img src="${pageContext.request.contextPath }/resources/assets/images/faces/4.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Megan Fox <span
+                                                            class="float-end text-muted fw-normal fs-11">7:23AM</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span class="chat-msg text-truncate">You are need to be
+                                                            appreaciated for what you have done,congs</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="chat-inactive checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Nicholas Sams','13','offline')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                        <img src="${pageContext.request.contextPath }/resources/assets/images/faces/13.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Nicholas Sams <span
+                                                            class="float-end text-muted fw-normal fs-11">10:22AM</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span class="chat-msg text-truncate">Great Project</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="chat-inactive checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Pope Johnson','15','offline')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                        <img src="${pageContext.request.contextPath }/resources/assets/images/faces/15.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Pope Johnson <span
+                                                            class="float-end text-muted fw-normal fs-11">9:10AM</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span class="chat-msg text-truncate">Hike management
+                                                            fixed</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane fade border-0 chat-groups-tab" id="groups-tab-pane"
+                                role="tabpanel" aria-labelledby="groups-tab" tabindex="0">
+                                <ul class="list-unstyled mb-0 mt-2 ">
+                                    <li class="pb-0">
+                                        <p class="text-muted fs-11 fw-semibold mb-1 op-7">GROUP CHATS</p>
+                                    </li>
+                                    <li class="checkforactive">
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Family Together &#128525;','18','online')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md online me-2 avatar-rounded">
+                                                        <img src="${pageContext.request.contextPath }/resources/assets/images/faces/17.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold" >
+                                                        Family Together &#128525; <span
+                                                            class="float-end text-muted fw-normal fs-11">12:24PM</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0 chat-msg-typing ">
+                                                        <span class="chat-msg text-truncate">Hira Typing...</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                        <span
+                                                            class="badge bg-success-transparent rounded-circle float-end">2</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="chat-msg-unread checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Work Buddies','19','online')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md online me-2 avatar-rounded">
+                                                        <img src="${pageContext.request.contextPath }/resources/assets/images/faces/18.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold" >
+                                                        Work Buddies <span
+                                                            class="float-end text-muted fw-normal fs-11">1:16PM</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span class="chat-msg text-truncate"><span
+                                                                class="group-indivudial">Rams:</span>Happy to be part of
+                                                            this group</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="chat-inactive checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Friends Forever &#128526;','20','offline')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                        <img src="${pageContext.request.contextPath }/resources/assets/images/faces/19.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Friends Forever &#128526; <span
+                                                            class="float-end text-muted fw-normal fs-11">3 days
+                                                            ago</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span
+                                                            class="chat-msg text-truncate">Simon,Melissa,Amanda,Patrick,Siddique</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="chat-inactive checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Social Media Deals','21','offline')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                        <img  src="${pageContext.request.contextPath }/resources/assets/images/faces/20.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Social Media Deals <span
+                                                            class="float-end text-muted fw-normal fs-11">5 days
+                                                            ago</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span
+                                                            class="chat-msg text-truncate">Kamalan,Subha,Ambrose,Kiara,Jackson</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="chat-inactive checkforactive" >
+                                        <a href="javascript:void(0);" onclick="changeTheInfo(this,'Apartment Group','22','offline')">
+                                            <div class="d-flex align-items-top">
+                                                <div class="me-1 lh-1">
+                                                    <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                        <img src="${pageContext.request.contextPath }/resources/assets/images/faces/21.jpg" alt="img">
+                                                    </span>
+                                                </div>
+                                                <div class="flex-fill">
+                                                    <p class="mb-0 fw-semibold">
+                                                        Apartment Group <span
+                                                            class="float-end text-muted fw-normal fs-11">12 days
+                                                            ago</span>
+                                                    </p>
+                                                    <p class="fs-12 mb-0">
+                                                        <span
+                                                            class="chat-msg text-truncate">Subman,Rajen,Kairo,Dibasha,Alexa</span>
+                                                        <span class="chat-read-icon float-end align-middle"><i
+                                                                class="ri-check-double-fill"></i></span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            
+                            
+  
+                            
+                            <div class="tab-pane fade border-0 chat-calls-tab" id="calls-tab-pane" role="tabpanel"
+                                aria-labelledby="calls-tab" tabindex="0">
+                                <ul class="list-unstyled mb-0 mt-2 chat-calls-tab">
+                                    <li class="pb-0">
+                                        <div class="row">
+                                            <p class="text-muted fs-11 fw-semibold mb-1 op-7 col-3">온라인</p>
+                                            <p class="text-muted fs-11 fw-semibold mb-1 op-7 col-9" style="text-align: right;">
+                                                <span class="badge bg-success-transparent rounded-circle float-end fs-10">온라인 ${onlineList.size()}명</span>
+                                            </p>
+                                        </div>
+                                    </li>
+                             <c:forEach var="member" items="${memberList }">
+                            	<c:set var="isOnlie" value="false"/>
+                            	
+                            	<c:forEach var="online" items="${onlineList }">
+                            		<c:if test="${member.memId eq online.memId }">
+                            			<c:set var="isOnline" value="true"/>
+                            		</c:if>
+                            	</c:forEach>
+                            	
+                            	<c:choose>
+                            		<c:when test="${isOnline}">
+                            		<li>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-1 lh-1">
+                                                <span class="avatar avatar-md online me-2 avatar-rounded">
+                                                    <img src="${pageContext.request.contextPath }/resources/assets/images/faces/5.jpg" alt="img">
+                                                </span>
+                                            </div>
+                                            <div class="flex-fill my-auto">
+                                                <p class="mb-0 fw-semibold">
+                                                    ${member.memName }
+                                                </p>
+                                                <p class="fs-12 mb-0">
+                                                    <span class="text-muted text-truncate">${member.memEmail }</span>
+                                                </p>
+                                            </div>
+                                            <div class="">
+                                                <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-primary-light">
+                                                    <i class="ti ti-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                            		</c:when>
+                            	</c:choose>
+                            </c:forEach>
+                                    <li class="pb-0">
+                                        <p class="text-muted fs-11 fw-semibold mb-1 op-7">오프라인</p>
+                                    </li>
+                          	<c:forEach var="member" items="${memberList }">
+                            	<c:set var="isOnlie" value="true"/>
+                            	
+                            	<c:forEach var="online" items="${onlineList }">
+                            		<c:if test="${member.memId eq online.memId }">
+                            			<c:set var="isOnline" value="false"/>
+                            		</c:if>
+                            	</c:forEach>
+                            	
+                            	<c:choose>
+                            		<c:when test="${isOnline }">
+                                    <li>
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-1 lh-1">
+                                                <span class="avatar avatar-md offline me-2 avatar-rounded">
+                                                    <img src="${pageContext.request.contextPath }/resources/assets/images/faces/5.jpg" alt="img">
+                                                </span>
+                                            </div>
+                                            <div class="flex-fill my-auto">
+                                                <p class="mb-0 fw-semibold">
+                                                    ${member.memName }
+                                                </p>
+                                                <p class="fs-12 mb-0">
+                                                    <span class="text-muted text-truncate">${member.memEmail }</span>
+                                                </p>
+                                            </div>
+                                            <div class="">
+                                                <button aria-label="button" type="button" class="btn btn-sm btn-icon btn-primary-light">
+                                                    <i class="ti ti-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                            		</c:when>
+                            	</c:choose>
+                            </c:forEach> 
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main-chat-area border">
+                        <div class="d-flex align-items-center p-2 border-bottom">
+                            <div class="me-2 lh-1">
+                                <!-- online or offline 표시로 초록불 -->
+                                <span class="avatar avatar-lg offline me-2 avatar-rounded chatstatusperson">
+                                    <img class="chatimageperson" src="${pageContext.request.contextPath }/resources/assets/images/faces/2.jpg" alt="img">
+                                </span>
+                            </div>
+                            <div class="flex-fill">
+                                <p class="mb-0 fw-semibold fs-14">
+                                    <a href="javascript:void(0);" class="chatnameperson responsive-userinfo-open">클릭한 상대 이름</a>
+                                </p>
+                                <p class="text-muted mb-0 chatpersonstatus">online or offline</p>
+                            </div>
+                            <div class="d-flex flex-wrap rightIcons">
+                                <button aria-label="button" type="button" class="btn btn-icon btn-outline-light my-1 ms-2">
+                                    <i class="ti ti-phone"></i>
+                                </button>
+                                <button aria-label="button" type="button" class="btn btn-icon btn-outline-light my-1 ms-2">
+                                    <i class="ti ti-video"></i>
+                                </button>
+                                <button aria-label="button" type="button" class="btn btn-icon btn-outline-light my-1 ms-2 responsive-userinfo-open">
+                                    <i class="ti ti-user-circle" id="responsive-chat-close"></i>
+                                </button>
+                                <div class="dropdown ms-2">
+                                    <button aria-label="button" class="btn btn-icon btn-outline-light my-1 btn-wave waves-light" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ti ti-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Profile</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Clear Chat</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Delete User</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Block User</a></li>
+                                        <li><a class="dropdown-item" href="javascript:void(0);">Report</a></li>
+                                    </ul>
+                                </div>
+                                <button aria-label="button" type="button" class="btn btn-icon btn-outline-light my-1 ms-2 responsive-chat-close">
+                                    <i class="ri-close-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chat-content" id="main-chat-content">
+                            <ul class="list-unstyled">
+                                <li class="chat-day-label">
+                                    <span>Today</span>
+                                </li>
+                                <!-- 상대 채팅 -->
+                                <li class="chat-item-start">
+                                    <div class="chat-list-inner">
+                                        <div class="chat-user-profile">
+                                            <span class="avatar avatar-md online avatar-rounded chatstatusperson">
+                                                <img class="chatimageperson" src="${pageContext.request.contextPath }/resources/assets/images/faces/2.jpg" alt="img">
+                                            </span>
+                                        </div>
+                                        <div class="ms-3">
+                                            <span class="chatting-user-info">
+                                                <span class="chatnameperson">Emiley Jackson</span> <span class="msg-sent-time">11:48PM</span>
+                                            </span>
+                                            <div class="main-chat-msg">
+                                                <div>
+                                                    <p class="mb-0">Nice to meet you &#128512;</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-- 상대 채팅 끝 -->
+
+                                <!-- 내 채팅 -->
+                                <li class="chat-item-end">
+                                    <div class="chat-list-inner">
+                                        <div class="me-3">
+                                            <span class="chatting-user-info">
+                                                <span class="msg-sent-time"><span class="chat-read-mark align-middle d-inline-flex"><i
+                                                            class="ri-check-double-line"></i></span>11:50PM</span> You
+                                            </span>
+                                            <div class="main-chat-msg">
+                                                <div>
+                                                    <p class="mb-0">It is a long established fact that a reader will be
+                                                        distracted by the readable content of a page when looking at its
+                                                        layout</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="chat-user-profile">
+                                            <span class="avatar avatar-md online avatar-rounded">
+                                                <img src="${pageContext.request.contextPath }/resources/assets/images/faces/15.jpg" alt="img">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-- 내 채팅 끝 -->
+
+                                
+                                <li class="chat-item-start">
+                                    <div class="chat-list-inner">
+                                        <div class="chat-user-profile">
+                                            <span class="avatar avatar-md online avatar-rounded chatstatusperson">
+                                                <img class="chatimageperson" src="${pageContext.request.contextPath }/resources/assets/images/faces/2.jpg" alt="img">
+                                            </span>
+                                        </div>
+                                        <div class="ms-3">
+                                            <span class="chatting-user-info">
+                                                <span class="chatnameperson">상대 이름</span> <span class="msg-sent-time">메세지 보낸 시간</span>
+                                            </span>
+                                            <div class="main-chat-msg">
+                                                <div>
+                                                    <p class="mb-0">채팅</p>
+                                                </div>
+                                                <div>
+                                                    <p class="mb-0">채팅2</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+
+                                <li class="chat-item-end">
+                                    <div class="chat-list-inner">
+                                        <div class="me-3">
+                                            <span class="chatting-user-info">
+                                                <span class="msg-sent-time">
+                                                    <span class="chat-read-mark align-middle d-inline-flex">
+                                                        <i class="ri-check-double-line"></i>
+                                                    </span>메세지 보낸 시간
+                                                </span> 나
+                                            </span>
+                                            <div class="main-chat-msg">
+                                                <div>
+                                                    <p class="mb-0">내 채팅 &#128076;</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="chat-user-profile">
+                                            <span class="avatar avatar-md online avatar-rounded">
+                                                <img src="${pageContext.request.contextPath }/resources/assets/images/faces/15.jpg" alt="img">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                        <div class="chat-footer">
+                            <input class="form-control" placeholder="채팅을 입력해주세요..." type="text">
+                            <a aria-label="anchor" class="btn btn-icon mx-2 btn-success-light" href="javascript:void(0)">
+                                <i class="ri-emotion-line"></i>
+                            </a>
+                            <a aria-label="anchor" class="btn btn-primary btn-icon btn-send" href="javascript:void(0)">
+                                <i class="ri-send-plane-2-line"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 오른쪽 사이드 -->
+                    <div class="chat-user-details border" id="chat-user-details">
+                        <button aria-label="button" type="button" class="btn btn-icon btn-outline-light my-1 ms-2 responsive-chat-close2">
+                            <i class="ri-close-line"></i>
+                        </button>
+                        <div class="text-center mb-5">
+                            <span class="avatar avatar-rounded offline avatar-xxl me-2 mb-3 chatstatusperson">
+                                <img class="chatimageperson" src="${pageContext.request.contextPath }/resources/assets/images/faces/2.jpg" alt="img">
+                            </span>
+                            <p class="mb-1 fs-15 fw-semibold text-dark lh-1 chatnameperson">상대방 정보</p>
+                            <p class="fs-12 text-muted"><span class="chatnameperson">emaileyjackson2134</span>@gmail.com</p>
+                            <!-- <p class="text-center mb-0">
+                                <button type="button" aria-label="button" class="btn btn-icon rounded-pill btn-primary-light"><i
+                                        class="ri-phone-line"></i></button>
+                                <button type="button" aria-label="button" class="btn btn-icon rounded-pill btn-primary-light ms-2"><i
+                                        class="ri-video-add-line"></i></button>
+                                <button type="button" aria-label="button" class="btn btn-icon rounded-pill btn-primary-light ms-2"><i
+                                        class="ri-chat-1-line"></i></button>
+                            </p> -->
+                        </div>
+                        <div class="mb-5">
+                            <div class="fw-semibold mb-4">공유한 파일
+                                <span class="badge bg-primary-transparent rounded-circle ms-1">갯수</span>
+                                <span class="float-end fs-11"><a href="javascript:void(0);" class="link-primary text-underline"><u>전체보기</u></a></span>
+                            </div>
+                            <ul class="shared-files list-unstyled">
+                                <li>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-2">
+                                            <span class="shared-file-icon">
+                                                <i class="ti ti-file-text"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <p class="fs-12 fw-semibold mb-0">파일명</p>
+                                            <p class="mb-0 text-muted fs-11">등록일시</p>
+                                        </div>
+                                        <div class="fs-18">
+                                            <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-2">
+                                            <span class="shared-file-icon">
+                                                <i class="ri-image-line"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <p class="fs-12 fw-semibold mb-0">Img_02.Jpg</p>
+                                            <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:19AM</p>
+                                        </div>
+                                        <div class="fs-18">
+                                            <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-2">
+                                            <span class="shared-file-icon">
+                                                <i class="ri-image-line"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <p class="fs-12 fw-semibold mb-0">Img_15.Jpg</p>
+                                            <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:18AM</p>
+                                        </div>
+                                        <div class="fs-18">
+                                            <a aria-label="anchor" href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-2">
+                                            <span class="shared-file-icon">
+                                                <i class="ri-video-line"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <p class="fs-12 fw-semibold mb-0">Video_15_02_2022.MP4</p>
+                                            <p class="mb-0 text-muted fs-11">22,Oct 2022 - 10:18AM</p>
+                                        </div>
+                                        <div class="fs-18">
+                                            <a href="javascript:void(0)"><i class="ri-download-2-line text-muted"></i></a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mb-0">
+                            <div class="fw-semibold mb-4">공유한 사진
+                                <span class="badge bg-primary-transparent rounded-circle ms-1">갯수</span>
+                                <span class="float-end fs-11"><a href="javascript:void(0);" class="link-primary text-underline"><u>전체보기</u></a></span>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                                    <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                        <img src="${pageContext.request.contextPath }/resources/assets/images/media/media-56.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                                    <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                        <img src="${pageContext.request.contextPath }/resources/assets/images/media/media-52.jpg" alt="">
+                                    </a>
+                                </div>
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4">
+                                    <a aria-label="anchor" href="gallery.html" class="chat-media">
+                                        <img src="${pageContext.request.contextPath }/resources/assets/images/media/media-52.jpg" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End::app-content -->
+
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="input-group">
+                    <a href="javascript:void(0);" class="input-group-text" id="Search-Grid"><i class="fe fe-search header-link-icon fs-18"></i></a>
+                    <input type="search" class="form-control border-0 px-2" placeholder="Search" aria-label="Username">
+                    <a href="javascript:void(0);" class="input-group-text" id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+                    <a href="javascript:void(0);" class="btn btn-light btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fe fe-more-vertical"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="javascript:void(0);">Action</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Another action</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Something else here</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Separated link</a></li>
+                    </ul>
+                  </div>
+                  <div class="mt-4">
+                    <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                    <span class="search-tags alert"><i class="fe fe-user me-2"></i>People<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                    <span class="search-tags alert"><i class="fe fe-file-text me-2"></i>Pages<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                    <span class="search-tags alert"><i class="fe fe-align-left me-2"></i>Articles<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                    <span class="search-tags alert"><i class="fe fe-server me-2"></i>Tags<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                  </div>
+                  <div class="my-4">
+                    <p class="font-weight-semibold text-muted mb-2">Recent Search :</p>
+                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                      <a href="notifications.html"><span>Notifications</span></a>
+                      <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                    </div>
+                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                      <a href="alerts.html"><span>Alerts</span></a>
+                      <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                    </div>
+                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-0 alert">
+                      <a href="mail.html"><span>Mail</span></a>
+                      <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <div class="btn-group ms-auto">
+                    <button type="button" class="btn btn-sm btn-primary-light">Search</button>
+                    <button type="button" class="btn btn-sm btn-primary">Clear Recents</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+<script>
+</script>

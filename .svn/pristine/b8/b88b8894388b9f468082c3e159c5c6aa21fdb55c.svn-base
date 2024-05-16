@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IPatientMypageMapper">
+
+	<select id="list" resultType= "ClinicReservationVO">
+		SELECT RESERV_NO, RESERV_DATE, RESERV_TIME
+		FROM CLINIC_RESERVATION
+		WHERE MEM_NO = '4'
+		ORDER BY RESERV_DATE DESC, RESERV_TIME ASC
+	</select>
+	
+	<select id="selectOne" resultType="memberVO">
+		SELECT MEM_NO, MEM_ID, MEM_PW, MEM_EMAIL, MEM_NAME,
+		MEM_AGE, MEM_GENDER, MEM_REGNO1, MEM_REGNO2, MEM_TEL,
+		MEM_ADDTEL, MEM_ADDRESS1, MEM_ADDRESS2, MEM_SIGNUP_DATE, MEM_POSTCODE
+		FROM member
+		WHERE MEM_NO = '4'
+	</select>
+	
+	<update id="updateAccount" parameterType="memberVO">
+		UPDATE member
+		SET MEM_PW = #{memPw},
+		    MEM_NAME = #{memName},
+		    MEM_TEL = #{memTel},
+		    MEM_ADDTEL = #{memAddtel},
+		    MEM_POSTCODE = #{memPostcode},
+		    MEM_ADDRESS1 = #{memAddress1},
+		    MEM_ADDRESS2 = #{memAddress2}
+		WHERE MEM_NO = '4'
+	</update>
+	
+	<select id="checkPw" resultType ="memberVO">
+		select mem_pw
+		from member
+		where mem_no = '113'
+	</select>
+	
+	<update id="changePw" parameterType="memberVO">
+		update member
+		set mem_pw = #{memPw}
+		where mem_no = '4'
+	</update>
+	
+	<update id="deleteAccount" parameterType="memberVO">
+		update member
+		set MEM_WITHDRAW = 'Y',
+			MEM_WITHDRAW_REASON = #{memWithDrawReason},
+			MEM_WITHDRAW_DATE = sysdate
+		where mem_no = '113'
+	</update>
+	
+	<select id="cList" resultType="CounselVO">
+		SELECT COUNSEL_NO, COUNSEL_TITLE, COUNSEL_DATE
+		    FROM COUNSEL
+		WHERE PATNT_NO = '4'
+		ORDER BY COUNSEL_DATE DESC
+	</select>
+
+</mapper>

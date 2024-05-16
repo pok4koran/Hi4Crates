@@ -1,0 +1,15 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.SurgeryReservationVO;
+
+public interface ISugeryReservationService {
+
+	public List<SurgeryReservationVO> getSurgeryReservWaitingList();
+
+	public List<SurgeryReservationVO> getSurgeryCal();
+
+	public SurgeryReservationVO surgeryDateCheck(String string);
+
+}

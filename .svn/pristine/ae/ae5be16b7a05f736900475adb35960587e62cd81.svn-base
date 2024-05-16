@@ -1,0 +1,217 @@
+package kr.or.ddit.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.mapper.IMainChartMapper;
+import kr.or.ddit.service.IMainChartService;
+import kr.or.ddit.vo.ChartVO;
+import kr.or.ddit.vo.CommonCodeVO;
+import kr.or.ddit.vo.DiagnosisVO;
+import kr.or.ddit.vo.DiseaseVO;
+import kr.or.ddit.vo.GroupOrderDetailVO;
+import kr.or.ddit.vo.GroupOrderVO;
+import kr.or.ddit.vo.MedicineVO;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.OrderVO;
+import kr.or.ddit.vo.PrescriptionVO;
+
+@Service
+public class MainChartServiceImpl implements IMainChartService {
+	
+	@Inject
+	IMainChartMapper mapper;
+	private DiagnosisVO diagnosisVO;
+
+	@Override
+	public List<MemberVO> getWatingList(int empNo) {
+		
+		return mapper.getWatingList(empNo);
+	}
+
+	@Override
+	public List<ChartVO> getPatientChart(int memNo) {
+		
+		return mapper.getPatientChart(memNo);
+	}
+	
+	@Override
+	public List<DiagnosisVO> getDiseaseList(int chartNo) {
+		return mapper.getDiseaseList(chartNo);
+	}
+
+
+	@Override
+	public MemberVO patientPreview(int memNo) {
+		return mapper.patientPreview(memNo);
+	}
+
+	@Override
+	public ServiceResult orderRadiation(OrderVO orderVO) {
+		
+		ServiceResult result=null;
+		
+		int status = mapper.orderRadiation(orderVO);
+		
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+		
+		
+	}
+
+	@Override
+	public ServiceResult createChart(ChartVO chartVO) {
+		
+		ServiceResult result = null;
+		
+		int status = mapper.createChart(chartVO);
+		
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public List<MedicineVO> getMedicineList(int chartNo) {
+		
+		return mapper.getMedicineList(chartNo);
+	}
+
+	@Override
+	public List<CommonCodeVO> getPtList(int chartNo) {
+		return mapper.getPtList(chartNo);
+	}
+
+	@Override
+	public List<DiseaseVO> searchDisease() {
+		return mapper.searchDisease();
+	}
+
+	@Override
+	public List<MedicineVO> searchMedicine() {
+		return mapper.searchMedicine();
+	}
+
+	@Override
+	public ServiceResult insertChart(ChartVO chartVO) {
+		ServiceResult result = null;
+		
+		int status = mapper.insertChart(chartVO);
+		
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult insertDiagnosis(DiagnosisVO primaryDiagnosisVO) {
+		ServiceResult result = null;
+		
+		int status = mapper.insertDiagnosis(primaryDiagnosisVO);
+		
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult insertMedicineOrder(OrderVO orderMedicine) {
+		ServiceResult result = null;
+		
+		int status = mapper.insertMedicineOrder(orderMedicine);
+		
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult insertPrescription(PrescriptionVO prescriptionVO) {
+		ServiceResult result = null;
+		int status = mapper.insertPrescription(prescriptionVO);
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult insertPtOrder(OrderVO orderPt) {
+		ServiceResult result = null;
+		int status = mapper.insertPtOrder(orderPt);
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult createGroupOrder(GroupOrderVO groupOrderVO) {
+		ServiceResult result = null;
+		int status = mapper.createGroupOrder(groupOrderVO);
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult insertGroupOrderDetail(GroupOrderDetailVO groupOrderDetail) {
+		ServiceResult result = null;
+		int status = mapper.insertGroupOrderDetail(groupOrderDetail);
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult insertSecondDiagnosis(DiagnosisVO secondaryDiagnosisVO) {
+		ServiceResult result = null;
+		int status = mapper.insertSecondDiagnosis(secondaryDiagnosisVO);
+		if(status>0) {
+			result=ServiceResult.OK;
+		}else {
+			result=ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+
+
+
+
+
+
+
+
+}

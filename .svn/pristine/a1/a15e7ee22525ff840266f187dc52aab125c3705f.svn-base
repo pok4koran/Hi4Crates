@@ -1,0 +1,35 @@
+package kr.or.ddit.controller.surgery;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.IEmpSurgeryService;
+import kr.or.ddit.vo.SurgeryReservationVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/surgeryRecord")
+@Slf4j
+public class SurgeryRecordController {
+	
+	@Inject
+	private IEmpSurgeryService surgeryService;
+	
+	//수술목록 리스트
+	@GetMapping("/getSurgeryList")
+	public String getSurgeryList(Model model){
+		
+		List<SurgeryReservationVO> surgeryList =  surgeryService.getSurgeryList();
+		
+		model.addAttribute("surgeryList", surgeryList);
+		
+		return "empSurgery/surgeryRecord";
+	}
+
+}

@@ -1,0 +1,12 @@
+package kr.or.ddit.service;
+
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ReceiptVO;
+
+public interface IStatisticsService {
+
+	int mCount(MemberVO rVO);
+
+	int wCount(MemberVO rVO);
+
+}

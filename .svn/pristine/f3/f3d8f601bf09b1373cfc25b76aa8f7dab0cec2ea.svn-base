@@ -1,0 +1,73 @@
+package kr.or.ddit.controller.doctor;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.service.IDoctorMeetingService;
+import kr.or.ddit.vo.MeetingPersonVO;
+import kr.or.ddit.vo.MeetingVO;
+import kr.or.ddit.vo.TreeViewVO;
+
+@Controller
+@RequestMapping("/doctor/meeting")
+public class DoctorMeetingController {
+
+	@Inject
+	private IDoctorMeetingService doctorMeetingService;
+	
+	@GetMapping("/start")
+	public String goMeetingPage() {
+		return "doctor/meeting";
+	}
+	
+	@GetMapping("/treeView")
+	public String goTreeViewPage() {
+		return "doctor/treeView";
+	}
+	
+	@GetMapping("/{roomAlias}")
+	public String inviteCodePage(@PathVariable String roomAlias, Model model) {
+		model.addAttribute("roomAlias", roomAlias);
+		return "redirect:/doctor/meeting/start";
+	}
+	
+	@PostMapping("/createMeeting")
+	public ResponseEntity<Integer> insertMeetingRecord(@RequestBody MeetingVO meetingVO) {
+		
+		int meetingNo = doctorMeetingService.insertMeetingRecord(meetingVO);
+		
+		return new ResponseEntity<Integer>(meetingNo, HttpStatus.OK);
+	}
+	
+	@PostMapping("/recordingMeeting")
+	public ResponseEntity<Boolean> recordingMeeting(@RequestBody MeetingVO meetingVO) {
+		boolean flag = doctorMeetingService.recordingMeeting(meetingVO);
+		return new ResponseEntity<Boolean>(flag, HttpStatus.OK);
+	}
+	
+	@PostMapping("/insertMeetingPerson")
+	public ResponseEntity<Boolean> insertMeetingPerson(@RequestBody MeetingPersonVO meetingPersonVO) {
+		boolean flag = doctorMeetingService.insertMeetingPerson(meetingPersonVO);
+		return new ResponseEntity<Boolean>(flag, HttpStatus.OK);
+	}
+	
+	@PostMapping("/getEmpList")
+	public ResponseEntity<List<TreeViewVO>> getEmpList() {
+		List<TreeViewVO> treeList = doctorMeetingService.getEmpList();
+		return new ResponseEntity<List<TreeViewVO>>(treeList, HttpStatus.OK);
+	}
+	
+	
+}

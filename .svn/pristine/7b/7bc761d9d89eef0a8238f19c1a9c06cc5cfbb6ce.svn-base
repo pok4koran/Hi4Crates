@@ -1,0 +1,12 @@
+package kr.or.ddit.vo;
+
+import lombok.Data;
+
+@Data
+public class SurgeryReservationVO {
+	private int surgeryReservationNo;
+	private String surgeryReservationDate;
+	private String surgeryReservationTime;
+	private String surgeryRoomStatus;
+	private int orderNo;
+}

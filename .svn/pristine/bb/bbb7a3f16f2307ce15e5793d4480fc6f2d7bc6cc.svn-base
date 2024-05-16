@@ -1,0 +1,10 @@
+package kr.or.ddit.mapper;
+
+import kr.or.ddit.vo.MeetingPersonVO;
+import kr.or.ddit.vo.MeetingVO;
+
+public interface IDoctorMeetingMapper {
+	public int insertMeetingRecord(MeetingVO meetingVO);
+	public int recordingMeeting(MeetingVO meetingVO);
+	public int insertMeetingPerson(MeetingPersonVO meetingPersonVO);
+}

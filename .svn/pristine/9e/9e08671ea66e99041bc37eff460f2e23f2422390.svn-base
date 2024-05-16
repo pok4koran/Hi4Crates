@@ -1,0 +1,20 @@
+package kr.or.ddit.controller.physical;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+@RequestMapping("/emp/physical")
+public class PhysicalTherapistController {
+
+	// 직원용 공지사항 글쓰기 화면으로 이동
+	@GetMapping("/main")
+	public String getPhysicalMain () {
+		log.info("[getPhysicalMain] 실행");
+		return "empPhysical/physicalMain";
+	}
+}

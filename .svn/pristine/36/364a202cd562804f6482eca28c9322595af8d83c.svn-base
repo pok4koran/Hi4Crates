@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.INotiMapper">
+	<select id="getNotiList" resultType="notiVO">
+		select 
+		    notification_no
+		    ,notification_content
+		    ,notification_date
+		    ,n.emp_no
+		    ,notification_person
+		from
+		    notification n,
+		    emp e,
+		    member m
+		where
+		    n.emp_no = e.emp_no
+		and
+		    e.mem_no = m.mem_no
+		and
+		    m.mem_id = #{memId}
+		and
+			notification_check = 'N'
+	</select>
+	
+	<update id="checkNoti">
+		update
+			notification
+		set
+			notification_check = 'Y'
+		where
+			notification_no = #{notificationNo}
+	</update>
+</mapper>

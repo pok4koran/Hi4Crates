@@ -1,0 +1,22 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.vo.CalendarVO;
+import kr.or.ddit.vo.ClinicReservationVO;
+import kr.or.ddit.vo.MemberVO;
+
+// 이름은 CalendarMapper지만   ClinicReservationVO사용함
+public interface ICalendarMapper {
+	public List<ClinicReservationVO> getData(int empNo);
+	public List<CalendarVO> test();
+	public int insertEvent(ClinicReservationVO clinicReservationVO);
+	public int updateEvent(CalendarVO calendar);
+	public int deleteEvent(String id);
+	public List<MemberVO> showdoctorList();
+	public List<ClinicReservationVO> showReserveList(ClinicReservationVO clinicReservationVO);
+	
+	//캘린더로 선택한 진료예약 수정하기
+	public int updateClinicReservation(ClinicReservationVO clinicReservationVO);
+}

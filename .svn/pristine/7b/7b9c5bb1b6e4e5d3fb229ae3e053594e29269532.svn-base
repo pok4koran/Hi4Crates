@@ -1,0 +1,15 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.EmpListVO;
+import kr.or.ddit.vo.EmpVO;
+import kr.or.ddit.vo.MemberVO;
+
+public interface IEmpListMapper {
+
+	public List<EmpListVO> getEmpList();
+
+	public int updateEmp(EmpVO empVO);
+
+}

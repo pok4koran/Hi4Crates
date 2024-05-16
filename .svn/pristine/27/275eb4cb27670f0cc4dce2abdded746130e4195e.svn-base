@@ -1,0 +1,67 @@
+package kr.or.ddit.controller.doctor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.IOrderSetService;
+import kr.or.ddit.vo.GroupOrderDetailVO;
+import kr.or.ddit.vo.GroupOrderVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/orderSet")
+@Slf4j
+public class OrderSetController {
+	
+	@Inject
+	IOrderSetService orderSetService;
+	
+	@GetMapping("/main")
+	public String main(Model model) {
+		
+		int empNo=1;
+		
+		List<GroupOrderVO> orderSetList = orderSetService.getOrderSetName(empNo);
+		
+		model.addAttribute("orderSetList",orderSetList);
+	
+		return "doctor/orderSet";
+	}
+	
+	@PostMapping("/detail")
+	@ResponseBody
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<GroupOrderDetailVO> getOrderSetDetail(@RequestBody Map<String, String> map){
+		
+		int groupOrderNo = Integer.parseInt(map.get("groupOrderNo"));
+		
+	
+		List<GroupOrderDetailVO> getOrderSetList = orderSetService.getOrderSetDetail(groupOrderNo);
+		GroupOrderDetailVO groupOrderDetailVO = new GroupOrderDetailVO();
+		
+		for(GroupOrderDetailVO groupOrderDetail : getOrderSetList) {
+			if(groupOrderDetail.getGroupOrderDetailCategory()=="GO001") {
+				
+			}
+		}
+		
+		return new ResponseEntity<GroupOrderDetailVO>(HttpStatus.OK);
+		
+	}
+
+
+}

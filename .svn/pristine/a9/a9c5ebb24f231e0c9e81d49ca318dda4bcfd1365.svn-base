@@ -1,0 +1,46 @@
+package kr.or.ddit.controller.patient;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.IPatientMypageService;
+import kr.or.ddit.vo.ClinicReservationVO;
+import kr.or.ddit.vo.CounselVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/pMypage")
+@Slf4j
+public class myPageController {
+
+	@Inject
+	public IPatientMypageService service;
+	
+	@GetMapping("/home")
+	public String myPage(Model model) {
+		
+		// 예약리스트
+		int memNo = 4;
+		List<ClinicReservationVO> reserList = service.list(memNo);
+		System.out.println("####reserList" + reserList);
+		model.addAttribute("reserList", reserList);
+		
+		// 상담내역
+		int patntNo = 4;
+		List<CounselVO> CounsList = service.cList(patntNo);
+//		System.out.println("###CounsList찾아옴ㅋㅋ" + CounsList);
+//		log.info("reserList####" + reserList);
+		
+		model.addAttribute("CounsList", CounsList);
+		return "patient/myPage";
+	}
+	
+	
+}

@@ -1,0 +1,269 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<aside class="app-sidebar sticky" id="sidebar">
+	<div class="main-sidebar-header">
+		<a href="/home" class="header-logo"> <img
+			src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/desktop-logo.png"
+			alt="logo" class="desktop-logo"> <img
+			src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/toggle-logo.png"
+			alt="logo" class="toggle-logo"> <img
+			src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/desktop-dark.png"
+			alt="logo" class="desktop-dark"> <img
+			src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/toggle-dark.png"
+			alt="logo" class="toggle-dark"> <img
+			src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/desktop-white.png"
+			alt="logo" class="desktop-white"> <img
+			src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/toggle-white.png"
+			alt="logo" class="toggle-white">
+		</a>
+	</div>
+	<!-- Start::main-sidebar -->
+	<div class="main-sidebar" id="sidebar-scroll">
+
+		<!-- Start::nav -->
+		<nav class="main-menu-container nav nav-pills flex-column sub-open">
+			<div class="slide-left" id="slide-left">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"
+					height="24" viewBox="0 0 24 24"> <path
+						d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path> </svg>
+			</div>
+			<ul class="main-menu">
+				<li class="slide has-sub">
+					<a href="/admin/main" class="side-menu__item">
+						<i class="bx bx-home side-menu__icon"></i>
+							<span class="side-menu__label">홈</span>
+					</a>
+				<ul class="slide-menu child1">
+				</ul>
+				</li>
+				<li class="slide has-sub"><a href="javascript:void(0);"
+					class="side-menu__item"> <i
+						class="bx bx-file-blank side-menu__icon"></i> <span
+						class="side-menu__label">차트</span> <i
+						class="fe fe-chevron-right side-menu__angle"></i>
+				</a>
+					<ul class="slide-menu child1">
+						<li class="slide"><a href="/doctor/mainChart"
+							class="side-menu__item">메인 차트</a></li>
+						<li class="slide"><a href="/orderSet/main"
+							class="side-menu__item">오더 세트</a></li>
+					</ul>
+				</li>
+				<!-- End::slide -->
+
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="javascript:void(0);"
+					class="side-menu__item"> <i class="bx bx-task side-menu__icon"></i>
+						<span class="side-menu__label">검사</span> <i
+						class="fe fe-chevron-right side-menu__angle"></i>
+				</a>
+					<ul class="slide-menu child1">
+					<li class="slide has-sub"><a href="javascript:void(0);"
+							class="side-menu__item">방사선실<i
+								class="fe fe-chevron-right side-menu__angle"></i></a>
+							<ul class="slide-menu child2">
+								<li class="slide"><a href="/radiation/main"
+									class="side-menu__item">메인</a></li>
+								<li class="slide"><a href="/radiation/equipmentList"
+									class="side-menu__item">장비조회</a></li>
+							</ul></li>
+					<li class="slide has-sub"><a href="/emp/physical/main"
+							class="side-menu__item">물리치료실<i
+								class="fe fe-chevron-right side-menu__angle"></i></a>
+					</ul>
+				</li>
+				<!-- End::slide -->
+
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="javascript:void(0);"
+					class="side-menu__item"> <i
+						class="bx bx-fingerprint side-menu__icon"></i> <span
+						class="side-menu__label">입/퇴원</span> <i
+						class="fe fe-chevron-right side-menu__angle"></i>
+				</a>
+					<ul class="slide-menu child1">
+						<li class="slide"><a href="/nurse/hospitalization"
+							class="side-menu__item">입원</a></li>
+						<li class="slide"><a href="#"
+							class="side-menu__item">퇴원</a></li>
+					</ul></li>
+				<!-- End::slide -->
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="javascript:void(0);"
+					class="side-menu__item"> <i
+						class="bx bx-fingerprint side-menu__icon"></i> <span
+						class="side-menu__label">간호사</span> <i
+						class="fe fe-chevron-right side-menu__angle"></i>
+				</a>
+					<ul class="slide-menu child1">
+						<li class="slide"><a href="/nurse/main"
+							class="side-menu__item">홈</a></li>
+						<li class="slide"><a href="/nurse/medicineList"
+							class="side-menu__item">의약품</a></li>
+						<li class="slide"><a href="/nurse/schedule"
+							class="side-menu__item">근무조회</a></li>
+						<li class="slide"><a href=" /nurse/surgery"
+							class="side-menu__item">수술</a></li>
+					</ul></li>
+				<!-- End::slide -->
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="javascript:void(0);"
+					class="side-menu__item"> <i
+						class="bx bx-fingerprint side-menu__icon"></i> <span
+						class="side-menu__label">접수/예약</span> <i
+						class="fe fe-chevron-right side-menu__angle"></i>
+				</a>
+					<ul class="slide-menu child1">
+						<li class="slide"><a href="/admin/receiptForm"
+							class="side-menu__item">접수</a></li>
+						<li class="slide"><a href="/admin/reserveForm"
+							class="side-menu__item">예약</a></li>
+					</ul></li>
+				<!-- End::slide -->
+
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="javascript:void(0);"
+					class="side-menu__item"> <i class="bx bx-error side-menu__icon"></i>
+						<span class="side-menu__label">수술</span> <i
+						class="fe fe-chevron-right side-menu__angle"></i>
+				</a>
+					<ul class="slide-menu child1">
+						<li class="slide side-menu__label1"><a
+							href="javascript:void(0)">수술</a></li>
+						<li class="slide"><a href="/emp/surgery/reservList"
+							class="side-menu__item">수술 예정 환자</a></li>
+						<li class="slide"><a href="/emp/surgery/reservForm"
+							class="side-menu__item">수술 일정 등록</a></li>
+						<li class="slide"><a href="/emp/surgery/surgeryRoom"
+							class="side-menu__item">수술실 예약 현황</a></li>
+						<li class="slide"><a href="/emp/surgery/surgeryRecord"
+							class="side-menu__item">수술 기록 조회</a></li>
+					</ul></li>
+				<!-- End::slide -->
+
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="javascript:void(0);"
+					class="side-menu__item"> <i class="bx bx-box side-menu__icon"></i>
+						<span class="side-menu__label">통계</span> <i
+						class="fe fe-chevron-right side-menu__angle"></i>
+				</a>
+					<ul class="slide-menu child1 mega-menu">
+						<li class="slide side-menu__label1"><a
+							href="javascript:void(0)">Ui Elements</a></li>
+						<li class="slide"><a href="alerts.html"
+							class="side-menu__item">Alerts</a></li>
+						<li class="slide"><a href="badge.html"
+							class="side-menu__item">Badge</a></li>
+						<li class="slide"><a href="breadcrumb.html"
+							class="side-menu__item">Breadcrumb</a></li>
+						<li class="slide"><a href="buttons.html"
+							class="side-menu__item">Buttons</a></li>
+						<li class="slide"><a href="buttongroup.html"
+							class="side-menu__item">Button Group</a></li>
+						<li class="slide"><a href="cards.html"
+							class="side-menu__item">Cards</a></li>
+						<li class="slide"><a href="dropdowns.html"
+							class="side-menu__item">Dropdowns</a></li>
+						<li class="slide"><a href="images_figures.html"
+							class="side-menu__item">Images &amp; Figures</a></li>
+						<li class="slide"><a href="links_interactions.html"
+							class="side-menu__item">Links &amp; Interactions</a></li>
+						<li class="slide"><a href="listgroup.html"
+							class="side-menu__item">List Group</a></li>
+						<li class="slide"><a href="navs_tabs.html"
+							class="side-menu__item">Navs &amp; Tabs</a></li>
+						<li class="slide"><a href="object-fit.html"
+							class="side-menu__item">Object Fit</a></li>
+						<li class="slide"><a href="pagination.html"
+							class="side-menu__item">Pagination</a></li>
+						<li class="slide"><a href="popovers.html"
+							class="side-menu__item">Popovers</a></li>
+						<li class="slide"><a href="progress.html"
+							class="side-menu__item">Progress</a></li>
+						<li class="slide"><a href="spinners.html"
+							class="side-menu__item">Spinners</a></li>
+						<li class="slide"><a href="toasts.html"
+							class="side-menu__item">Toasts</a></li>
+						<li class="slide"><a href="tooltips.html"
+							class="side-menu__item">Tooltips</a></li>
+						<li class="slide"><a href="typography.html"
+							class="side-menu__item">Typography</a></li>
+					</ul></li>
+				<!-- End::slide -->
+
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="/admin/receiveForm"
+					class="side-menu__item"> <i class="bx bx-medal side-menu__icon"></i>
+						<span class="side-menu__label">수납</span>
+				</a>
+					<ul class="slide-menu child1">
+					</ul></li>
+				<!-- End::slide -->
+
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="javascript:void(0);"
+					class="side-menu__item"> <i class="bx bx-error side-menu__icon"></i>
+						<span class="side-menu__label">공지</span> <i
+						class="fe fe-chevron-right side-menu__angle"></i>
+				</a>
+					<ul class="slide-menu child1">
+						<li class="slide side-menu__label1"><a
+							href="javascript:void(0)">공지사항</a></li>
+						<li class="slide"><a href="/emp/notice/list"
+							class="side-menu__item">직원 공지사항 게시판</a></li>
+					</ul></li>
+				<!-- End::slide -->
+
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="javascript:void(0);"
+					class="side-menu__item"> <i class="bx bx-file side-menu__icon"></i>
+						<span class="side-menu__label">관리</span> <i
+						class="fe fe-chevron-right side-menu__angle"></i>
+				</a>
+					<ul class="slide-menu child1">
+						<li class="slide has-sub"><a href="javascript:void(0);"
+							class="side-menu__item">의약품<i
+								class="fe fe-chevron-right side-menu__angle"></i></a>
+							<ul class="slide-menu child2">
+								<li class="slide"><a href="form_inputs.html"
+									class="side-menu__item">의약품 검색</a></li>
+								<li class="slide"><a href="/admin/medicienRequestList"
+									class="side-menu__item">의약품 신청 목록</a></li>
+							</ul></li>
+						<li class="slide has-sub"><a href="javascript:void(0);"
+							class="side-menu__item">의료기기<i
+								class="fe fe-chevron-right side-menu__angle"></i></a>
+							<ul class="slide-menu child2">
+								<li class="slide"><a href="form_inputs.html"
+									class="side-menu__item">의료기기 검색</a></li>
+								<li class="slide"><a href="/admin/equipmentRequestList"
+									class="side-menu__item">의료기기 수리요청 목록</a></li>
+							</ul></li>
+						<li class="slide"><a href="/public/admin/vacationRequestList"
+							class="side-menu__item">연가 신청 목록</a></li>
+						<li class="slide"><a href="/public/admin/permission"
+							class="side-menu__item">권한 승인 대기 목록</a></li>
+						<li class="slide"><a href="/empList/showEmpList"
+							class="side-menu__item">직원전체목록</a></li>
+					</ul></li>
+				<!-- End::slide -->
+				<!-- Start::slide -->
+				<li class="slide has-sub"><a href="/mypage/${sessionScope.user.member.memNo }"
+					class="side-menu__item"> <i class='bx bxs-face side-menu__icon'></i>
+						<span class="side-menu__label">마이페이지</span> 
+				</a>
+				<ul class="slide-menu child1">
+				</ul>
+				</li>
+				<!-- End::slide -->
+
+			</ul>
+			<div class="slide-right" id="slide-right">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"
+					height="24" viewBox="0 0 24 24"> <path
+						d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z"></path> </svg>
+			</div>
+		</nav>
+		<!-- End::nav -->
+
+	</div>
+</aside>

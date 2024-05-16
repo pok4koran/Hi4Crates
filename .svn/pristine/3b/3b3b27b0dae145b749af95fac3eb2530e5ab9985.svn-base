@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ISurgeryMapper">
+	
+	<resultMap type="surgeryReservVO" id="surgeryReservMap">
+		<id property="surgeryReservationNo" column="SURGERY_RESERVATION_NO"/>
+		<result property="surgeryReservationNo" column="SURGERY_RESERVATION_NO"/>
+		<result property="surgeryReservationDate" column="SURGERY_RESERVATION_DATE"/>
+		<result property="surgeryReservationTime" column="SURGERY_RESERVATION_TIME"/>
+		<result property="surgeryRoomStatus" column="SURGERY_ROOM_STATUS"/>
+		<result property="orderNo" column="ORDER_NO"/>
+		<result property="patientNo" column="PATNT_NO"/>
+		<result property="surgeryDoctor" column="SURGERY_DOCTOR"/>
+	</resultMap>
+
+	
+	<insert id="insertSurgeryReserv">
+		<selectKey keyProperty="surgeryReservationNo" resultType="int" order="BEFORE">
+			select SURGERY_RESERVATION_SEQ.nextval from dual
+		</selectKey>
+		insert into SURGERY_RESERVATION (
+			SURGERY_RESERVATION_NO
+			, SURGERY_RESERVATION_DATE
+			, SURGERY_RESERVATION_TIME
+			, SURGERY_ROOM_STATUS
+			, ORDER_NO
+			, PATNT_NO
+			, SURGERY_DOCTOR
+		) values (
+			#{surgeryReservationNo}
+			, #{surgeryReservationDate}
+			, #{surgeryReservationTime}
+			, #{surgeryRoomStatus }
+			, #{orderNo}
+			, #{patnt_no}
+			, #{surgeryDoctor}
+		)
+	</insert>
+	
+	<select id="selectSurgeryReservCount" parameterType="pagingVO" resultType="int">
+		select count(SURGERY_RESERVATION_NO)
+		from SURGERY_RESERVATION
+		where 1=1
+	</select>
+	
+	<select id="selectSurgeryReservList" parameterType="pagingVO" resultType="surgeryReservVO">
+		select
+			b.*
+		from (
+			select
+				a.*, row_number() over(order by a.SURGERY_RESERVATION_NO desc) rnum
+			from (
+				select
+					SURGERY_RESERVATION_NO
+					, SURGERY_RESERVATION_DATE
+					, SURGERY_RESERVATION_TIME
+					, SURGERY_ROOM_STATUS
+					, ORDER_NO
+					, PATNT_NO
+					, SURGERY_DOCTOR
+				from SURGERY_RESERVATION
+				where 1=1
+				order by SURGERY_RESERVATION_NO desc
+			) a
+		) b
+		<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	
+	
+	<!-- 수술 종류 검색 -->
+	<!-- 수술 종류 검색 -->
+	<!-- 수술 종류 검색 -->
+	<resultMap type="surgeryKindVO" id="surgeryKindMap">
+		<id property="surgeryKindCode" column="SURGERY_KIND_CODE"/>
+		<result property="surgeryKindCode" column="SURGERY_KIND_CODE"/>
+		<result property="surgeryKindName" column="SURGERY_KIND_NAME"/>
+		<result property="surgeryKindPrice" column="SURGERY_KIND_PRICE"/>
+		<result property="surgeryHospitalize" column="SURGERY_HOSPITALIZE"/>
+	</resultMap>
+	
+<!-- 	<sql id="searchSurgeryKind"> -->
+<!-- 		<if test="surgerySearchWord != null"> -->
+<!-- 			and ( (surgery_kind_code like '%'||#{surgerySearchWord}||'%') -->
+<!-- 			or (surgery_kind_name like '%'||#{surgerySearchWord}||'%') ) -->
+<!-- 		</if> -->
+<!-- 	</sql> -->
+	
+	<select id="getSurgeryKindList" parameterType="String"
+		resultMap="surgeryKindMap">
+		SELECT
+			surgery_kind_code
+		  , surgery_kind_name
+		  , surgery_kind_price
+		  , surgery_hospitalize
+		FROM
+			surgery_kind
+		WHERE 1 = 1
+			<if test="surgerySearchWord != null">
+				and ( (surgery_kind_code like '%'||#{surgerySearchWord}||'%')
+				or (surgery_kind_name like '%'||#{surgerySearchWord}||'%') )
+			</if>
+		ORDER BY SURGERY_KIND_CODE
+	</select>
+	<!-- 수술 종류 검색 끝-->
+	<!-- 수술 종류 검색 끝-->
+	<!-- 수술 종류 검색 끝-->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="getSurgeryReservWaitingList" resultType="surgeryReservVO">
+		SELECT 
+		      SR.SURGERY_RESERVATION_NO
+		    , SR.SURGERY_RESERVATION_DATE
+		    , SR.SURGERY_RESERVATION_TIME
+		    , SR.SURGERY_ROOM_NO
+		    , SR.ORDER_NO
+		    , SR.PATNT_NO
+		    , SR.SURGERY_DOCTOR
+		    , SR.SURGERY_KIND_CODE
+		    , SR.SURGERY_RESERVATION_STATUS
+		    , E.EMP_NO
+		    , MD.MEM_NAME AS doctorName
+		    , M.MEM_NAME as patntName
+		    , M.MEM_AGE 
+		    , M.MEM_GENDER
+		    , M.MEM_TEL
+		    , CC.CODE_NAME as clinicName
+		    , SK.SURGERY_KIND_NAME
+		    , BC.CODE_NAME as bodycodeName
+		    , HC.CODE_NAME as historyName
+		FROM
+		    SURGERY_RESERVATION SR
+		INNER JOIN
+		    EMP E ON E.EMP_NO = SR.SURGERY_DOCTOR
+		INNER JOIN
+		    MEMBER MD ON MD.MEM_NO = E.MEM_NO
+		INNER JOIN
+		    PATIENT P ON P.PATNT_NO = SR.PATNT_NO
+		INNER JOIN
+		    MEMBER M ON M.MEM_NO = P.MEM_NO
+		INNER JOIN
+		    "ORDER" O ON O.ORDER_NO = SR.ORDER_NO
+		INNER JOIN
+		    CHART C ON C.CHART_NO = O.CHART_NO
+		INNER JOIN
+		    RECEIPT R ON R.RECEIPT_NO = C.RECEIPT_NO
+		INNER JOIN
+		    COMMON_CODE CC ON CC.CODE_NO = R.CLINIC_NO
+		INNER JOIN
+		    SURGERY_KIND SK ON SK.SURGERY_KIND_CODE = SR.SURGERY_KIND_CODE
+		INNER JOIN
+		    COMMON_CODE BC ON BC.CODE_NO = O.BODY_CODE
+		INNER JOIN
+		    HISTORY H ON H.RECEIPT_NO = R.RECEIPT_NO
+		INNER JOIN
+		    COMMON_CODE HC ON HC.CODE_NO = H.HISTORY_STATUS
+		WHERE
+		    SR.SURGERY_RESERVATION_STATUS = 'N'
+	</select>
+	
+	<select id="getSurgeryCal" resultType="surgeryReservVO">
+		SELECT 
+		      SR.SURGERY_RESERVATION_NO
+		    , SR.SURGERY_RESERVATION_DATE as "start"
+		    , SR.SURGERY_RESERVATION_TIME
+		    , SR.SURGERY_ROOM_NO
+		    , SR.ORDER_NO
+		    , SR.PATNT_NO
+		    , SR.SURGERY_DOCTOR
+		    , SR.SURGERY_KIND_CODE
+		    , SR.SURGERY_RESERVATION_STATUS
+		    , E.EMP_NO
+		    , M.MEM_AGE
+    		, M.MEM_GENDER
+		    , MD.MEM_NAME as title
+		    , M.MEM_NAME as patntName
+		    , CC.CODE_NAME as clinicName
+		    , SK.SURGERY_KIND_NAME
+		    , BC.CODE_NAME as bodycodeName
+		    , HC.CODE_NAME as historyName
+		FROM
+		    SURGERY_RESERVATION SR
+		INNER JOIN
+		    EMP E ON E.EMP_NO = SR.SURGERY_DOCTOR
+		INNER JOIN
+		    MEMBER MD ON MD.MEM_NO = E.MEM_NO
+		INNER JOIN
+			PATIENT P ON P.PATNT_NO = SR.PATNT_NO
+		INNER JOIN
+		    MEMBER M ON M.MEM_NO = P.MEM_NO
+		INNER JOIN
+		    "ORDER" O ON O.ORDER_NO = SR.ORDER_NO
+		INNER JOIN
+		    CHART C ON C.CHART_NO = O.CHART_NO
+		INNER JOIN
+		    RECEIPT R ON R.RECEIPT_NO = C.RECEIPT_NO
+		INNER JOIN
+		    COMMON_CODE CC ON CC.CODE_NO = R.CLINIC_NO
+		INNER JOIN
+		    SURGERY_KIND SK ON SK.SURGERY_KIND_CODE = SR.SURGERY_KIND_CODE
+		INNER JOIN
+		    COMMON_CODE BC ON BC.CODE_NO = O.BODY_CODE
+		INNER JOIN
+		    HISTORY H ON H.RECEIPT_NO = R.RECEIPT_NO
+		INNER JOIN
+		    COMMON_CODE HC ON HC.CODE_NO = H.HISTORY_STATUS
+		WHERE
+		    SR.SURGERY_RESERVATION_STATUS = 'Y'
+	</select>
+	
+	<select id="surgeryDateCheck" resultType="surgeryReservVO">
+		SELECT
+		    *
+		FROM
+		    SURGERY_RESERVATION
+		WHERE
+		    SURGERY_RESERVATION_STATUS = 'Y'
+		AND
+		    TRUNC(SURGERY_RESERVATION_DATE) = #{startStr}
+	</select>
+	
+	
+	
+	
+	
+</mapper>

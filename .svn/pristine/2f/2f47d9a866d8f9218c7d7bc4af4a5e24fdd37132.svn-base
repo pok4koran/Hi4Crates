@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IMainAdminMapper">
+	
+	
+	<!-- <insert id="enrollMember" parameterType="memberVO" >
+		insert into member(
+		mem_no, mem_id, mem_pw, mem_name, mem_age, mem_gender,mem_regno1, mem_regno2,
+		mem_tel,mem_address1, mem_address2, mem_signup_date,mem_type,mem_social
+		)
+		values(
+		member_seq.nextval, #{memRegno},#{memRegno1},#{memName},#{memAge},#{memGender},#{memRegno1},#{memRegno2},
+		#{memTel},#{memAddress1},#{memAddress2},SYSDATE,'MT002','N'
+		)
+		
+	</insert> -->
+	
+	<insert id="enrollMember" parameterType="memberVO" useGeneratedKeys="true" >
+	    <!-- keyProperty에 설정된 프로퍼티에 자동 생성된 키가 할당됨 -->
+	    <selectKey keyProperty="memNo" resultType="memberVO" order="BEFORE">
+	        SELECT member_seq.nextval as mem_no FROM dual
+	        <!-- 새로 삽입된 레코드의 키 값을 가져옴 -->
+	    </selectKey>
+	    <!-- useGeneratedKeys 속성을 true로 설정하여 자동 생성된 키를 가져옴 -->
+	    <!-- keyProperty는 자동 생성된 키가 설정될 객체의 프로퍼티를 나타냄 -->
+	    insert into member(
+			mem_no, mem_id, mem_pw, mem_name, mem_age, mem_gender,mem_regno1, mem_regno2,
+			mem_tel,mem_postcode,mem_address1, mem_address2, mem_signup_date,mem_type,mem_social
+		)
+		values(
+			#{memNo}, #{memRegno},#{memRegno1},#{memName},#{memAge},#{memGender},#{memRegno1},#{memRegno2},
+			#{memTel},#{memPostcode},#{memAddress1},#{memAddress2},SYSDATE,'MT002','N'
+		)
+		
+	</insert>
+	
+	
+	<insert id="enrollPatient" parameterType="memberVO" useGeneratedKeys="true" >
+		<selectKey keyProperty="patntNo" resultType="memberVO" order="BEFORE">
+			select patient_seq.nextval as patnt_no from dual
+		</selectKey>
+		
+		insert into patient(
+			patnt_no, mem_no
+		)
+		values(
+			#{patntNo},#{memNo}
+		)
+	
+	</insert>
+	
+	
+	
+	 <select id="findReceiptDoctor" resultType="memberVO">
+		 select mem_name, m.mem_no, e.emp_no, clinic_no, code_name
+        from member m, emp e, clinic c, common_code
+        where m.mem_no = e.mem_no
+        and e.emp_no = c.emp_no
+        and code_no = clinic_no
+        and clinic_status != 'CS003'
+        
+	</select> 
+	
+	<insert id="insertReceipt" parameterType="receiptVO" useGeneratedKeys="true" >
+	     <selectKey keyProperty="receiptNo" resultType="receiptVO" order="BEFORE">
+	            SELECT receipt_seq.nextval as receipt_no FROM dual
+	            <!-- 새로 삽입된 레코드의 키 값을 가져옴 -->
+	      </selectKey>
+	    insert into receipt(
+	        receipt_no, receipt_date, receipt_reason, receipt_status, 
+	        patnt_no, clinic_no, emp_no
+	    )values(
+	        #{receiptNo}, SYSDATE, #{receiptReason}, 'RS001', 
+	        #{patntNo}, #{clinicNo},#{empNo}
+	    )
+	</insert>
+	
+	<insert id="insertPreDiagnosis" parameterType="receiptVO">
+		insert into pre_diagnosis(
+	    PRE_DIAGNOSIS_NO, PRE_DIAGNOSIS_EXP, PRE_DIAGNOSIS_DISEASE, PRE_DIAGNOSIS_ALLERGY,
+	    PRE_DIAGNOSIS_PREGNANCY, PRE_DIAGNOSIS_CHOICE, PRE_DIAGNOSIS_DATE, PATNT_NO
+		)VALUES(
+		    PRE_DIAGNOSIS_SEQ.NEXTVAL , #{preDiagnosisExp},#{preDiagnosisDisease},#{preDiagnosisAllergy},
+		    #{preDiagnosisPregnancy},#{preDiagnosisChoice},SYSDATE,#{patntNo}
+		)
+	</insert>
+	
+	<insert id="insertHistory" parameterType="receiptVO">
+	    INSERT INTO history (
+	    	history_no, history_date, history_loc, history_status, receipt_no
+	    ) VALUES (
+	    	HISTORY_SEQ.NEXTVAL, SYSDATE, #{clinicNo},'HS001',#{receiptNo}
+	    )  
+	
+	</insert>
+	
+	
+</mapper>

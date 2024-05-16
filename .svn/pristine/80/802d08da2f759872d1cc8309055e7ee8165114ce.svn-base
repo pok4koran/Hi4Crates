@@ -1,0 +1,72 @@
+package kr.or.ddit.controller.chat;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.socket.WebSocketSession;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.or.ddit.controller.comm.EchoHandler;
+import kr.or.ddit.service.IMemberService;
+import kr.or.ddit.vo.CustomUser;
+import kr.or.ddit.vo.MemberVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+public class ChatController {
+	
+	@Inject
+	private IMemberService memberService;
+	
+	private final EchoHandler echoHandler;
+	
+	private List<MemberVO> onlineList = new ArrayList<MemberVO>();
+	
+	@Autowired
+	public ChatController(EchoHandler echoHandler) {
+		this.echoHandler = echoHandler;
+	}
+	
+	@GetMapping("/comm/chat")
+	public String chatHome(Model model) {
+		List<WebSocketSession> sessions = echoHandler.getSessions();
+		List<MemberVO> newList = new ArrayList<MemberVO>(onlineList);
+		
+		// 웹소켓 세션에서 정보를 꺼내어서 online 유저 확인하기
+		for (WebSocketSession webSocketSession : sessions) {
+			log.info("접속자 아이디 : "+webSocketSession.getPrincipal().getName());
+			Principal principal = webSocketSession.getPrincipal();
+			log.info(""+webSocketSession.getAttributes().get("user"));
+			CustomUser user = (CustomUser) webSocketSession.getAttributes().get("user");
+			if(onlineList.size() == 0) newList.add(user.getMember());
+			for (MemberVO m : onlineList) {
+				if(!m.getMemId().equals(webSocketSession.getPrincipal().getName())) {
+					newList.add(user.getMember());
+				}
+			}
+		}
+		
+		List<MemberVO> memberList = memberService.getEmpList();
+		
+		
+		model.addAttribute("onlineList", newList);
+		model.addAttribute("memberList", memberList);
+		return "main/chat/chat"; 
+	}
+	
+}

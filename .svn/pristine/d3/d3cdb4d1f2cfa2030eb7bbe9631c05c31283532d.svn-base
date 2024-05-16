@@ -1,0 +1,18 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PtRecordVO;
+
+public interface IPhysicalMapper {
+	public List<MemberVO> selectPhysicalWaitingList();
+	public MemberVO selectPhysicalOrder(int memNo);
+	public String selectDocName(int chartNo);
+	public List<MemberVO> selectBodyCodes(int chartNo);
+	
+	public int selectReceiptNo(int memNo, int empNo);
+	public int updateStatusStart(int receiptNo);
+	public int insertPhysicalTherapyRecord(PtRecordVO recordVO);
+	public int updateStatusDone(int receiptNo);
+}

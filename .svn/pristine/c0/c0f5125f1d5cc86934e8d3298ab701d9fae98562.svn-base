@@ -1,0 +1,47 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ClinicReservationVO;
+import kr.or.ddit.vo.MedicineRequestResultVO;
+import kr.or.ddit.vo.MedicineRequestVO;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ReceiptVO;
+
+public interface IMainAdminMapper {
+
+	//원무과 회원 등록
+	public void enrollMember(MemberVO member);
+	
+	//환자 등록
+	public void enrollPatient(MemberVO member);
+	
+	//접수시 진료가능한 의사 조회
+	public List<MemberVO> findReceiptDoctor();
+	
+	//접수시 접수 테이블에 인서트
+	public void insertReceipt(ReceiptVO receiptVO);
+	
+	//접수시 예진표 테이블에 인서트
+	public void insertPreDiagnosis(ReceiptVO receiptVO);
+	
+	//접수시 환자상태 히스토리테이블에 인서트
+	public void insertHistory(ReceiptVO receiptVO);
+	
+	//접수시 평가테이블에 인서트
+	public void insertEvaluation(ReceiptVO receiptVO);
+	
+	//의약품 신청리스트 
+	public List<MedicineRequestVO> getMedicineRequestList();
+	
+	//접수페이지 속 오늘 예약리스트> 근무중인 의사리스트
+	public List<MemberVO> getTodayDoctors();
+	
+	//접수페이지 속 오늘예약리스트> 의사선택하면 나올 예약리스트
+	public List<ClinicReservationVO> getDoctorsReservList(ClinicReservationVO clVO);
+	
+	//의약품 신청 수락 인서트
+	public int mediRequestAdmit(MedicineRequestResultVO medicineRequestVO);
+	
+
+}

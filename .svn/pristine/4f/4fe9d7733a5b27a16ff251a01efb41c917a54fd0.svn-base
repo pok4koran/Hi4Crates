@@ -1,0 +1,771 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+
+<meta id="_csrf" name="_csrf" content="${_csrf.token }">
+<meta id="_csrf_header" name="_csrf_header" content="${_csrf.headerName }">
+
+<!-- 헤더 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.css">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/locales-all.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Sweetalerts JS -->
+<script src="${pageContext.request.contextPath}/resources/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/assets/js/sweet-alerts.js"></script>
+    
+<!-- Sweetalerts CSS -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/libs/sweetalert2/sweetalert2.min.css">
+
+<script
+	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- 사이드바 -->
+
+
+<style>
+input[type=text]:focus {
+    border-color: lightblue;
+}
+.custom-select option {
+ 	font-size: 16px; /* 원하는 글꼴 크기로 조정 */
+    margin-bottom: 5px; /* 원하는 간격으로 조정 */
+}
+
+</style>
+
+
+        <!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Start::app-content -->
+        <div class="main-content app-content">
+            <div class="container-fluid">
+
+                <!-- Start::page-header -->
+                
+                <!-- <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+                    <div>
+                        <p class="fw-semibold fs-18 mb-0">원무과-접수를 진행하세요</p>
+                        <span class="fs-semibold text-muted">ㅇㅇ</span>
+                    </div>
+                    <div class="btn-list mt-md-0 mt-2">
+                        
+                        <button type="button" class="btn btn-secondary-light btn-wave" data-bs-toggle="modal"
+                              data-bs-target="#create-task">
+                              회원등록(모달버튼)하기
+                        </button>
+
+
+                        
+                    </div>
+                </div> -->
+
+                 <!-- End::page-header -->
+
+                <!-- Start::row-1 -->
+                <div class="row">
+                    <div class="col-xxl-7 col-xl-12">
+                        <div class="row">
+                            <div class="col-xl-4" >
+                                <!-- 커스텀카드 시작 -->
+                                <div class="card custom-card" style="height: 830px;  margin-bottom: 12px; ">
+                                  <!-- 제목 시작 -->
+                                    <div class="card-header justify-content-between" >
+                                        <div class="card-title">
+                                          	  수납 대기 목록
+                                        </div>
+                                        <%-- <div>
+                                            <button type="button" class="btn btn-secondary-light btn-wave" data-bs-toggle="modal"
+                                            data-bs-target="#create-task">
+                                            <img src="${pageContext.request.contextPath}/resources/assets/images/icon/free-icon-account-14502797.png" width="20px" alt="">
+                                            <span>&nbsp</span>
+                                           	  회원등록하기</button>
+                                        </div> --%>
+                                    </div>
+                                    <!-- 제목 끝 -->
+
+
+
+                       			 
+                       			 <!-- 대기환자 카드 시작 -->
+						        <!-- Start::app-content -->
+						        <div id="placeReserveList" style='overflow-y: auto;max-height: 800px;'>
+						        
+						        <!-- <div class="card custom-card" style="background-color:rgb(238, 243, 248);width: 280px;height: 140px;margin-left: 10px;">
+								    <div class="card-body p-3" style="background-color:white;width: 260px;height: 110px;margin-left: 10px;margin-top: 10px;margin-bottom: 10px;">
+								        
+								        <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap" style="">
+								            <div class="d-inline-flex align-items-start position-relative">
+								                <a href="profile.html" class="stretched-link"></a>
+								                <div class="me-2">
+								                    <span class="avatar avatar-rounded" >
+								                        <img src="{pageContext.request.contextPath}/resources/assets/img/patient.png" alt="img">
+								                    </span>
+								                </div>
+								                <div class="flex-grow-1">
+								                    <span class="mb-0 d-block fs-14 fw-semibold"> 송현지</span>
+								                    <span class="fs-13 ">여 25세<i class="bi bi-patch-check-fill text-success  fs-15"></i></span>
+								                </div>
+								            </div>
+								            <span class="fs-10 badge rounded-pill bg-secondary">수납대기중</span>
+								        </div>
+								         <button type="button" class="btn btn-outline-info btn-wave" style="width: 220px;height: 35px;">선택</button>
+								        <div class="d-flex align-items-end flex-wrap gap-2">
+								            <div class="flex-fill">
+								                <p class="fs-14 mb-1 text-muted">Highest Bid</p>
+								                <div class="fs-16 mb-0 d-flex align-items-center fw-semibold">
+								                  
+								                </div>
+								            </div>
+								            <a href="javascript:void(0);" class="btn btn-primary-light btn-wave">Place Bid</a>
+								        </div>
+								    </div>
+								</div> -->
+								</div>
+						        
+						   
+						        <!-- End::app-content -->
+                       			 
+                       			 <!-- 대기환자 카드 끝 -->
+								
+                            </div>
+                                <!-- 커스텀카드 끝 -->
+                            </div>
+
+					            <!-- !!!!!!!!!!!!!!!!!!!!여기부터   -->
+					            <div class="col-xl-8" style="height: 270px;" >
+					                <div class="row">
+					                    <!--******* 접수하기 카드박스 -->
+					                        <div class="col-xl-12" style="height: 830px" >
+					
+					                            <!-- 여기 시작 -->
+					                            <!-- 달력넣음 -->
+					                            <div class="col-xl-12">
+					                                <div class="card custom-card"  style=" height: 830px">
+					                                    <div class="card-header">
+					                                        <div class="card-title ">수납 내역</div>
+					                                    </div>
+					                                    <div class="card-body">
+	                                        		
+	                                        		
+	                                        		
+	                                  <!--       		    <div class="card custom-card" style="margin-bottom: 0px;">
+                                      
+					                                      <div class="card-body">
+					                                          <ul class="list-group">
+					                                              <li class="list-group-item">
+					                                                  <div class="d-flex flex-wrap align-items-center">
+					                                                      <div class="me-2 fw-semibold">
+					                                                         	총액 :
+					                                                      </div>
+					                                                      <span class="fs-12 text-muted" id="memNameDetail" value=""></span>
+					                                                  </div>
+					                                              </li>
+					                                              
+					                                              <li class="list-group-item">
+					                                                  <div class="d-flex flex-wrap align-items-center">
+					                                                      <div class="me-2 fw-semibold">
+					                                                        	  공단부담금 :
+					                                                      </div>
+					                                                      <span class="fs-12 text-muted" id="memAgeDetail"></span>
+					                                                  </div>
+					                                              </li>
+					                                              <li class="list-group-item">
+					                                                  <div class="d-flex flex-wrap align-items-center">
+					                                                      <div class="me-2 fw-semibold">
+					                                                       	   	  받을 금액:
+					                                                      </div>
+					                                                      <span class="fs-12 text-muted" id="memGenderDetail"></span>
+					                                                  </div>
+					                                              </li>
+					                                              <li class="list-group-item">
+					                                                  <div class="d-flex flex-wrap align-items-center">
+					                                                      <div class="me-2 fw-semibold">
+					                                                       	   주민등록번호:
+					                                                      </div>
+					                                                      <span class="fs-12 text-muted" id="memRegnoDetail"></span>
+					                                                  </div>
+					                                              </li>
+					                                              
+					                                              
+					                                              
+					                                            
+					 
+					                                          </ul>
+					                                          <div class="text-end">
+					                                        <button type="button" class="btn btn-secondary btn-wave">확인</button>
+					                                    </div>
+					                                    
+					                                      </div>  
+					                                                                                              
+					                                  </div>
+						                                        		 -->
+						                                        		 
+						                                        		 
+						                               <!-- 테스트로 넣어봄 -->     
+						                               
+						                               <div class="card custom-card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    Traffic Sources
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>내역</th>
+                                                <th>금액</th>
+                                                <th>단위</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        
+                                                        <div class="fw-semibold">처방</div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span><i class="ri-arrow-up-s-fill me-1 text-success align-middle fs-18"></i>23,379</span>
+                                                </td>
+                                                <td>
+                                                    <span>원</span>
+                                                </td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                       
+                                                        <div class="fw-semibold">물리치료</div>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <span><i class="ri-arrow-up-s-fill me-1 text-success align-middle fs-18"></i>78,973</span>
+                                                </td>
+                                                <td>
+                                                    <span>원</span>
+                                                </td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                       
+                                                        <div class="fw-semibold">주사</div>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <span><i class="ri-arrow-up-s-fill me-1 text-success align-middle fs-18"></i>12,457</span>
+                                                </td>
+                                                <td>
+                                                    <span>원</span>
+                                                </td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        
+                                                        <div class="fw-semibold">공단부담금</div>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <span><i class="ri-arrow-up-s-fill me-1 text-success align-middle fs-18"></i>-8,570</span>
+                                                </td>
+                                                <td>
+                                                    <span>원</span>
+                                                </td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                       
+                                                        <div class="fw-semibold">받을금액</div>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <span><i class="ri-arrow-up-s-fill me-1 text-success align-middle fs-18"></i>6,135</span>
+                                                </td>
+                                                <td>
+                                                    <span>원</span>
+                                                </td>
+                                               
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+						                                   		 
+						                               <!-- 테스트로 넣어봄 -->         		 
+						                                        		 
+						                                        		 
+						                                        		 
+						                                        		 
+						                                        		 
+						                                        		 
+						                                        		 
+						                                        		 
+	                                        		
+	                                        		
+		
+					                                    </div>
+					                                </div>
+					                            </div>
+					                            <!-- 달력끝 -->
+					                            
+										</div>
+					                    <!--******** 접수하기 박스 끝 -->
+					                                                
+					            <table style="width: 100px; height: 100px;">
+					
+					            </table>
+					            <!-- <div class="card-body">
+					                <div class="content-wrapper">
+					                    <div id="crm-revenue-analytics">zzz</div>
+					                </div>
+					            </div> -->
+					        </div>
+					    </div>
+					    <!-- !!!!!!!!!!!!!!!!!!!!여기까지   -->
+                   <!-- Start::add task modal 모달시작 -->
+				 
+                 <!-- End::add task modal 모달끝 -->
+
+                        <!-- 캘린더모달 -->
+                        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true">
+                            <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                <div class="input-group">
+                                    <a href="javascript:void(0);" class="input-group-text" id="Search-Grid"><i class="fe fe-search header-link-icon fs-18"></i></a>
+                                    <input type="search" class="form-control border-0 px-2" placeholder="Search" aria-label="Username">
+                                    <a href="javascript:void(0);" class="input-group-text" id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-light btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fe fe-more-vertical"></i>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="javascript:void(0);">Action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);">Another action</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);">Something else here</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);">Separated link</a></li>
+                                    </ul>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                                    <span class="search-tags alert"><i class="fe fe-user me-2"></i>People<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                                    <span class="search-tags alert"><i class="fe fe-file-text me-2"></i>Pages<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                                    <span class="search-tags alert"><i class="fe fe-align-left me-2"></i>Articles<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                                    <span class="search-tags alert"><i class="fe fe-server me-2"></i>Tags<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                                </div>
+                                <div class="my-4">
+                                    <p class="font-weight-semibold text-muted mb-2">Recent Search :</p>
+                                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                                    <a href="notifications.html"><span>Notifications</span></a>
+                                    <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                                    </div>
+                                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                                    <a href="alerts.html"><span>Alerts</span></a>
+                                    <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                                    </div>
+                                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-0 alert">
+                                    <a href="mail.html"><span>Mail</span></a>
+                                    <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="modal-footer">
+                                <div class="btn-group ms-auto">
+                                    <button type="button" class="btn btn-sm btn-primary-light">Search</button>
+                                    <button type="button" class="btn btn-sm btn-primary">Clear Recents</button>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+ 
+                        </div>
+                    </div>
+                    <div class="col-xxl-5 col-xl-12">
+                        <div class="row">
+                            <div class="col-xxl-12 col-xl-12">
+                                <div class="row">
+                                    <div class="col-xl-12 col-xl-6">
+                                       
+                                       
+                                        <!-- 달력밑내용 -->
+					                            
+										<div class="card custom-card" style="height: 380px">
+					                            <div class="card-header justify-content-between">
+					                                <div class="card-title">
+					                                    	문서발급
+					                                </div>
+					                                
+					                            </div>
+					                            <div class="card-body p-0">
+					                               
+					                            </div>
+					                        </div>
+										                            
+					              <!-- 달력밑내용 -->
+                                       
+                                       
+                                       
+                                       
+                                        
+                                    <div class="col-xxl-12 col-xl-6" style="height:550px;">
+                                        <div class="card custom-card" style="height:425px;">
+                                            <div class="card-header justify-content-between">
+                                                <div class="card-title">
+                                                    <i class="bx bx-receipt">&nbsp;</i>
+                                                    	예약하기
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div>
+                                				<!-- 예약하기 표 넣기 -->
+                                				
+												<!--변경테이블  -->
+												<div class="table-responsive">
+                                                    <table class="table text-nowrap table-bordered border-primary">
+                                                         
+                                                        <tbody id="table">
+                                                            <tr>
+                                                                <th scope="row" class="me-2 fw-semibold" >
+                                                                    	담당의
+                                                                </th>
+                                                                <td >
+                                                                	<input type="hidden" id="ID" disabled="disabled" />
+                                                                	<input type="text" class="form-control" id="reserveDoctorName"  style="width: 250px;float: left;padding-top: 4px;padding-bottom: 3px;" value="김의사" >
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row" class="me-2 fw-semibold">
+                                                               	     환자명
+                                                                </th>
+                                                                 <td >
+                                                                	<input type="text" class="form-control" id="reservePatientName"  style="width: 250px;float: left;padding-top: 4px;padding-bottom: 3px;">
+                                                                    	
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th scope="row" class="me-2 fw-semibold">
+                                                                    	예약일
+                                                                </th>
+                                                                 <td >
+                                                                	<input type="text" class="form-control" id="startDate"  style="width: 250px;float: left;padding-top: 4px;padding-bottom: 3px;" value="2024-04-01" >
+                                                                </td>
+                                                            </tr>
+                                                           
+                                                            <!-- 시간 셀렉트박스 -->
+                                                            <tr>
+	                                                            <th scope="row" class="me-2 fw-semibold">
+	                                                            	시작시간
+	                                                            </th>
+	                                                            <td>
+		                                                            <select name="reservation_time" 
+		                                                             id="reservStarttime" class="form-select custom-select">
+																		<!-- <option value="">원하는 진료시간을 선택하세요.</option> -->
+																		 <option selected></option>
+																		<!-- 9:00부터 12:00까지 -->
+																		<optgroup label="오전">
+																			<option value="09:00">9:00</option>
+																			<option value="09:30">9:30</option>
+																			<option value="10:00">10:00</option>
+																			<option value="10:30">10:30</option>
+																			<option value="11:00">11:00</option>
+																			<option value="11:30">11:30</option>
+																			<!-- <option value="12:00">12:00</option> -->
+																		</optgroup>
+																		<!-- 13:00부터 18:00까지 -->
+																		<optgroup label="오후">
+																			<option value="13:00">13:00</option>
+																			<option value="13:30">13:30</option>
+																			<option value="14:00">14:00</option>
+																			<option value="14:30">14:30</option>
+																			<option value="15:00">15:00</option>
+																			<option value="15:30">15:30</option>
+																			<option value="16:00">16:00</option>
+																			<option value="16:30">16:30</option>
+																			<option value="17:00">17:00</option>
+																			<option value="17:30">17:30</option>
+																		</optgroup>
+																	</select>
+																</td>
+                                                             </tr>
+                                                            
+                                                            <!-- 시간 셀렉트박스 -->
+                                                            
+                                                           
+                                                            <tr>
+                                                                <th scope="row" class="me-2 fw-semibold">
+                                                                  		 예약 메모
+                                                                </th>
+                                                                 <td >
+                                                                	<input type="text" class="form-control" id="reservMemo" style="width: 250px;float: left;padding-top: 4px;padding-bottom: 3px;" value="" >
+                                                                </td>
+                                                            </tr>
+                                                           
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                    <div style="margin-top: 10px" >
+	                                                   	<button type="button" id="insertBtn" class="btn btn-secondary btn-wave" style="float:right;">저장</button>
+	                                                    <span style="margin:4px; float: right;"></span>
+	                                                   <!--  <button type="button" id="updateBtn" class="btn btn-secondary btn-wave" style="float:right;">수정</button>
+	                                                    <span style="margin:4px; float: right;"></span> -->
+	                                                    <!-- <button type="button" id="deleteBtn" class="btn btn-secondary btn-wave" style="float:right;">삭제</button> -->
+	                                                	</div>
+	                                                </div>
+												
+												<!--변경테이블  -->
+												
+												
+												
+                                				
+                                				<!-- 예약하기 표 넣기 -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                        <!--  -->
+                                    </div>
+                                    <div class="col-xxl-12 col-xl-6">
+                   
+                                    </div>
+                                    <!--  -->
+
+                                    <!--  -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End::row-1 -->
+
+            </div>
+        </div>
+        <!-- End::app-content -->
+        
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModal" aria-hidden="true" >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="input-group">
+                    <a href="javascript:void(0);" class="input-group-text" id="Search-Grid"><i class="fe fe-search header-link-icon fs-18"></i></a>
+                    <input type="search" class="form-control border-0 px-2" placeholder="Search" aria-label="Username">
+                    <a href="javascript:void(0);" class="input-group-text" id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+                    <a href="javascript:void(0);" class="btn btn-light btn-icon" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fe fe-more-vertical"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="javascript:void(0);">Action</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Another action</a></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Something else here</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="javascript:void(0);">Separated link</a></li>
+                    </ul>
+                  </div>
+                  <div class="mt-4">
+                    <p class="font-weight-semibold text-muted mb-2">Are You Looking For...</p>
+                    <span class="search-tags alert"><i class="fe fe-user me-2"></i>People<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                    <span class="search-tags alert"><i class="fe fe-file-text me-2"></i>Pages<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                    <span class="search-tags alert"><i class="fe fe-align-left me-2"></i>Articles<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                    <span class="search-tags alert"><i class="fe fe-server me-2"></i>Tags<a href="javascript:void(0)" class="tag-addon" data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+                  </div>
+                  <div class="my-4">
+                    <p class="font-weight-semibold text-muted mb-2">Recent Search :</p>
+                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                      <a href="notifications.html"><span>Notifications</span></a>
+                      <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                    </div>
+                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+                      <a href="alerts.html"><span>Alerts</span></a>
+                      <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                    </div>
+                    <div class="p-2 border br-5 d-flex align-items-center text-muted mb-0 alert">
+                      <a href="mail.html"><span>Mail</span></a>
+                      <a class="ms-auto lh-1" href="javascript:void(0);" data-bs-dismiss="alert" aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <div class="btn-group ms-auto">
+                    <button type="button" class="btn btn-sm btn-primary-light">Search</button>
+                    <button type="button" class="btn btn-sm btn-primary">Clear Recents</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        
+
+    </div>
+
+    
+    <!-- Scroll To Top -->
+    <div class="scrollToTop">
+        <span class="arrow"><i class="ri-arrow-up-s-fill fs-20"></i></span>
+    </div>
+    <div id="responsive-overlay"></div>
+    <!-- Scroll To Top -->
+
+    <!-- Popper JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Defaultmenu JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/js/defaultmenu.min.js"></script>
+
+    <!-- Node Waves JS-->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/node-waves/waves.min.js"></script>
+
+    <!-- Sticky JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/js/sticky.js"></script>
+
+    <!-- Simplebar JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="${pageContext.request.contextPath}/resources/assets/js/simplebar.js"></script>
+
+    <!-- Color Picker JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+  
+
+    <!-- JSVector Maps JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
+
+    <!-- JSVector Maps MapsJS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/jsvectormap/maps/world-merc.js"></script>
+
+    <!-- Apex Charts JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/apexcharts/apexcharts.min.js"></script>
+
+    <!-- Chartjs Chart JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/chart.js/chart.min.js"></script>
+
+    <!-- CRM-Dashboard -->
+    <script src="${pageContext.request.contextPath}/resources/assets/js/crm-dashboard.js"></script>
+
+    <!-- Custom JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/js/custom.js"></script>
+
+    
+    <!-- Custom-Switcher JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/js/custom-switcher.min.js"></script>
+    
+    <!-- Dragula JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/dragula/dragula.min.js"></script>
+
+    <!-- Flat Picker JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/libs/flatpickr/flatpickr.min.js"></script>
+    
+    <!-- CRM Deals JS -->
+    <script src="${pageContext.request.contextPath}/resources/assets/js/crm-deals.js"></script>
+    
+</body>
+<script>
+	
+    $.ajax({
+    	method: 'POST',
+    	url : '/admin/getReserveList',
+    	contentType:'application/json; charset=utf-8',
+    	beforeSend : function(xhr){
+    		 // CSRF 토큰 헤더에 추가
+            xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+    	},
+    	success : function(res){
+    		console.log("수납대기목록결과",res);
+    		
+    		 // 받아온 데이터에 대해 반복문을 돌며 HTML을 생성하고 추가합니다.
+    	    res.forEach(function(item) {
+    	    	
+    	    
+    		console.log("체킹킹");
+    		console.log(item.receiptNo);
+    		var newResultHtml = '<div class="card custom-card" style="background-color:rgb(238, 243, 248);width: 280px;height: 140px;margin-left: 10px;">' +
+    	    '<div class="card-body p-3" style="background-color:white;width: 260px;height: 110px;margin-left: 10px;margin-top: 10px;margin-bottom: 10px;">' +
+    	    '<div class="d-flex justify-content-between align-items-start mb-3 flex-wrap" style="">' +
+    	    '<div class="d-inline-flex align-items-start position-relative">' +
+    	    '<a href="profile.html" class="stretched-link"></a>' +
+    	    '<div class="me-2">' +
+    	    '<span class="avatar avatar-rounded">' +
+    	    '<img src="${pageContext.request.contextPath}/resources/assets/img/patient.png" alt="img">' +
+    	    '</span>' +
+    	    '</div>' +
+    	    '<div class="flex-grow-1">' +
+    	    '<span class="mb-0 d-block fs-14 fw-semibold">' + item.memName + '</span>' +
+    	    '<span class="fs-13 ">' + item.memGender + ' ' + item.memAge + '세<i class="bi bi-patch-check-fill text-success  fs-15"></i></span>' +
+    	    '</div>' +
+    	    '</div>' +
+    	    '<span class="fs-10 badge rounded-pill bg-secondary">수납대기중</span>' +
+    	    '</div>' +
+    	    '<input type="hidden" value="'+item.receiptNo+'" />'+
+    	    '<button type="button" class="btn btn-outline-info btn-wave pickPt" style="width: 220px;height: 35px;">선택</button>' +
+    	    '</div>' +
+    	    '</div>';
+    		
+    		
+    		        $("#placeReserveList").append(newResultHtml); // 결과를 추가할 부모 요소에 새로운 결과를 추가합니다.
+    		
+    		
+    		
+    		
+    	    })
+    		
+    		
+    		
+    	}
+    })    
+    
+    //수납대기환자 클릭 이벤트
+    //접수번호를 가져와서 수납하기
+    $(document).on("click",".pickPt",function(){
+    	alert("dd");
+    	//console.log($(this).closest('.card-body').find('input[type="hidden"]').val());
+    	let pickReceiptNo = $(this).closest('.card-body').find('input[type="hidden"]').val(); // 접수번호
+    	
+    	//접수번호로 수납 내역 가져오기
+    });
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        
+</script>
+
+</html>

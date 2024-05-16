@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.INurseMapper">
+	
+	<resultMap type="memberVO" id="hospitalizeMemberMap">
+		<id property="memNo" column="mem_no"/>
+		<result property="memNo" column="mem_no"/>
+		<result property="memName" column="mem_name"/>
+		<result property="memAge" column="mem_age"/>
+		<result property="memGender" column="mem_gender"/>
+		<result property="empName" column="emp_name"/>
+		<result property="patientVO.patntNo" column="patnt_no"/>
+		<result property="bedVO.bedNo" column="bed_no"/>
+		<result property="empVO.empNo" column="emp_no"/>
+		<collection property="bedVO.wardVO" resultMap="wardMap"/>
+	</resultMap>
+	
+	<resultMap type="wardVO" id="wardMap">
+		<id property="wardNo" column="ward_no"/>
+		<result property="wardNo" column="ward_no"/>
+	</resultMap>
+	
+	<select id="getBedList" parameterType="bedVO">
+		select
+		    b.bed_no, b.bed_status, b.ward_no, c.code_name
+		from bed b, common_code c
+		where b.bed_status = c.code_no
+	</select>
+	
+	<select id="getHospitalizeList" resultMap="hospitalizeMemberMap">
+		select
+		    p.patnt_no, m.mem_no, b.bed_no, w.ward_no, m.mem_name, m.mem_age, m.mem_gender, mm.mem_name as emp_name, e.emp_no
+		from hospitalization_record hr, bed b, "ORDER" o, chart ch, patient p, member m, ward w, emp e, member mm
+		where hr.bed_no = b.bed_no
+		    and b.ward_no = w.ward_no
+		    and hr.order_no = o.order_no
+		    and o.chart_no = ch.chart_no
+		    and ch.patnt_no = p.patnt_no
+		    and p.mem_no = m.mem_no
+		    and o.emp_no = e.emp_no
+		    and e.mem_no = mm.mem_no
+	</select>
+	
+	<select id="getPatntOrder" parameterType="int" resultType="orderVO">
+		select c.code_name, o.body_code, ch.chart_date, ch.chart_record, m.mem_name, m.mem_gender, m.mem_age, mm.mem_name as emp_name
+			from "ORDER" o, chart ch, patient p, member m, member mm, emp e, common_code c
+			where o.chart_no = ch.chart_no
+			    and ch.patnt_no = p.patnt_no
+			    and p.mem_no = m.mem_no
+			    and o.emp_no = e.emp_no
+			    and e.mem_no = mm.mem_no
+			    and (o.order_code = 'OD001' OR o.order_code = 'OD002')
+			    and o.order_code = c.code_no
+			    and m.mem_no = #{patntNo}
+	</select>
+	
+	<select id="getHospitalizePatntInfo" parameterType="int">
+		
+	
+	</select>
+	
+	<select id="getMedicineList" resultType="medicineVO">
+		select
+    		mdcin_no, mdcin_name, mdcin_quantity, mdcin_unit, mdcin_company, mdcin_course, mdcin_price
+		from medicine
+	</select>
+</mapper>

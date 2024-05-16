@@ -1,0 +1,814 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<meta id="_csrf" name="_csrf" content="${_csrf.token }">
+<meta id="_csrf_header" name="_csrf_header" content="${_csrf.headerName }">
+<style>
+#dropdown-menu {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background-color: white;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	z-index: 100;
+	width: 200px;
+	display: none;
+}
+
+#dropdown-menu ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#dropdown-menu li {
+	padding: 8px 12px;
+	border-bottom: 1px solid #ddd;
+}
+
+#dropdown-menu li a {
+	color: black;
+	text-decoration: none;
+}
+
+#dropdown-menu li a:hover {
+	background-color: #f5f5f5;
+}
+
+/* 추가 코드 */
+#dropdown-menu {
+	width: calc(150%); /* 검색창 좌우 여백 고려 */
+}
+
+#header-notification-scroll {
+  max-height: 300px; /* 원하는 높이로 조정 */
+  overflow-y: auto;
+}
+
+#header-notification-scroll::-webkit-scrollbar {
+  width: 8px; /* 스크롤바 너비 조정 */
+}
+
+#header-notification-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* 스크롤바 색상 조정 */
+  border-radius: 4px; /* 스크롤바 모서리 조정 */
+}
+
+#header-notification-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4); /* 스크롤바 호버 시 색상 조정 */
+}
+</style>
+<script src="${pageContext.request.contextPath }/resources/js/websocketFunction.js"></script>
+<!-- 모달 -->
+<div class="modal fade" id="modaldemo8">
+	<div class="modal-dialog modal-lg modal-dialog-centered "
+		role="document">
+		<div class="modal-content shadow" id="modal-body"
+			style="border: 0.1px; border-radius: 15px;"></div>
+	</div>
+</div>
+
+<header class="app-header">
+	<input type="hidden" id="userId"
+		value="${sessionScope.user.member.memId }">
+	<div class="col-4" style="display: none;">
+		<div class="form-check switch-select">
+			<label class="form-check-label" for="switcher-dark-theme">
+				Dark </label> <input class="form-check-input" type="radio"
+				name="theme-style" id="switcher-dark-theme">
+		</div>
+	</div>
+	<div class="main-header-container container-fluid">
+		<!-- Start::header-content-left -->
+		<div class="header-content-left">
+			<!-- Start::header-element -->
+			<div class="header-element">
+				<div class="horizontal-logo">
+					<a href="index.html" class="header-logo"> <img
+						src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/desktop-logo.png"
+						alt="logo" class="desktop-logo"> <img
+						src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/toggle-logo.png"
+						alt="logo" class="toggle-logo"> <img
+						src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/desktop-dark.png"
+						alt="logo" class="desktop-dark"> <img
+						src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/toggle-dark.png"
+						alt="logo" class="toggle-dark"> <img
+						src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/desktop-white.png"
+						alt="logo" class="desktop-white"> <img
+						src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/toggle-white.png"
+						alt="logo" class="toggle-white">
+					</a>
+				</div>
+			</div>
+			<!-- End::header-element -->
+			<!-- Start::header-element -->
+			<div class="header-element">
+				<!-- Start::header-link -->
+				<a aria-label="Hide Sidebar"
+					class="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle"
+					data-bs-toggle="sidebar" href="javascript:void(0);"><span></span></a>
+				<!-- End::header-link -->
+				<div class="col-md-12" style="margin-left: 10px; margin-top: 7px;">
+					<div class="container">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="input-group">
+									<input type="text" id="search-input" class="form-control"
+										placeholder="검색어 입력">
+									<button class="btn btn-outline-light btn-wave" type="button"
+										id="search-btn">
+										<i class="bx bx-search-alt-2 header-link-icon"></i>
+									</button>
+									<!-- 								</div> -->
+									<div id="dropdown-menu" style="display: none;">
+										<!-- 									<ul> -->
+										<!-- 										<li><a href="#">1번 항목</a></li> -->
+										<!-- 										<li><a href="#">2번 항목</a></li> -->
+										<!-- 										<li><a href="#">3번 항목</a></li> -->
+										<!-- 									</ul> -->
+										<i class="bx bx-search-alt-2 header-ling-icon"></i>검색 결과
+										<p style="font-size: 25px;">
+											👨‍⚕️ <span style="font-size: 15px;">아래 검색 규칙을 읽고 검색 해
+												주세요!</span>
+										</p>
+										<p style="font-size: 40px;">🗣</p>
+										<p style="font-size: 30px;">👤</p>
+										<span>아래 검색 규칙을 읽고 검색 해 주세요!</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<!-- 			<div class="input-group mb-3">
+						<input type="text" class="form-control" placeholder="검색어를 입력하세요" id="searchBox" name="search">
+						<input id="searchBox">
+							aria-label="Search" aria-describedby="button-addon2"
+						<button class="btn btn-outline-light btn-wave" type="submit"
+							id="button-addon2">
+							<i class="bx bx-search-alt-2 header-link-icon"></i>
+						</button>
+					</div> -->
+
+				</div>
+			</div>
+			<!-- End::header-element -->
+		</div>
+		<div class="header-content-right">
+			<!-- Start::header-element -->
+
+			<!-- End::header-element -->
+			<!-- Start::header-element -->
+			<div class="header-element notifications-dropdown">
+				<!-- Start::header-link|dropdown-toggle -->
+				<a href="javascript:void(0);" class="header-link dropdown-toggle"
+					data-bs-toggle="dropdown" data-bs-auto-close="outside"
+					id="messageDropdown" aria-expanded="false"> <i
+					class="bx bx-bell header-link-icon"></i> <span
+					class="badge bg-secondary rounded-pill header-icon-badge pulse pulse-secondary"
+					id="notification-icon-badge"></span>
+				</a>
+				<!-- End::header-link|dropdown-toggle -->
+				<!-- Start::main-header-dropdown -->
+
+
+<!-- 알림 보여줄 곳 -->
+				<div class="main-header-dropdown dropdown-menu dropdown-menu-end"
+					data-popper-placement="none">
+					<div class="p-3">
+						<div class="d-flex align-items-center justify-content-between">
+							<p class="mb-0 fs-17 fw-semibold">알림</p>
+							<span class="badge bg-secondary-transparent"
+								id="notifiation-data">알림이 존재하지 않습니다.</span>
+						</div>
+					</div>
+					<div class="dropdown-divider"></div>
+					<ul class="list-unstyled mb-0" id="header-notification-scroll">
+
+<!-- 						<li class="dropdown-item"> -->
+<!-- 							<div class="d-flex align-items-start"> -->
+<!-- 								<div class="pe-2"> -->
+<!-- 									<span -->
+<!-- 										class="avatar avatar-md bg-success-transparent avatar-rounded"><i -->
+<!-- 										class='bx bxs-comment-check fs-18'></i></span> -->
+<!-- 								</div> -->
+<!-- 								<div -->
+<!-- 									class="flex-grow-1 d-flex align-items-center justify-content-between"> -->
+<!-- 									<div> -->
+<!-- 										<p class="mb-0 fw-semibold"> -->
+<!-- 											<a href="notifications.html">신청이 승인되었습니다.</a> -->
+<!-- 										</p> -->
+<!-- 										<span -->
+<!-- 											class="text-muted fw-normal fs-12 header-notification-text">당신의 -->
+<!-- 											연가신청이 승인되었습니다.</span> -->
+<!-- 									</div> -->
+<!-- 									<div> -->
+<!-- 										<a href="javascript:void(0);" -->
+<!-- 											class="min-w-fit-content text-muted me-1 dropdown-item-close1"><i -->
+<!-- 											class="ti ti-x fs-16"></i></a> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</li> -->
+
+					</ul>
+					
+<!-- 					<div class="p-3 empty-header-item1 border-top"> -->
+<!-- 						<div class="d-grid"> -->
+<!-- 							<a href="notifications.html" class="btn btn-primary">알림 전체보기</a> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+					
+					<div class="p-5 empty-item1 d-none">
+						<div class="text-center">
+							<span
+								class="avatar avatar-xl avatar-rounded bg-secondary-transparent">
+								<i class="ri-notification-off-line fs-2"></i>
+							</span>
+							<h6 class="fw-semibold mt-3">읽지 않은 알림이 없습니다!</h6>
+						</div>
+					</div>
+				</div>
+				<!-- End::main-header-dropdown -->
+			</div>
+			<!-- End::header-element -->
+
+			<!-- Start::header-element -->
+			<div class="header-element header-shortcuts-dropdown">
+				<!-- Start::header-link|dropdown-toggle -->
+				<a href="javascript:void(0);" class="header-link dropdown-toggle"
+					data-bs-toggle="dropdown" data-bs-auto-close="outside"
+					id="notificationDropdown" aria-expanded="false"> <i
+					class="bx bx-grid-alt header-link-icon"></i>
+				</a>
+				<!-- End::header-link|dropdown-toggle -->
+				<!-- Start::main-header-dropdown -->
+				<div
+					class="main-header-dropdown header-shortcuts-dropdown dropdown-menu pb-0 dropdown-menu-end"
+					aria-labelledby="notificationDropdown">
+					<div class="p-3">
+						<div class="d-flex align-items-center justify-content-between">
+							<p class="mb-0 fs-17 fw-semibold">Related Apps</p>
+						</div>
+					</div>
+					<div class="dropdown-divider mb-0"></div>
+					<div class="main-header-shortcuts p-2" id="header-shortcut-scroll">
+						<div class="row g-2">
+							<div class="col-4">
+								<a href="javascript:void(0);">
+									<div class="text-center p-3 related-app">
+										<span class="avatar avatar-sm avatar-rounded"> <img
+											src="${pageContext.request.contextPath }/resources/assets/images/apps/figma.png"
+											alt="">
+										</span> <span class="d-block fs-12">Figma</span>
+									</div>
+								</a>
+							</div>
+							<div class="col-4">
+								<a href="javascript:void(0);">
+									<div class="text-center p-3 related-app">
+										<span class="avatar avatar-sm avatar-rounded"> <img
+											src="${pageContext.request.contextPath }/resources/assets/images/apps/microsoft-powerpoint.png"
+											alt="">
+										</span> <span class="d-block fs-12">Power Point</span>
+									</div>
+								</a>
+							</div>
+							<div class="col-4">
+								<a href="javascript:void(0);">
+									<div class="text-center p-3 related-app">
+										<span class="avatar avatar-sm avatar-rounded"> <img
+											src="${pageContext.request.contextPath }/resources/assets/images/apps/microsoft-word.png"
+											alt="">
+										</span> <span class="d-block fs-12">MS Word</span>
+									</div>
+								</a>
+							</div>
+							<div class="col-4">
+								<a href="javascript:void(0);">
+									<div class="text-center p-3 related-app">
+										<span class="avatar avatar-sm avatar-rounded"> <img
+											src="${pageContext.request.contextPath }/resources/assets/images/apps/calender.png"
+											alt="">
+										</span> <span class="d-block fs-12">Calendar</span>
+									</div>
+								</a>
+							</div>
+							<div class="col-4">
+								<a href="javascript:void(0);">
+									<div class="text-center p-3 related-app">
+										<span class="avatar avatar-sm avatar-rounded"> <img
+											src="${pageContext.request.contextPath }/resources/assets/images/apps/sketch.png"
+											alt="">
+										</span> <span class="d-block fs-12">Sketch</span>
+									</div>
+								</a>
+							</div>
+							<div class="col-4">
+								<a href="javascript:void(0);">
+									<div class="text-center p-3 related-app">
+										<span class="avatar avatar-sm avatar-rounded"> <img
+											src="${pageContext.request.contextPath }/resources/assets/images/apps/google-docs.png"
+											alt="">
+										</span> <span class="d-block fs-12">Docs</span>
+									</div>
+								</a>
+							</div>
+							<div class="col-4">
+								<a href="javascript:void(0);">
+									<div class="text-center p-3 related-app">
+										<span class="avatar avatar-sm avatar-rounded"> <img
+											src="${pageContext.request.contextPath }/resources/assets/images/apps/google.png"
+											alt="">
+										</span> <span class="d-block fs-12">Google</span>
+									</div>
+								</a>
+							</div>
+							<div class="col-4">
+								<a href="javascript:void(0);">
+									<div class="text-center p-3 related-app">
+										<span class="avatar avatar-sm avatar-rounded"> <img
+											src="${pageContext.request.contextPath }/resources/assets/images/apps/translate.png"
+											alt="">
+										</span> <span class="d-block fs-12">Translate</span>
+									</div>
+								</a>
+							</div>
+							<div class="col-4">
+								<a href="javascript:void(0);">
+									<div class="text-center p-3 related-app">
+										<span class="avatar avatar-sm avatar-rounded"> <img
+											src="${pageContext.request.contextPath }/resources/assets/images/apps/google-sheets.png"
+											alt="">
+										</span> <span class="d-block fs-12">Sheets</span>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="p-3 border-top">
+						<div class="d-grid">
+							<a href="javascript:void(0);" class="btn btn-primary">View
+								All</a>
+						</div>
+					</div>
+				</div>
+				<!-- End::main-header-dropdown -->
+			</div>
+			<!-- End::header-element -->
+
+			<!-- Start::header-element -->
+			<div class="header-element header-fullscreen">
+				<!-- Start::header-link -->
+				<a onclick="openFullscreen();" href="javascript:void(0);"
+					class="header-link"> <i
+					class="bx bx-fullscreen full-screen-open header-link-icon"></i> <i
+					class="bx bx-exit-fullscreen full-screen-close header-link-icon d-none"></i>
+				</a>
+				<!-- End::header-link -->
+			</div>
+			<!-- End::header-element -->
+
+			<!-- Start::header-element -->
+			<div class="header-element">
+				<!-- Start::header-link|dropdown-toggle -->
+				<a href="javascript:void(0);" class="header-link dropdown-toggle"
+					id="mainHeaderProfile" data-bs-toggle="dropdown"
+					data-bs-auto-close="outside" aria-expanded="false">
+					<div class="d-flex align-items-center">
+						<div class="me-sm-2 me-0">
+							<img
+								src="${pageContext.request.contextPath }/resources/assets/images/faces/9.jpg"
+								alt="img" width="32" height="32" class="rounded-circle">
+						</div>
+						<div class="d-sm-block d-none">
+							<p class="fw-semibold mb-0 lh-1">${sessionScope.user.member.memName }</p>
+							<span class="op-7 fw-normal d-block fs-11">직무</span>
+						</div>
+					</div>
+				</a>
+				<!-- End::header-link|dropdown-toggle -->
+				<ul
+					class="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end"
+					aria-labelledby="mainHeaderProfile">
+					<li><a class="dropdown-item d-flex" href="/mypage/${sessionScope.user.member.memNo }"><i
+							class="ti ti-user-circle fs-18 me-2 op-7"></i>내 정보</a></li>
+<!-- 					<li><a class="dropdown-item d-flex" href="#" -->
+<%-- 						data-memno="${sessionScope.user.member.memNo }" id="goMypage"><i --%>
+<!-- 							class="ti ti-user-circle fs-18 me-2 op-7"></i>내 정보</a></li> -->
+					<li><a class="dropdown-item d-flex" href="mail.html"><i
+							class="ti ti-inbox fs-18 me-2 op-7"></i>Inbox <span
+							class="badge bg-success-transparent ms-auto">25</span></a></li>
+					<li><a class="dropdown-item d-flex border-block-end"
+						href="to-do-list.html"><i
+							class="ti ti-clipboard-check fs-18 me-2 op-7"></i>Task Manager</a></li>
+					<li><a class="dropdown-item d-flex" href="mail-settings.html"><i
+							class="ti ti-adjustments-horizontal fs-18 me-2 op-7"></i>Settings</a></li>
+					<li><a class="dropdown-item d-flex border-block-end"
+						href="javascript:void(0);"><i
+							class="ti ti-wallet fs-18 me-2 op-7"></i>Bal: $7,12,950</a></li>
+					<li><a class="dropdown-item d-flex" href="chat.html"><i
+							class="ti ti-headset fs-18 me-2 op-7"></i>Support</a></li>
+					<li><a href="#" id="logout" class="dropdown-item d-flex"><i
+							class="ti ti-logout fs-18 me-2 op-7"></i>로그아웃</a></li>
+				</ul>
+			</div>
+			<!-- End::header-element -->
+
+			<!-- Start::header-element -->
+			<div class="header-element">
+				<!-- Start::header-link|switcher-icon -->
+				<a href="mypage" class="header-link switcher-icon"> <i
+					class="bx bx-cog header-link-icon"></i>
+				</a>
+				<!-- End::header-link|switcher-icon -->
+			</div>
+			<!-- End::header-element -->
+		</div>
+		<!-- End::header-content-right -->
+	</div>
+	<form action="/logout" method="post" id="logoutForm">
+		<sec:csrfInput/>
+	</form>
+</header>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+	<div id="infoToast" class="toast colored-toast bg-info-transparent"
+		role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header bg-info text-fixed-white">
+			<img class="bd-placeholder-img rounded me-2"
+				src="${pageContext.request.contextPath }/resources/img/원무과장.png" alt="...">
+			<strong class="me-auto">원무과장</strong>
+			<button type="button" class="btn-close" data-bs-dismiss="toast"
+				aria-label="Close"></button>
+		</div>
+		<div class="toast-body">연가 기안이 승인되었습니다.</div>
+	</div>
+	
+<div id="dangerToast" class="toast colored-toast bg-danger-transparent" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="toast-header bg-danger text-fixed-white">
+            <img class="bd-placeholder-img rounded me-2" src="${pageContext.request.contextPath }/resources/img/원무과장.png" alt="...">
+            <strong class="me-auto">원무과장</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="disagreeBox">
+            연가 기안이 반려되었습니다.
+        </div>
+    </div>
+</div>
+
+
+<script>
+$(document).ready(function() {
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader('X-CSRF-Token', $("meta[name='_csrf']").attr("content"));
+        }
+    });
+});
+	var csrfToken = $("meta[name='_csrf']").attr("content");
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+const notiBox = $('#header-notification-scroll');
+var sock = null;
+var ws = null;
+$(document).ready(function(){
+	connectWs();
+});
+var onlineList;
+var offlineList;
+// 소켓
+function connectWs(){
+//  	ws = new WebSocket("ws://localhost/echo");
+ 	ws = new WebSocket("ws://192.168.143.12:80/echo");
+//	ws = new WebSocket("ws://121.184.106.118:80/echo");
+// 	sock = ws;
+	
+	ws.onopen = function(){
+		console.log("연결 완료");
+		console.log($('#userId').val());
+		ws.send('로그인#'+$('#userId').val()+"#SUCCESS");
+	};
+	
+	ws.onmessage = function(event){
+		
+		// 받은 데이터가 JSON 형식인지 확인
+		let jsonData = null;
+		try{
+			jsonData = JSON.parse(event.data);
+		} catch (e) {
+			let responseCode = event.data.split('#')[0];
+			if(responseCode === "notiList") getNotiList(event);
+			else if(responseCode === "vacationResult") vacationResult(event);
+			return;
+		}
+		let jsonType = jsonData.type;
+		console.log(jsonType);
+		if(jsonType === "로그인") {
+			onlineList = JSON.parse(jsonData.online);
+			offlineList = JSON.parse(jsonData.offline);
+			showOnline(onlineList, offlineList);
+		}
+		else if(jsonType === "openSoloChat"){
+			let member = JSON.parse(jsonData.member);
+			let status = jsonData.status;
+			openSoloChat(member, status);
+		}
+		else if(jsonType === "chat"){
+			let chatList = JSON.parse(jsonData.chat);
+			printChat(chatList);
+		}
+		else if(jsonType === "myChatRoom"){
+			let chatList = JSON.parse(jsonData.data);
+			myChatRoomList(chatList);
+		}
+		else if(jsonType === "enterChat"){
+			let chatPersonList = JSON.parse(jsonData.data);
+			enterChat(chatPersonList);
+		}
+		
+		
+	};
+	
+	ws.onclose = function(){
+		showOnline(onlineList, offlineList);
+		console.log('close');
+	};
+	
+}
+
+
+
+
+
+
+$('#logout').on("click",function(){
+	$('#logoutForm').submit();
+});
+
+$(function() {
+	var patntInfo;
+	var protector;
+	var chartRecordList;
+	$("#search-input").click(function() {
+	  $("#dropdown-menu").toggle();
+	});
+	
+	$("#search-btn").click(function(){
+		var searchName = $('#search-input').val();
+		var data = {searchName : searchName};
+		let html = `<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>`;
+		$('#dropdown-menu').html(html);
+		    $.ajax({
+		    	type:"post",
+		    	url :"/comm/getSearchList",
+		    	data : JSON.stringify(data),
+		    	contentType : "application/json;charset=utf-8",
+// 		    	beforeSend: function(xhr) {
+// 		             xhr.setRequestHeader(csrfHeader, csrfToken);
+// 		         },
+		         success:function(result){
+		        	 console.log(result)
+					if(result != null && result.length > 0){
+						html = "<div class='col-xl-12' style=''>";
+						html += "<div class='card custom-card'>";
+						$.each(result, function(idx,val){
+						var reg = val.memRegno1 +"-"+ val.memRegno2[0]+"******";
+						console.log(reg);
+							html+= '<div class="card-header">';
+							html+= '<div class="me-3">';
+							html+= '<span style="font-weight: bold; color: skyblue;">'+val.memName+'</span>';
+							html+= '<i class="bx bx-plus-medical" style="color: red; margin-left:10px;"></i>';
+							html+= '<span style="margin-left: 15px;">'+val.memGender+", "+val.memAge+'세</span>';
+							html+= '<i class="ti ti-arrow-big-right" style="margin-left: 15px;">';
+							html+= '<a class="link-opacity-25" id="showDetail" data-bs-effect="effect-scale" data-bs-param="'+val.memNo+'" href="#">';
+							html+= '<span> 상세보기</span>';
+							html+= '</a>';
+							html+= '</i>';
+							html+= '<br>';
+							html+= '<span class="badge rounded-pill bg-success-transparent" style="margin-top: 5px;">no.'+formatNumber(val.memNo)+'</span> ';
+							html+= '<i class="bx bxs-phone-call" style="margin-left: 20px;"></i>';
+							html+= '<span style="margin: 10px;">'+val.memTel+'</span>';
+							html+= '<i class="bx bx-info-square"></i>  '+reg;
+							html+= '</div>';
+							html+= '</div>';
+						});
+						html += "</div></div>";
+						$('#dropdown-menu').html(html);
+					}else{
+			        	html = "<p>"+"검색 정보가 없습니다."+"</p>";
+			        	$('#dropdown-menu').html(html);
+					}
+		         },
+		         error:function(xhr, status, error){
+		        	 var errorMessage = xhr.status + ": "+xhr.statusText;
+		        	 alert('에러 발생 : '+errorMessage);
+		        	 console.err('에러 발생',error);
+		         }
+		    });
+	});
+	
+});
+	/* 자세히 보기 클릭 */
+	$(document).on("click", "#showDetail", function(){
+		$('#modal-body').html();
+		var paramValue = $(this).data('bs-param');
+		$.ajax({
+			url : "/comm/showpatientdetail",
+			type : "get",
+			 data: { param: paramValue },
+// 			 beforeSend: function(xhr) {
+//                  // CSRF 토큰 헤더에 추가
+//                 xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+//      	},
+			 success :function(res){
+				console.log(res);
+				chartRecordList = res[0];
+				let particularList = res[1];
+				patntInfo = res[2];
+				protector = res[3];
+// 				console.table(chartRecordList);
+// 				console.table(particularList);
+// 				console.table(patntInfo);
+// 				console.table(protector);
+				let html ="";
+	             html+='<div class="row g-0">'
+	                 +'<div class="col-5 leftmd">'
+	                 +'<p>'
+	                 +'<h6 style="float: left;">'
+	                 +'<i class="bx bx-building-house" style="margin-left: 20px; font-size: 20px;"></i>'
+	                 +'</h6>'
+	                 +'<span class="leftmdTitle">최근방문기록</span>'
+	                 +'</p><br><br>';
+	                 $.each(chartRecordList, function(index, chart)
+	                 {
+	                 html+='<p class="leftmdContent">'+chart.chartDate+' '+chart.memName+'<br><span class="badge rounded-pill bg-dark-transparent">'+formatNumber(chart.chartNo)+'</span></p>'
+	                 });
+	             html+='<div style="margin-top: 50px;"></div>'
+	                 +'<p>'
+	                 +'<h6 style="float: left;">'
+	                 +'<i class="bx bx-message-square-dots" style="margin-left: 20px; font-size: 20px;"></i>'
+	                 +'</h6>'
+	                 +'<span class="leftmdTitle">특이사항</span><br>'
+	                 +'</p>';
+	                 if(particularList.length > 0){
+		                 $.each(particularList, function(index, particular){
+		             html+='<p class="leftmdContent" style="color: black; font-weight: 500;">'
+		                 +'<i class="bx bx-bell"></i> '
+		                 +particular.particularDescription+'<br>'
+	                     +'<span class="leftmdContent">'+particular.particularDate+', '+particular.particularWriter+'</span>'
+		                 +'</p>';
+		                 });
+	                 }
+	                 else{
+	                 html +='<p class="leftmdContent" style="color: black; font-weight: 500;">'
+		                 +'<i class="bx bx-task-x"></i>'
+		                 +' 특이사항 기록이 존재하지 않습니다.<br>'
+		                 +'</p>'
+	                 }
+	                 html+='</div>';
+	                 html +='<div class="col-7 rightmd" >'
+	                 +'<p>'
+	                 +'<h6 style="float: left;">'
+	                 +'<i class="bx bx-user" style="margin-left: 20px; font-size: 20px;"></i>'
+	                 +'</h6>'
+	                 +'<span class="leftmdTitle">환자 정보</span>'
+	                 +'<span class="rightmdTime">'+patntInfo.memSignupDate+'</span>'
+	                 +'</p>'
+	                 +'<p class="rightmdNo">no.'+formatNumber(patntInfo.memNo)+'</p>'
+	                 +'<p class="rightmdName">'+patntInfo.memName+'<span style="font-size: 15px;margin-left: 10px;">'+patntInfo.memGender+','+patntInfo.memAge+'세</span></p>'
+	                 +'<p>'
+	                 +'<span class="rightmdSubtitle" style="margin-left: 20px;">주민등록번호</span>'
+	                 +'<span class="rightmdSubtitle" style="margin-left: 100px;">대표연락처</span>'
+	                 +'</p>'
+	                 +'<p>'
+	                 +'<span class="rigtmdSubcontent" style="margin-left: 22px; ">'+patntInfo.memRegno1+'-'+patntInfo.memRegno2+'</span>'
+	                 +'<span class="rigtmdSubcontent" style="left: 555px; ">'+patntInfo.memTel+'</span>'
+	                 +'</p>'
+	                 +'<div style="margin-top: 50px;"></div>'
+	                 +'<p>'
+	                 +'<h6 style="float: left;">'
+	                 +'<i class="bx bx-user-plus" style="margin-left: 20px; font-size: 20px;"></i>'
+	                 +'</h6>'
+	                 +'<span class="leftmdTitle">보호자</span><br>'
+	                 +'</p>'
+	                 +'<p>';
+	                 if(protector != null ){
+		            html +='<span style="margin-left: 20px;">'+protector.protectorName+'</span>'
+		                 +'<span style="margin-left: 20px;">'+protector.protectorTel+'</span>'
+		                 +'<span style="margin-left: 20px;">'+protector.protectorRelate+'</span>'
+		                 +'<span style="margin-left: 20px;">'+protector.protectorDate+'</span>'
+	                 }else{
+	                	 html +='<span style="margin-left: 20px;"><i class="bx bx-task-x"></i> 등록된 보호자가 없습니다 !</span>'	 
+	                 }
+	                 html+='</p>'
+	                 +'<p style="float: right; margin-right: 15px;">'
+	                 +'<button class="btn btn-outline-info rounded-pill btn-wave" id="selectPatientBtn" data-bs-dismiss="modal" >선택</button>'
+	                 +'<button class="btn btn-outline-dark rounded-pill btn-wave" data-bs-dismiss="modal" >닫기</button>'
+	                 +'</p>'
+	                 +'</div>'
+					 +'</div>';
+				$('#modal-body').html(html);
+				
+				// 선택 또는 닫기 버튼 클릭 이벤트 핸들러
+				$("#selectPatientBtn, .btn-outline-dark").click(function() {
+				    $("#dropdown-menu").toggle(); // 드롭다운 메뉴 토글
+				});
+			 }
+		});
+			 $('#modaldemo8').modal('show');
+			 
+			// 모달창 외부 클릭시 드롭다운토글 없애기
+			 $('#modaldemo8').on('shown.bs.modal', function() {
+			     $('body').on('click', function(e) {
+			         // 모달 내부를 클릭한 경우에는 처리하지 않음
+			         if ($(e.target).closest('.modal-content').length === 0) {
+			             $("#dropdown-menu").hide(); // 드롭다운 메뉴 숨기기
+			         }
+			     });
+			 });
+			
+			
+			
+			 
+	});
+	function formatNumber(num) {
+	    var str = num.toString();
+	    while (str.length < 4) {
+	        str = '0' + str;
+	    }
+	    return str;
+	}
+
+	/* 알림 목록 클릭 이벤트 */
+
+$(document).on("click", ".dropdown-item-close1", function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    $(this).closest(".dropdown-item").remove();
+    let notiNo = $(this).data("notino");
+    console.log($(this));
+    console.log(notiNo);
+
+    $("#notifiation-data").text("안읽은 알림 (" + $(".dropdown-item-close1").length + ")개");
+    $("#notification-icon-badge").text($(".dropdown-item-close1").length+"+");
+
+    if ($(".dropdown-item-close1").length === 0) {
+        $(".empty-item1").removeClass("d-none");
+        $("#notifiation-data").text("");
+        $("#notification-icon-badge").text("");
+    }
+    
+    let data = {
+		"notiNo" : notiNo	    		
+    };
+    $.ajax({
+    	url : "/noti/checkNoti.do",
+    	type : "post",
+    	data : JSON.stringify(data),
+    	contentType : "application/json;charset=utf-8",
+//     	beforeSend: function(xhr) {
+//             // CSRF 토큰 헤더에 추가
+//            xhr.setRequestHeader($("meta[name='_csrf_header']").attr("content"), $("meta[name='_csrf']").attr("content"));
+// 	},
+    	success : function(){
+    		console.log("체크완료")
+    	}
+    });
+});
+	
+	
+$(function(){
+	if($(".dropdown-item-close1").length === 0) {
+	      let elementShow1 = $(".empty-item1");
+	      elementShow1.removeClass("d-none");
+	}else{
+	      let elementShow1 = $(".empty-item1");
+	      elementShow1.addClass("d-none");
+	}
+});
+
+(function () {
+    "use strict";
+
+    var listElement = document.getElementById('header-notification-scroll');
+    var listItems = listElement.querySelectorAll('li');
+    
+    // 만약 리스트 아이템이 5개 이상이면 SimpleBar 초기화
+    if (listItems.length > 5) {
+        new SimpleBar(listElement, { autoHide: true });
+    }
+})();
+
+$('#goMypage').on("click",function(event){
+	event.preventDefault();
+	let form = $('#goMypageForm');
+	let memNo = $(this).data("memno");
+	$('#mypageMemno').val(memNo);
+	form.submit();
+		
+});
+</script>
+

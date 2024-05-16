@@ -1,0 +1,47 @@
+package kr.or.ddit.controller.doctor;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.IDoctorRoundService;
+import kr.or.ddit.vo.MemberVO;
+
+@Controller
+@RequestMapping("/doctor/round")
+public class RoundController {
+	
+	@Inject
+	private IDoctorRoundService doctorRoundService;
+
+	@GetMapping("/main")
+	public String goRoundPage() {
+		return "doctor/roundPage";
+	}
+	
+	// 환자 진료 내역 리스트 가져오기
+	@PostMapping("/getPatntRecordList")
+	public ResponseEntity<List<MemberVO>> getPatntRecordsList(@RequestBody Map<String, Integer> patntMap) {
+		int patntNo = patntMap.get("patntNo");
+		List<MemberVO> recordsList = doctorRoundService.getPatntRecordsList(patntNo);
+		
+		return new ResponseEntity<List<MemberVO>>(recordsList, HttpStatus.OK);
+	}
+	
+	// 진료 내역 상세조회
+	public ResponseEntity<MemberVO> getPatntRecordInfo(@RequestBody Map<String, Integer> chartMap) {
+		int chartNo = chartMap.get("chartNo");
+		MemberVO recordInfo = doctorRoundService.getPatntRecordInfo(chartNo);
+		
+		return new ResponseEntity<MemberVO>(recordInfo, HttpStatus.OK);
+	}
+}

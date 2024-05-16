@@ -1,0 +1,63 @@
+package kr.or.ddit.controller.admin;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.IMainAdminService;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.OrderVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/admin")
+@Slf4j
+public class MainReceiveController {
+	
+	@Inject
+	IMainAdminService mainAdminService;
+	
+	//수납 (접수 연습하던거임 이거 내일 다시 수정)
+	@GetMapping("/receiveForm")
+	public String getreceiptForm() {
+		log.info("dd");
+		return "admin/receive";
+	}
+	
+	// 수납 대기환자 불러오는 ajax 
+	@PostMapping("/getReserveList")
+	public ResponseEntity<List<MemberVO>> getReserveList(){
+		log.info("수납 대기환자 컨트롤러");
+		List<MemberVO> reserveList =  mainAdminService.getReserveList();
+		log.info("수납대기리스트임");
+		for (MemberVO memberVO : reserveList) {
+			log.info("환자번호:"+memberVO.getPatntNo());
+			
+		}
+		
+		return new ResponseEntity<List<MemberVO>>(reserveList,HttpStatus.OK);
+	}
+	
+	// 물리 치료 (갯수)불러오는 ajax
+	@PostMapping("/getMulli")
+	@ResponseBody
+	public int getMulli(@RequestBody Map<String, Object> map) {
+		log.info("갯수컨트롤러");
+		int rNo = (int) map.get("receiptNo");
+		//int rNo = Integer.parseInt(receiptNo); // String을 int로 변환
+	    int cnt = mainAdminService.getMulli(rNo);
+	    log.info("갯수: ",cnt);
+	    return cnt;
+	}
+	
+}

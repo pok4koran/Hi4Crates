@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IProtectorMapper">
+	
+	<insert id="insertProtector">
+		INSERT INTO PROTECTOR
+			(
+				  PROTECTOR_NO
+				, PROTECTOR_NAME
+				, PROTECTOR_TEL
+				, PROTECTOR_RELATE
+				, PATNT_NO
+				, PROTECTOR_DATE
+			)
+			VALUES
+			(
+				  PROTECTOR_SEQ.NEXTVAL
+				, #{protectorName}
+				, #{protectorTel}
+				, #{protectorRelate}
+				, #{patntNo}
+				, SYSDATE
+			)
+	</insert>
+	
+</mapper>

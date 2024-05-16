@@ -1,0 +1,13 @@
+package kr.or.ddit.mapper;
+
+import kr.or.ddit.vo.HistoryVO;
+
+public interface IHistoryMapper {
+
+	public void updateMediCare(int receiptNo);
+
+	public void updateHistory(HistoryVO historyVO);
+
+	
+
+}

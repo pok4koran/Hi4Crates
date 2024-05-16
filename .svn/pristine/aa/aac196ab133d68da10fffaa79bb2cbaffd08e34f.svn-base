@@ -1,0 +1,199 @@
+ package kr.or.ddit.service.impl;
+
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.mapper.IEmpNoticeMapper;
+import kr.or.ddit.service.IEmpNoticeService;
+import kr.or.ddit.vo.AttachmentVO;
+import kr.or.ddit.vo.EmpNoticeVO;
+import kr.or.ddit.vo.PaginationVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Service
+public class EmpNoticeServiceImpl implements IEmpNoticeService {
+
+	@Inject
+	private IEmpNoticeMapper noticeMapper;
+	
+	@Override
+	public ServiceResult postEmpNotice(
+			HttpServletRequest req, EmpNoticeVO empNoticeVO) {
+		ServiceResult result = null;
+		log.info("[서비스]postEmpNotice 시작!");
+		// attachmentGroupNo 가져오는 곳
+		
+		// 파일 등록 과정: 
+		// 먼저 DB에 attachmentGroupNo 등록해서(seq 생성) 바로 select로 pk 가져오기
+		// 가져온 attachmentGroupNo로 해당되는 업로드 파일 목록 불러오기(attachFileList)
+		// AttachmentVO에 파일 정보 담아서 DB에 등록
+		// 파일 등록 후 attachmentGroupNo와 함께 게시글 등록(가장 마지막 단계)
+		
+		log.info("[서비스]postEmpNotice: empNoticeVO: " + empNoticeVO);
+		if(empNoticeVO != null) {	// 등록할 글 정보가 존재한다면
+			log.info("[서비스]postEmpNotice: empNoticeVO 있음!");
+			int attachmentGroupNo = noticeMapper.insertEmpAttachGroupNo();
+			// ㄴ 실패시 빈 vo 보내서 값 담아오기
+			log.info("[서비스]postEmpNotice: attachmentGroupNo는? " + attachmentGroupNo);
+			// insert할 글 내용이 담긴 VO에 attachmentGroupNo 세팅
+			empNoticeVO.setAttachmentGroupNo(attachmentGroupNo);
+			
+			if (attachmentGroupNo > 0) {
+				// 파일 업로드 준비...
+				// 필요한 값: List<AttachmentVO> attachFileList, 
+						// int attachmentGroupNo,
+						// HttpServletRequest req
+				
+				// 업로드할 파일 목록 가져오기?
+				/////////////////////////////더 생각해야 함
+				List<AttachmentVO> attachFileList 
+							= empNoticeVO.getAttachFileList();
+				try {
+					empNoticeFileUpload(
+							attachFileList, attachmentGroupNo, req);
+				}catch(Exception e) {
+					e.printStackTrace();
+					log.info("[서비스]postEmpNotice: 파일 업로드 과정 중 문제 발생!");
+				}
+				
+			}	// if 'attachmentGroupNo등록' 성공했다면 끝
+
+			// 게시글 등록 과정
+			int status = noticeMapper.insertEmpNotice(empNoticeVO);
+			if (status > 0) {
+				result = ServiceResult.OK;
+			}else {
+				log.info("[서비스]postEmpNotice: 게시글 등록 과정 중 문제 발생!");
+				result = ServiceResult.FAILED;
+			}
+			
+		}	// if '등록할 글 정보가 존재한다면' 끝
+		else {	// 등록할 empNoticeVO가 null 이라면
+			log.error("[서비스]postEmpNotice: empNoticeVO==null");
+			result = ServiceResult.FAILED;
+		}
+
+		return result;
+	}
+	
+	
+	
+	private void empNoticeFileUpload(
+			List<AttachmentVO> attachFileList, 
+//			int attachNo, // 선생님 방식에선 원래 게시글 번호
+			int attachmentGroupNo,
+			HttpServletRequest req
+			) throws Exception {
+		String savePath = "C:/upload/";
+		
+		if(attachFileList != null) {	// (첨부파일이 존재한다면)
+			if(attachFileList.size() > 0) {	// (첨부파일 존재)
+				for(AttachmentVO attachmentVO : attachFileList) {
+					String saveName = UUID.randomUUID().toString();
+					saveName += "_" + attachmentVO.getAttachName();
+					String saveAttachPath = req.getServletContext()
+							.getRealPath(savePath + attachmentGroupNo);
+					File file = new File(saveAttachPath);
+					// 경로 디렉토리 없을 시 생성하기
+					if(!file.exists()) {
+						file.mkdirs();
+					}
+					saveAttachPath += "/" + saveName;	// 파일명을 포함한 실제 업로드 경로
+					attachmentVO.setAttachmentGroupNo(attachmentGroupNo); 
+					// 파일 업로드 경로 설정
+					attachmentVO.setAttachPath(saveAttachPath);
+					attachmentVO.setAttachLoc("내부공지사항");
+					/////////////////////////////////////////////////
+					// 여기에 AttachmentVO 각각 세팅?
+					// 게시글의 파일데이터 추가
+					try {
+						noticeMapper.insertEmpNoticeAttachment(attachmentVO);
+					}catch(Exception e) {
+						e.printStackTrace();
+						log.error("[서비스]empNoticeFileUpload: 파일 업로드 중 문제 발생!");
+					}
+					
+					File saveFile = new File(saveAttachPath);
+					attachmentVO.getItem().transferTo(saveFile);	// 파일 복사
+					
+				}	// for 닫기
+			}	// if 파일크기>0 닫기
+		}	// if 파일!=null 닫기
+	}	// 메서드 닫기
+	
+	
+	
+	@Override
+	public int getEmpNoticeCount(PaginationVO<EmpNoticeVO> pagingVO) {
+		return noticeMapper.selectEmpNoticeCount(pagingVO);
+	}
+
+	@Override
+	public List<EmpNoticeVO> getEmpNoticeList(PaginationVO<EmpNoticeVO> pagingVO) {
+		return noticeMapper.selectEmpNoticeList(pagingVO);
+	}
+
+	@Override
+	public EmpNoticeVO selectEmpNoticeDetail(int empNoticeNo) {
+		noticeMapper.incrementViewCount(empNoticeNo);
+		return noticeMapper.selectEmpNoticeDetail(empNoticeNo);
+	}
+
+	@Override
+	public ServiceResult updateNotice(HttpServletRequest req, EmpNoticeVO empNoticeVO) {
+		ServiceResult result = null;
+		int status = noticeMapper.updateNotice(empNoticeVO);
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult updateNoticeModal(EmpNoticeVO empNoticeVO) {
+		ServiceResult result = null;
+		int status = noticeMapper.updateNotice(empNoticeVO);
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+	
+	@Override
+	public ServiceResult deleteNotice(HttpServletRequest req, int empNoticeNo) {
+		ServiceResult result = null;
+		int status = noticeMapper.deleteNotice(empNoticeNo);
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+	@Override
+	public ServiceResult deleteNoticeModal(int empNoticeNo) {
+		ServiceResult result = null;
+		int status = noticeMapper.deleteNotice(empNoticeNo);
+		if(status > 0) {
+			result = ServiceResult.OK;
+		}else {
+			result = ServiceResult.FAILED;
+		}
+		return result;
+	}
+
+
+}

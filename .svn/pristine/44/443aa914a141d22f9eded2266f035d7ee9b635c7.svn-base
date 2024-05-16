@@ -1,0 +1,16 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.vo.PatientNoticeVO;
+
+public interface IPatientNoticeService {
+
+	public List<PatientNoticeVO> list();
+
+	public ServiceResult insertNotice(HttpServletRequest req, PatientNoticeVO noticeVO);
+	
+}

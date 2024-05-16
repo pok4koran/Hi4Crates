@@ -1,0 +1,47 @@
+package kr.or.ddit.controller.patient;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.or.ddit.service.IPatientBookService;
+import kr.or.ddit.vo.MemberVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@RequestMapping("/book")
+@Slf4j
+public class bookController {
+
+	@Inject
+	private IPatientBookService service;
+	
+	@GetMapping("/do")
+	public String bookJ() {
+		
+		return "patient/book";
+	}
+	
+	@PostMapping("/click")
+	public ResponseEntity<List<MemberVO>> book(@RequestBody Map<String, String> requestData,
+			Model model) {
+		String Date = requestData.get("calendarStartDate");
+//		log.info("####Date" + Date);
+		
+		List<MemberVO> chooseDoctor = service.doctor(Date);
+		
+		log.info("####chooseDoctor" + chooseDoctor);
+		
+		return new ResponseEntity<List<MemberVO>>(chooseDoctor, HttpStatus.OK);
+	}
+}

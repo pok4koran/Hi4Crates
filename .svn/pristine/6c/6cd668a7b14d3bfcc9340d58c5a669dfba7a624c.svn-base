@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IOrderSetMapper">
+
+	<select id="getOrderSetName" parameterType="int" resultType="groupOrderVO">
+		SELECT
+		    group_order_no,
+		    group_order_name,
+		    emp_no
+		FROM
+		    group_order
+		where
+		    emp_no=#{empNo}
+	</select>
+	
+	<select id="getOrderSetDetail" parameterType="int" resultType="groupOrderDetailVO">
+		select
+		    GROUP_ORDER_NO,
+		    GROUP_ORDER_DETAIL_CONTENT,
+		    GROUP_ORDER_DETAIL_CATEGORY
+		from 
+		    group_order_detail
+		where 
+    		GROUP_ORDER_NO = #{groupOrderNo}
+	</select>
+	
+
+</mapper>

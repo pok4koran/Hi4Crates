@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IPatientBookMapper">
+	
+	<select id="doctor" resultType="MemberVO">
+		SELECT mem_name
+		FROM member
+		WHERE mem_no IN (
+		    SELECT DISTINCT m.mem_no
+		    FROM member m
+			    LEFT JOIN emp e ON e.mem_no = m.mem_no
+			    LEFT JOIN vacation_request v ON e.emp_no = v.emp_no
+		    WHERE e.emp_job = '의사'
+		    AND (v.vacation_request_status IS NULL OR v.vacation_request_status != 'Y')
+		)
+	</select>                                                            
+
+</mapper>

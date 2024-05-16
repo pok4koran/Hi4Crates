@@ -1,0 +1,72 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<aside class="app-sidebar sticky" id="sidebar" style="background-color: rgba(0, 0, 0, 0);">
+            <div class="container-xl">
+                <!-- Start::main-sidebar -->
+                <div class="main-sidebar">
+                    <!-- Start::nav -->
+                    <nav class="main-menu-container nav nav-pills sub-open">
+                        <div class="landing-logo-container">
+                            <div class="horizontal-logo">
+                                <a href="index.html" class="header-logo">
+                                    <img src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/asd.png" alt="logo" class="desktop-logo" style="width: 150px; height: auto;">
+                                    <img src="${pageContext.request.contextPath }/resources/assets/images/brand-logos/asd.png" alt="logo" class="desktop-white" style="width: 150px; height: auto;">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="slide-left" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24"> <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z"></path> </svg></div>
+                        <ul class="main-menu">
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="#team" class="side-menu__item">
+                                    <span class="side-menu__label" style="font-size: 30px; font-weight: 700; opacity: 0.8;">병원정보</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="#team" class="side-menu__item">
+                                    <span class="side-menu__label" style="font-size: 30px; font-weight: 700; opacity: 0.8;">진료예약</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="#testimonials" class="side-menu__item">
+                                    <span class="side-menu__label" style="font-size: 30px; font-weight: 700; opacity: 0.8;">오시는길</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                            <!-- Start::slide -->
+                            <li class="slide">
+                                <a href="#team" class="side-menu__item">
+                                    <span class="side-menu__label" style="font-size: 30px; font-weight: 700; opacity: 0.8;">공지사항</span>
+                                </a>
+                            </li>
+                            <!-- End::slide -->
+                        </ul>
+                        <div style="display: flex; justify-content: space-between;">
+						    <div style="cursor: pointer; padding: 10px; border-radius: 5px;">
+						        <a href="/login">
+						            <span class="side-menu__label" style="font-size: 15px; font-weight: 700; opacity: 0.8;">로그인</span>
+						        </a>
+						    </div>
+						    <div style="cursor: pointer; padding: 10px; border-radius: 5px;">
+						        <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModalLg">
+						            <span class="side-menu__label" style="font-size: 15px; font-weight: 700; opacity: 0.8;">회원가입</span>
+						        </a>
+						    </div>
+						    <div style="cursor: pointer; padding: 10px; border-radius: 5px;">
+						        <a href="/public/admin/main">
+						            <span class="side-menu__label" style="font-size: 15px; font-weight: 700; opacity: 0.8;">직원전용</span>
+						        </a>
+						    </div>
+						</div>
+                    </nav>
+                    <!-- End::nav -->
+                </div>
+                <!-- End::main-sidebar -->
+            </div>
+        </aside>

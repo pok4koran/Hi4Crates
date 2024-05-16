@@ -1,0 +1,468 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
+
+<style type="text/css">
+.ui-autocomplete {
+  max-height: 200px;
+  overflow-y: auto;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden;
+  height: auto;
+}
+
+.ui-menu-item div.ui-state-hover,
+.ui-menu-item div.ui-state-active {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #f6B664;
+  border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  background-image: none;
+  border:none;
+}
+</style>
+
+<body>
+
+	<div class="page">
+
+		<div class="main-content app-content">
+			<div class="container-fluid">
+
+				<!-- Start::row-1 -->
+				<div class="row">
+					<div class="col-xxl-2 col-xl-12">
+						<div class="col-xxl-12 col-xl-6">
+							<div class="card custom-card">
+								<div class="card-header justify-content-between">
+									<div class="card-title">환자목록</div>
+								</div>
+								<div class="card-body" id="waitingList" style="overflow-y: auto;">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- 차트 div  -->
+					<div class="col-xxl-10 col-xl-12">
+					
+					<div id="chartView">
+						<div class="row" style="background-color: white; border-radius: 1%;">
+							<div class="col-xl-3" style="border-right: solid 1px rgb(229, 228, 228);">
+								<div class="col-xl-12">
+									<div class="card custom-card">
+										<div class="card-header  justify-content-between">
+											<div class="card-title">내원이력</div>
+										</div>
+										<div class="card-body" style="overflow-y: scroll; height: 500px;"  >
+											<div class="accordion accordion-border-dark accordions-items-seperate" id="accordionprimaryborderExample">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+								</div>
+							</div>
+							<div class="col-xl-4">
+								<div class="row">
+									<div class="col-xl-12">
+										<div class="card custom-card"
+											style="border: solid 1px rgb(229, 228, 228);">
+											<div class="card-header justify-content-between">
+												<div class="card-title">진료기록</div>
+											</div>
+											<div class="card-body">
+												<div class="content-wrapper">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-xl-12">
+										 <div class="card custom-card" style="border: solid 1px rgb(229, 228, 228);">
+                                            <div class="card-header justify-content-between">
+                                                <div class="card-title">
+                                                   		진단 및 처방
+                                                </div>
+                                        	</div>
+											<div class="card-body" style="margin-top: -2%;">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xl-5"
+								style="border-left: solid 1px rgb(229, 228, 228);">
+								<div class="row">
+									<div class="col-xxl-12 col-xl-12">
+										<div class="row">
+											<div class="col-xl-12">
+												<div class="col-xl-12">
+													<div class="card custom-card" style="border: solid 1px rgb(229, 228, 228);">
+			                                            <div class="card-header justify-content-between">
+			                                                <div class="card-title">
+			                                                   	차트 작성
+			                                                </div>
+			                                        	</div>
+														<div class="card-body" style="margin-top: -2%;" id="insertChartArea">
+															<input type="text" id="patntNo" readonly="readonly">
+															<input type="text" id="receiptNo" readonly="readonly">
+															환자명 : <input type="text" class="form-control" id="patntName" readonly="readonly"/>
+															<!-- 로그인한 사용자 자동으로 들어가게? -->
+															작성자 : <input type="text" class="form-control" id="empName" readonly="readonly"> 
+															<textarea class="form-control" rows="10" cols="30" id="nursingContent"
+															style="resize : none;"></textarea>
+															<button type="button" class="btn btn-sm btn-info" id="insertChartBtn">Insert</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					</div>
+				</div>
+				<!-- <div class="col-xxl-2 col-xl-12"> -->
+
+			</div>
+			<!-- End::row-1 -->
+
+		</div>
+	</div>
+	<!-- End::app-content -->
+
+	<div class="modal fade" id="searchModal" tabindex="-1"
+		aria-labelledby="searchModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="input-group">
+						<a href="javascript:void(0);" class="input-group-text"
+							id="Search-Grid"><i
+							class="fe fe-search header-link-icon fs-18"></i></a> <input
+							type="search" class="form-control border-0 px-2"
+							placeholder="Search" aria-label="Username"> <a
+							href="javascript:void(0);" class="input-group-text"
+							id="voice-search"><i class="fe fe-mic header-link-icon"></i></a>
+						<a href="javascript:void(0);" class="btn btn-light btn-icon"
+							data-bs-toggle="dropdown" aria-expanded="false"> <i
+							class="fe fe-more-vertical"></i>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="javascript:void(0);">Action</a></li>
+							<li><a class="dropdown-item" href="javascript:void(0);">Another
+									action</a></li>
+							<li><a class="dropdown-item" href="javascript:void(0);">Something
+									else here</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="javascript:void(0);">Separated
+									link</a></li>
+						</ul>
+					</div>
+					<div class="mt-4">
+						<p class="font-weight-semibold text-muted mb-2">Are You
+							Looking For...</p>
+						<span class="search-tags alert"><i class="fe fe-user me-2"></i>People<a
+							href="javascript:void(0)" class="tag-addon"
+							data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span> <span
+							class="search-tags alert"><i class="fe fe-file-text me-2"></i>Pages<a
+							href="javascript:void(0)" class="tag-addon"
+							data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span> <span
+							class="search-tags alert"><i class="fe fe-align-left me-2"></i>Articles<a
+							href="javascript:void(0)" class="tag-addon"
+							data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span> <span
+							class="search-tags alert"><i class="fe fe-server me-2"></i>Tags<a
+							href="javascript:void(0)" class="tag-addon"
+							data-bs-dismiss="alert"><i class="fe fe-x"></i></a></span>
+					</div>
+					<div class="my-4">
+						<p class="font-weight-semibold text-muted mb-2">Recent Search
+							:</p>
+						<div
+							class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+							<a href="notifications.html"><span>Notifications</span></a> <a
+								class="ms-auto lh-1" href="javascript:void(0);"
+								data-bs-dismiss="alert" aria-label="Close"><i
+								class="fe fe-x text-muted"></i></a>
+						</div>
+						<div
+							class="p-2 border br-5 d-flex align-items-center text-muted mb-2 alert">
+							<a href="alerts.html"><span>Alerts</span></a> <a
+								class="ms-auto lh-1" href="javascript:void(0);"
+								data-bs-dismiss="alert" aria-label="Close"><i
+								class="fe fe-x text-muted"></i></a>
+						</div>
+						<div
+							class="p-2 border br-5 d-flex align-items-center text-muted mb-0 alert">
+							<a href="mail.html"><span>Mail</span></a> <a class="ms-auto lh-1"
+								href="javascript:void(0);" data-bs-dismiss="alert"
+								aria-label="Close"><i class="fe fe-x text-muted"></i></a>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="btn-group ms-auto">
+						<button type="button" class="btn btn-sm btn-primary-light">Search</button>
+						<button type="button" class="btn btn-sm btn-primary">Clear
+							Recents</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Popper JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/@popperjs/core/umd/popper.min.js"></script>
+
+	<!-- Bootstrap JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Defaultmenu JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/js/defaultmenu.min.js"></script>
+
+	<!-- Node Waves JS-->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/node-waves/waves.min.js"></script>
+
+	<!-- Sticky JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/js/sticky.js"></script>
+
+	<!-- Simplebar JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/simplebar/simplebar.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/js/simplebar.js"></script>
+
+	<!-- Color Picker JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/@simonwep/pickr/pickr.es5.min.js"></script>
+
+
+
+	<!-- Custom-Switcher JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/js/custom-switcher.min.js"></script>
+
+	<!-- Prism JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/prismjs/prism.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/js/prism-custom.js"></script>
+
+	<!-- Filepond JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond/filepond.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-file-encode/filepond-plugin-file-encode.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-image-edit/filepond-plugin-image-edit.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/filepond-plugin-image-transform/filepond-plugin-image-transform.min.js"></script>
+
+
+	<!-- Dropzone JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/dropzone/dropzone-min.js"></script>
+
+	<!-- Fileupload JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/js/fileupload.js"></script>
+
+	<!-- Custom JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/js/custom.js"></script>
+
+
+	<!-- JSVector Maps JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
+
+	<!-- JSVector Maps MapsJS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/libs/jsvectormap/maps/world-merc.js"></script>
+
+
+
+	<!-- CRM-Dashboard -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/js/crm-dashboard.js"></script>
+
+
+	<!-- Custom-Switcher JS -->
+	<script
+		src="${pageContext.request.contextPath }/resources/assets/js/custom-switcher.min.js"></script>
+
+    <!-- Jquery Cdn -->
+<!--     <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script> -->
+    
+    <!-- Select2 Cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- Internal Select-2.js -->
+    <script src="${pageContext.request.contextPath }/resources/assets/js/select2.js"></script>
+    
+    
+
+
+</body>
+<script type="text/javascript">
+	$(function() {
+		
+		$.ajax({
+			url : "/nurse/getWaitingPatntList",
+			type : "post",
+			success : function(res) {
+				console.log(res);
+				let waitingList = $('#waitingList');
+				let html = "";
+				$.each(res, function(index, item) {
+					html += '<div class="card border custom-card" style="background-color:white;width: 280px;height: 110px;margin-left: 10px;margin-bottom: 10px; margin-top: 5px;">'+
+		            '<div class="card-header" style="height: 30px; background-color: #f6feff !important">'+
+		            '<span class="fw-semibold fs-13" style="position: absolute; left: 12px; ">' + item.codeName + '</span>'+
+		            '</div>'+
+		            '<div class="card-body p-3" style="width: 240px;height: 110px;margin-left: 10px;margin-bottom: 10px;">'+
+		            '<div class="d-flex justify-content-between align-items-start mb-3 flex-wrap" style="">'+
+		            '<div class="d-inline-flex align-items-start position-relative">'+
+		            // '<a href="profile.html" class="stretched-link"></a>'+
+		            '<div class="flex-grow-1 patntList" data-mem-no="' + item.memNo + '" data-patnt-no="' + item.patntNo + '"'+
+		            'data-receipt-no="' + item.receiptNo + '">' +
+		            '<span class="mb-0 d-block fs-15 fw-semibold pickPt memName">' + item.memName + '</span>'+
+		            '<span class="fs-13 text-muted">' + item.memGender + ' ' + item.memAge + '세</span>'+
+		            '</div>' +
+		            '</div>' +
+		            '<span class="fs-10 badge rounded-pill bg-secondary">' + item.ccodeName + '</span>'+
+		            
+		            '</div>' +
+		            '<input type="hidden" value="'+item.receiptNo+'" />'+
+		            '</div>' +
+		            '</div>';
+				});
+				waitingList.html(html);
+			}
+		});
+		
+		$(document).on('click', '.patntList', function() {
+			let memNo = $(this).data('mem-no');
+			let patntNo = $(this).data('patnt-no');
+			let receiptNo = $(this).data('receipt-no');
+			
+			let patntNoInput = $('#patntNo');
+			patntNoInput.val(patntNo);
+			
+			 let memName = $(this).find('.memName').text();
+			console.log(memName);
+			
+			let patntNameInput = $('#patntName');
+			patntNameInput.val(memName);
+			
+			let receiptNoInput = $('#receiptNo');
+			receiptNoInput.val(receiptNo);
+			
+			console.log(memNo);
+			
+			let data = {
+				memNo : memNo
+			};
+			
+			$.ajax({
+				url : "/nurse/getHistoryList",
+				type : "post",
+				data : JSON.stringify(data),
+				contentType : "application/json",
+				success : function(res) {
+					console.log("내원이력");
+					console.log(res);
+					// 내원이력 리스트 추가
+				}
+			});
+		});
+		
+		// 내원이력 리스트 중 하나를 클릭하면 chartNo 가져와서 order 조회하기
+		$(document).on("click", ".list", function() {
+			let chartData = {
+				chartNo : 144 // 임시로 넣음
+			};
+			
+			$.ajax({
+				url : "/nurse/getHistoryInfo",
+				type : "post",
+				data : JSON.stringify(chartData),
+				contentType : "application/json",
+				success : function(res) {
+					console.log("내원이력");
+					console.log(res);
+				}
+			});
+			
+			// 대기환자 오더 조회
+			$.ajax({
+				url : "/nurse/getPatntOrder",
+				type : "post",
+				data : JSON.stringify(chartData),
+				contentType : "application/json",
+				success : function(res) {
+					console.log("getOrder!!");
+					console.log(res);
+				}
+			});
+		});
+		
+		
+		let insertChartBtn = $('#insertChartBtn');
+		insertChartBtn.click(function() {
+			let patntNo = $('#patntNo').val();
+			let receiptNo = $('#receiptNo').val();
+			console.log("patntNo", patntNo);
+			console.log("receiptNo", receiptNo);
+			let nursingContent = $('#nursingContent').val();
+			
+			console.log("nursingContent", nursingContent);
+			
+			let data = {
+				patntNo : patntNo,
+				receiptNo : receiptNo,
+				nursingContent : nursingContent
+				// empNo 추가해야함
+			};
+			
+			// 간호기록 차트 다시하기
+			$.ajax({
+				url : "/nurse/insertNursingRecord",
+				type : "post",
+				data : JSON.stringify(data),
+				contentType : "application/json",
+				success : function(res) {
+					console.log(res);
+				}
+			});
+		});
+	});
+	
+	
+
+</script>
+
+
+</html>

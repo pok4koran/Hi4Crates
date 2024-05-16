@@ -1,0 +1,12 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import kr.or.ddit.vo.MemberVO;
+
+public interface IDoctorRoundService {
+
+	public List<MemberVO> getPatntRecordsList(int patntNo);
+	public MemberVO getPatntRecordInfo(int chartNo);
+
+}

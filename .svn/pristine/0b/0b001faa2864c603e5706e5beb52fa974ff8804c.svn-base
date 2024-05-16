@@ -1,0 +1,44 @@
+package kr.or.ddit.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.mapper.IPatientNoticeMapper;
+import kr.or.ddit.service.IPatientNoticeService;
+import kr.or.ddit.vo.PaginationVO;
+import kr.or.ddit.vo.PatientNoticeVO;
+
+@Service
+public class PatientNoticeServiceImpl implements IPatientNoticeService {
+
+	@Inject
+	private IPatientNoticeMapper noticeMapper;
+	
+	@Override
+	public List<PatientNoticeVO> getPatntNoticeList(PaginationVO<PatientNoticeVO> pagingVO) {
+		return noticeMapper.selectPatntNoticeList(pagingVO);
+	}
+	
+	@Override
+	public int getPatntNoticeCount(PaginationVO<PatientNoticeVO> pagingVO) {
+		return noticeMapper.selectPatntNoticeCount(pagingVO);
+	}
+	
+	@Override
+	public ServiceResult insertNotice(HttpServletRequest req, PatientNoticeVO noticeVO) {
+		
+		return noticeMapper.insertNotice(noticeVO);
+	}
+
+//insertPatntAttachGroupNo
+	
+//insertPatntNoticeAttachment
+
+
+
+}

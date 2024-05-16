@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 마이바티스 홈페이지에서 Exploring Mapped SQL Statements 의 dtd  -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="kr.or.ddit.mapper.ICalendarMapper">
+	<select id="getData" parameterType="int" resultType="clinicReservationVO" >
+		select
+			 reserv_no, reserv_date, reserv_time, reserv_memo, emp_no, mem_no
+		FROM clinic_reservation
+		where emp_no = #{empNo}
+		
+	</select>
+	
+	<insert id="insertEvent" parameterType="clinicReservationVO" useGeneratedKeys="true">
+		<!-- keyProperty에 설정된 프로퍼티에 자동 생성된 키가 할당됨 -->
+	    <selectKey keyProperty="reservNo" resultType="clinicReservationVO" order="BEFORE">
+	        SELECT CLINIC_RESERVATION_SEQ.nextval as reserv_no FROM dual
+	        <!-- 새로 삽입된 레코드의 키 값을 가져옴 -->
+	    </selectKey>
+	    <!-- useGeneratedKeys 속성을 true로 설정하여 자동 생성된 키를 가져옴 -->
+	    <!-- keyProperty는 자동 생성된 키가 설정될 객체의 프로퍼티를 나타냄 -->
+		insert into clinic_reservation(
+			reserv_no, reserv_date, reserv_time, reserv_memo, emp_no, mem_no
+		) values (
+			#{reservNo},#{reservDate},#{reservTime},#{reservMemo},#{empNo},#{memNo}
+		)
+	</insert>
+	
+	<update id="updateEvent" parameterType="clinicReservationVO">
+		update calendar
+		set
+			calendar_title = #{calendarTitle},
+			calendar_startdate = #{calendarStartDate},
+			calendar_enddate = #{calendarEndDate},
+			calendar_allday = #{calendarAllDay}
+		where calendar_key = #{calendarKey}
+	</update>
+	
+	<delete id="deleteEvent" parameterType="string">
+		delete from calendar
+		where calendar_key = #{calendarKey}
+	</delete>
+	
+	<select id="showdoctorList" resultType="memberVO">
+		select m.mem_no, mem_name, emp_no
+		from member m , emp e
+		where mem_type = 'MT001'
+		and m.mem_no = e.mem_no
+		and emp_job = '의사'
+	</select>
+	
+	<select id="showReserveList" parameterType="clinicReservationVO" resultType="clinicReservationVO">
+		SELECT
+		 reserv_no, reserv_date, reserv_time, reserv_memo, e.emp_no, m.mem_name as empName, c.mem_no, pm.mem_name
+		FROM clinic_reservation c, emp e, patient p, member m, member pm
+	    where reserv_date = #{reservDate}
+	    and e.emp_no = #{empNo}
+        and e.mem_no = m.mem_no -- 얘가 사원 조인
+        and c.mem_no = p.mem_no
+        and p.mem_no = pm.mem_no -- 얘는 환자 조인
+	</select>
+</mapper>

@@ -1,0 +1,36 @@
+package kr.or.ddit.service.impl;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.ISurgeryReservationMapper;
+import kr.or.ddit.service.ISugeryReservationService;
+import kr.or.ddit.vo.SurgeryReservationVO;
+
+@Service
+public class SurgeryReservationServiceImpl implements ISugeryReservationService {
+	
+	@Inject
+	private ISurgeryReservationMapper surgeryMapper;
+	
+
+	@Override
+	public List<SurgeryReservationVO> getSurgeryReservWaitingList() {
+		return surgeryMapper.getSurgeryReservWaitingList();
+	}
+	
+	@Override
+	public List<SurgeryReservationVO> getSurgeryCal() {
+		return surgeryMapper.getSurgeryCal();
+	}
+	
+	@Override
+	public SurgeryReservationVO surgeryDateCheck(String startStr) {
+		return surgeryMapper.surgeryDateCheck(startStr);
+	}
+	
+
+}

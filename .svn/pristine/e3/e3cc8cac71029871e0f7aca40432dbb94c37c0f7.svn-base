@@ -1,0 +1,157 @@
+package kr.or.ddit.controller.physical;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.service.IPhysicalService;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PtRecordVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Controller
+@Slf4j
+@RequestMapping("/emp/physical")
+public class PhysicalTherapistController {
+
+	@Inject
+	private IPhysicalService physicalService;
+	
+	
+	// 직원용 공지사항 글쓰기 화면으로 이동
+	@GetMapping("/main")
+	public String getPhysicalMain () {
+		log.info("[컨트롤러][getPhysicalMain] 실행");
+		return "empPhysical/physicalMain";
+	}
+	
+
+	/**
+	 * 물리치료 환자 목록 조회
+	 * ajax로 요청, 자동 갱신 예정
+	 * @return new ResponseEntity<List<MemberVO>>(list, HttpStatus.OK)
+	 */
+	@PostMapping(value="/patnts")
+	public ResponseEntity<List<MemberVO>> selectPhysicalWaitingList(
+			) {
+		log.info("[컨트롤러][selectPhysicalWaitingList] 실행");
+		List<MemberVO> physicalWaitingList = new ArrayList<>();
+		// 서비스 실행
+		physicalWaitingList = physicalService.getPhysicalWaitingList();
+		// 결과 반환
+		if(physicalWaitingList != null && !physicalWaitingList.isEmpty()) {
+			log.info("[컨트롤러][selectPhysicalWaitingList] 대기목록 나옴!");
+			return new ResponseEntity<List<MemberVO>>(physicalWaitingList, HttpStatus.OK);
+		}else {
+			log.error("[컨트롤러][selectPhysicalWaitingList] 대기목록 없음!");
+			return null;
+		}
+	}	// [selectPhysicalWaitingList] 끝
+	
+	
+	/**
+	 * 환자 목록에서 환자 클릭시 출력할 정보 목록
+	 * @param memberVO
+	 * @return new ResponseEntity<MemberVO>(memOrderInfo, HttpStatus.OK)
+	 */
+	@ResponseBody
+	@PostMapping("/order")
+	public ResponseEntity<MemberVO> selectPhysicalOrder(
+			@RequestBody MemberVO memberVO
+			) {
+		log.info("[컨트롤러][selectPhysicalOrder]시작!");
+		int memNo = memberVO.getMemNo();
+		log.info("[컨트롤러][selectPhysicalOrder] 받아온 memNo: " + memNo);
+		// 환자 오더 조회
+		MemberVO memOrderInfo = physicalService.getPhysicalOrder(memNo);
+		log.info("[컨트롤러][selectPhysicalOrder] 쿼리로 가져온 환자 이름 : " + memOrderInfo.getMemName());
+		
+		// 오더 작성 의사명 조회
+		String docName = physicalService.getDoctorsName(memOrderInfo);
+		log.info("[컨트롤러][selectPhysicalOrder] docName: " + docName);
+		memOrderInfo.setDocName(docName);
+		
+		// 오더에서 따로 바디코드 가져오기
+		int chartNo = memOrderInfo.getChartVO().getChartNo();
+		log.info("[컨트롤러][selectPhysicalOrder] chartNo: " + chartNo);
+//		List<String> bodyCodes = new ArrayList<String>();
+		List<MemberVO> bodyCodes = new ArrayList<MemberVO>();
+		bodyCodes = physicalService.getBodyCodes(chartNo);
+		log.info("[컨트롤러][selectPhysicalOrder] bodyCodes: " + bodyCodes);
+		memOrderInfo.setBodyCodes(bodyCodes);
+		
+		return new ResponseEntity<MemberVO>(memOrderInfo, HttpStatus.OK);
+	}
+
+	/**
+	 * 환자의 상태를 '치료중'으로 바꾸는 메서드 (작동 미확인)
+	 * @param memNo
+	 * @param empNo
+	 * @param model
+	 * @return return new ResponseEntity<String>()
+	 */
+	@ResponseBody
+	@RequestMapping("/statusStart")
+	public ResponseEntity<String> updateStatusStart(
+			@RequestParam int memNo
+			, @RequestParam int empNo
+			, Model model
+			){
+		log.info("[컨트롤러][updateStatusDone] 실행");
+		log.info("[컨트롤러][updateStatusDone] memNo: " + memNo + " | empNo: " + empNo);
+		int res = physicalService.changeStatusStart(memNo, empNo);
+		if (res > 0) {
+			log.info("[컨트롤러][updateStatusDone] 업데이트 성공! " + res);
+			return new ResponseEntity<String>("success", HttpStatus.OK);
+		}else {
+			log.error("[컨트롤러][updateStatusDone] 업데이트 실패! " + res);
+			return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@ResponseBody
+	@PostMapping("/report")
+	public ResponseEntity<String> insertPhysicalTherapyRecord(
+			@RequestBody PtRecordVO recordVO
+			){
+		log.info("[컨트롤러][insertPhysicalTherapyRecord] 시작!");
+		
+		// 치료기록 등록
+		int rprt = physicalService.postPhysicalTherapyRecord(recordVO);
+		if (rprt > 0) {
+			log.info("[컨트롤러][insertPhysicalTherapyRecord] 환자기록 등록 성공! " + rprt);
+		}else {
+			log.info("[컨트롤러][insertPhysicalTherapyRecord] 환자기록 등록 실패! " + rprt);
+			return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		// 환자 상태를 '대기중'으로, 위치를 '수납실'로 변경
+		int memNo = recordVO.getMemNo();
+		int empNo = recordVO.getEmpNo();
+		int res = physicalService.changeStatusDone(memNo, empNo);
+		// SQL에서 location도 업데이트 해야 함!
+		
+		if (res > 0) {
+			log.info("[컨트롤러][insertPhysicalTherapyRecord] 환자 history 업데이트 성공! " + res);
+			return new ResponseEntity<String>("success", HttpStatus.OK);
+		}else {
+			log.error("[컨트롤러][insertPhysicalTherapyRecord] 환자 history 업데이트 실패! " + res);
+			return new ResponseEntity<String>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+
+	
+	
+}

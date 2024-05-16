@@ -1,0 +1,21 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.vo.AttachmentVO;
+import kr.or.ddit.vo.PaginationVO;
+import kr.or.ddit.vo.PatientNoticeVO;
+
+public interface IPatientNoticeMapper {
+
+	public List<PatientNoticeVO> selectPatntNoticeList(PaginationVO<PatientNoticeVO> pagingVO);
+	public int selectPatntNoticeCount(PaginationVO<PatientNoticeVO> pagingVO);
+
+//	public ServiceResult insertNotice(PatientNoticeVO noticeVO);
+	public void insertPatntAttachGroupNo(PatientNoticeVO patntNoticeVO);
+	public void insertPatntNoticeAttachment(AttachmentVO attachmentVO);
+	public int insertPatntNotice(PatientNoticeVO patntNoticeVO);
+
+
+}

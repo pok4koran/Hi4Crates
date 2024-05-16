@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IVacationMapper">
+	<select id="getVacationRequestMine" resultType="vacationRequestVO">
+		SELECT 
+		      VACATION_REQUEST_NO
+		    , VACATION_START_DATE
+		    , VACATION_END_DATE
+		    , VACATION_DATE
+		    , VACATION_REQUEST_DATE
+		    , VACATION_REASON
+		    , VACATION_REQUEST_STATUS
+		FROM 
+	    	VACATION_REQUEST
+		WHERE
+	    	EMP_NO = (SELECT EMP_NO FROM EMP WHERE MEM_NO=#{memNo})
+	</select>
+	
+	<insert id="vacationRequest">
+		insert into VACATION_REQUEST
+			(
+				VACATION_REQUEST_NO, VACATION_START_DATE, VACATION_END_DATE,
+				VACATION_DATE, VACATION_REQUEST_DATE, EMP_NO, VACATION_REASON
+			)
+			VALUES
+			(
+				VACATION_REQUEST_SEQ.NEXTVAL, #{vacationStartDate}, #{vacationEndDate},
+				#{vacationDate}, sysdate, (select emp_no from emp where mem_no = #{memNo}), #{vacationReason}
+			)
+	</insert>
+</mapper>

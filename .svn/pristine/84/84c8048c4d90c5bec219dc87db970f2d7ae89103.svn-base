@@ -1,0 +1,181 @@
+package kr.or.ddit.controller.comm;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.apache.velocity.tools.view.WebappUberspector.GetAttributeExecutor;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import kr.or.ddit.service.IMemberService;
+import kr.or.ddit.service.INotiService;
+import kr.or.ddit.vo.CustomUser;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.NotificationVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Component
+@RequestMapping("/echo")
+@Slf4j
+@Scope(value = WebApplicationContext.SCOPE_APPLICATION)
+public class EchoHandler extends TextWebSocketHandler {
+	
+	@Inject
+	private INotiService notiService;
+	
+	@Inject
+	private IMemberService memberService;
+	
+	
+	// 로그인 중인 전체 인원 정보
+	private List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
+	
+	
+	// 클라이언트가 웹 소켓 생성함
+	public void afterConnectionEstablished(WebSocketSession session) throws Exception{
+		log.info("접속자 : " + session.getPrincipal().getName());
+		
+		// 웹 소켓이 생성될 때마다 리스트에 넣어줌
+		if(!sessions.contains(session)) {
+			sessions.add(session);
+		}
+		
+		log.info("--------------접속정보--------------");
+		for (WebSocketSession ss : sessions) {
+			log.info("현재 접속자 : "+ss.getPrincipal().getName());
+		}
+		connetToChat(session);
+		log.info("접속자수 : "+sessions.size());
+		log.info("----------------------------------");
+		
+		
+	}
+	
+	private void connetToChat(WebSocketSession session) throws IOException {
+		
+		Gson gson = new Gson();
+		JsonObject jsonObject = new JsonObject();
+		// 온라인 리스트 만들기
+		List<MemberVO> onlineList = new ArrayList<MemberVO>();
+		for (WebSocketSession online : sessions) {
+			CustomUser onlineUser = (CustomUser) online.getAttributes().get("user");
+			onlineList.add(onlineUser.getMember());
+		}
+		List<MemberVO> memberList = memberService.getEmpList();
+		List<MemberVO> newList = new ArrayList<MemberVO>(memberList);
+		
+		for (MemberVO online : onlineList) {
+		    Iterator<MemberVO> iterator = newList.iterator();
+		    while (iterator.hasNext()) {
+		        MemberVO all = iterator.next();
+		        if (all.getMemId().equals(online.getMemId())) {
+		            iterator.remove(); // 반복자를 사용하여 삭제
+		        }
+		    }
+		}
+		String onlineJson = gson.toJson(onlineList);
+		String memberJson = gson.toJson(newList);
+		jsonObject.addProperty("type", "로그인");
+		jsonObject.addProperty("online", onlineJson);
+		jsonObject.addProperty("offline", memberJson);
+		
+		String jsonMessage = jsonObject.toString();
+		TextMessage msg = new TextMessage(jsonMessage);
+		for (WebSocketSession ss : sessions) {
+			ss.sendMessage(msg);
+		}
+		
+		
+	}
+
+	// JS에서 메세지 받을 때
+	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception{
+		String requestMsg = message.getPayload();
+		log.info("Client -> Server 메세지 날라올꺼에요!!:"+requestMsg);
+		
+		int dis = requestMsg.indexOf("#");
+		String reqCode = requestMsg.substring(0, dis);
+		String data = requestMsg.substring(dis+1);
+		
+		if(reqCode.equals("vacationResult")) vacationResult(data, session, message);
+		if(reqCode.equals("로그인")) getNotiList(data, session, message);
+		
+		
+		
+
+	}
+	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception{
+		log.info("소켓 끊음 ~~~~~_~~~~~~~~");
+		// 웹소켓이 종료될 때 마다 리스트에서 뺌
+		sessions.remove(session);
+		connetToChat(session);
+	}
+	
+	
+	public void vacationResult(String data, WebSocketSession session, TextMessage message) throws IOException {
+		log.info("WS:vacationResult ====================");
+		int empNo = Integer.parseInt(data.split("#")[0]);
+		String memId = memberService.getMemId(empNo);
+		String result = data.split("#")[1];
+		int notiNo = Integer.parseInt(data.split("#")[2]);
+		String content = "";
+		if(result.equals("disagree")) content = data.substring(data.lastIndexOf("#")+1);
+		
+		for (WebSocketSession user : sessions) {
+			// 클라이언트에서 보낸 #대상자아이디#와 세션에 접속해있는 유저의 아이디가 같을때 -> 전송
+			if(memId.equals(user.getPrincipal().getName())) {
+				if(result.equals("agree"))
+					user.sendMessage(new TextMessage("vacationResult#"+result+"#"+notiNo));
+				else if(result.equals("disagree"))
+					user.sendMessage(new TextMessage("vacationResult#"+result+"#"+notiNo+"#"+content));
+				}
+			}
+		}
+		
+	public void getNotiList(String data, WebSocketSession session, TextMessage message) throws IOException {
+		int dis = data.indexOf("#");
+		String targetId = data.substring(0, dis);
+		for(WebSocketSession single : sessions) {
+			// 세션 아이디
+			String memId = session.getPrincipal().getName(); // 클라이언트에서 보낸 요청자
+			log.info("로그인 !!!!!!!"+ targetId);
+			if(targetId.equals(single.getPrincipal().getName())) {
+				log.info("알람탄다~~~~~~~~~~");
+				List<NotificationVO> noti = new ArrayList<NotificationVO>();
+				noti = notiService.getNotiList(targetId);
+				for(NotificationVO notiVO : noti) {
+					int idx = notiVO.getNotificationNo();
+					String content = notiVO.getNotificationContent();
+					
+					TextMessage sendMsg = new TextMessage("notiList#"+content+"#"+idx);
+					single.sendMessage(sendMsg);
+				}
+			}
+		}
+	}
+	
+	public List<WebSocketSession> getSessions(){
+		return sessions;
+	}
+}
+

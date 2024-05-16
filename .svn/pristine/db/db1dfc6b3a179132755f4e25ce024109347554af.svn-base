@@ -1,0 +1,16 @@
+package kr.or.ddit.service;
+
+import java.util.Date;
+import java.util.List;
+
+import kr.or.ddit.vo.ClinicReservationVO;
+import kr.or.ddit.vo.MemberVO;
+
+public interface IPatientBookService {
+
+	List<MemberVO> doctor(String date);
+
+	List<ClinicReservationVO> time(ClinicReservationVO data);
+
+
+}

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IPatientNoticeMapper">
+
+	<sql id="patntNoticeSearch">
+		<if test="searchType != null and searchType == 'title'">
+			and (PATNT_NOTICE_TITLE like '%'||#{searchWord}||'%')
+		</if>
+		<if test="searchType != null and searchType == 'writer'">
+			and (PATNT_NOTICE_WRITER like '%'||#{searchWord}||'%')
+		</if>
+		<if test="searchType != null and searchType == 'content'">
+			and ( (PATNT_NOTICE_TITLE like '%'||#{searchWord}||'%')
+			or (PATNT_NOTICE_CONTENT like '%'||#{searchWord}||'%') )
+		</if>
+	</sql>
+	
+	<resultMap type="patntNoticeVO" id="patntNoticeMap">
+		<id property="patntNoticeNo" column="PATNT_NOTICE_NO"/>
+		<result property="patntNoticeNo" column="PATNT_NOTICE_NO"/>
+		<result property="patntNoticeTitle" column="PATNT_NOTICE_TITLE"/>
+		<result property="patntNoticeWriter" column="PATNT_NOTICE_WRITER"/>
+		<result property="patntNoticeDate" column="PATNT_NOTICE_DATE"/>
+		<result property="patntNoticeContent" column="PATNT_NOTICE_CONTENT"/>
+		<result property="patntNoticeHit" column="PATNT_NOTICE_HIT"/>
+		<result property="patntNoticeFix" column="PATNT_NOTICE_FIX"/>
+		<result property="attachmentGroupNo" column="ATTACHMENT_GROUP_NO"/>
+	</resultMap>
+	
+	<resultMap type="attachmentVO" id="attachmentMap">
+		<id property="attachNo" column="ATTACH_NO"/>
+		<result property="attachNo" column="ATTACH_NO"/>
+		<result property="attachType" column="ATTACH_TYPE"/>
+		<result property="attachName" column="ATTACH_NAME"/>
+		<result property="attachSize" column="ATTACH_SIZE"/>
+		<result property="attachDate" column="ATTACH_DATE"/>
+		<result property="attachPath" column="ATTACH_PATH"/>
+		<result property="attachLoc" column="ATTACH_LOC"/>
+		<result property="attachmentGroupNo" column="ATTACHMENT_GROUP_NO"/>
+	</resultMap>
+	
+	<select id="selectPatntNoticeCount" parameterType="pagingVO" resultType="int">
+		select count(PATNT_NOTICE_NO)
+		from PATNT_NOTICE
+		where 1=1
+		<include refid="patntNoticeSearch"/>
+	</select>
+	
+	<select id="selectPatntNoticeList" parameterType="pagingVO" resultType="patntNoticeVO">
+		select
+			b.*
+		from (
+			select
+				a.*, 
+				ROW_NUMBER() OVER(ORDER BY CASE WHEN a.PATNT_NOTICE_FIX = 'Y' THEN 0 ELSE 1 END, a.PATNT_NOTICE_NO DESC) AS rnum
+			from (
+				select
+					PATNT_NOTICE_NO
+					, PATNT_NOTICE_TITLE
+					, PATNT_NOTICE_WRITER
+					, PATNT_NOTICE_DATE
+					, PATNT_NOTICE_CONTENT
+					, PATNT_NOTICE_HIT
+					, PATNT_NOTICE_FIX
+				from PATNT_NOTICE
+				where 1=1
+				<include refid="patntNoticeSearch"/>
+				order by PATNT_NOTICE_NO desc
+			) a
+		) b
+		<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+		
+	<insert id="insertPatntAttachGroupNo" useGeneratedKeys="true"
+		parameterType="patntNoticeVO">
+		<selectKey keyProperty="attachmentGroupNo" 
+				resultType="int" order="BEFORE">
+			select ATTACHMENT_GROUP_SEQ.NEXTVAL from dual
+		</selectKey>
+		insert into ATTACHMENT_GROUP
+			(ATTACHMENT_GROUP_NO)
+			values (#{attachmentGroupNo})
+	</insert>
+	
+	<insert id="insertPatntNoticeAttachment" useGeneratedKeys="true"
+		parameterType="attachmentVO">
+		<selectKey keyProperty="attachNo" order="BEFORE" resultType="int">
+			SELECT ATTACHMENT_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO ATTACHMENT (
+			ATTACH_NO
+			, ATTACH_TYPE
+			, ATTACH_NAME
+			, ATTACH_SIZE
+			, ATTACH_DATE
+			, ATTACH_PATH
+			, ATTACH_LOC
+			, ATTACHMENT_GROUP_NO
+		) VALUES(
+			#{attachNo}
+			, #{attachType}
+			, #{attachName}
+			, #{attachSize}
+			, sysdate
+			, #{attachPath}
+			, #{attachLoc}
+			, #{attachmentGroupNo} 
+		)
+	</insert>
+
+	<insert id="insertPatntNotice" parameterType="patntNoticeVO" useGeneratedKeys="true">
+		<selectKey keyProperty="patntNoticeNo" resultType="int" order="BEFORE">
+			select PATNT_NOTICE_SEQ.nextval from dual
+		</selectKey>
+		insert into PATNT_NOTICE (
+			PATNT_NOTICE_NO
+			, PATNT_NOTICE_TITLE
+			, PATNT_NOTICE_WRITER
+			, PATNT_NOTICE_DATE
+			, PATNT_NOTICE_CONTENT
+			, PATNT_NOTICE_FIX
+			, ATTACHMENT_GROUP_NO
+		) values (
+			#{patntNoticeNo}
+			, #{patntNoticeTitle}
+			, #{patntNoticeWriter}
+			, sysdate
+			, #{patntNoticeContent}
+			, #{patntNoticeFix}
+			, #{attachmentGroupNo}
+		)
+	</insert>
+
+	
+<!-- 		<select id="incrementViewCount" parameterType="int"> -->
+<!-- 		update emp_notice -->
+<!-- 		set -->
+<!-- 			emp_notice_hit = emp_notice_hit + 1 -->
+<!-- 		where emp_notice_no = #{empNoticeNo} -->
+<!-- 	</select> -->
+
+<!-- 	<select id="selectEmpNoticeDetail" parameterType="int" resultMap="empNoticeMap"> -->
+<!-- 		select -->
+<!-- 			emp_notice_no -->
+<!-- 			, EMP_NOTICE_TITLE -->
+<!-- 			, EMP_NOTICE_WRITER -->
+<!-- 			, EMP_NOTICE_DATE -->
+<!-- 			, EMP_NOTICE_CONTENT -->
+<!-- 			, EMP_NOTICE_HIT -->
+<!-- 			, EMP_NOTICE_FIX -->
+<!-- 			, ATTACHMENT_GROUP_NO -->
+<!-- 		from emp_notice -->
+<!-- 		where emp_notice_no = #{empNoticeNo} -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="selectEmpNoticeDetailFile" parameterType="int" resultMap="attachmentMap"> -->
+<!-- 		select -->
+<!-- 			ATTACH_NO -->
+<!-- 			, ATTACH_TYPE -->
+<!-- 			, ATTACH_NAME -->
+<!-- 			, ATTACH_SIZE -->
+<!-- 			, ATTACH_DATE -->
+<!-- 			, ATTACH_PATH -->
+<!-- 			, ATTACH_LOC -->
+<!-- 			, ATTACHMENT_GROUP_NO -->
+<!-- 		from ATTACHMENT -->
+<!-- 		where ATTACHMENT_GROUP_NO = #{attachmentGroupNo} -->
+<!-- 	</select> -->
+	
+<!-- 	<update id="updateNotice" parameterType="empNoticeVO"> -->
+<!-- 		update emp_notice -->
+<!-- 		set -->
+<!-- 			EMP_NOTICE_TITLE = #{empNoticeTitle} -->
+<!-- 			, EMP_NOTICE_CONTENT = #{empNoticeContent} -->
+<!-- 			, EMP_NOTICE_DATE = sysdate -->
+<!-- 			, EMP_NOTICE_FIX = #{empNoticeFix} -->
+<!-- 			, ATTACHMENT_GROUP_NO = ${attachmentGroupNo} -->
+<!-- 		where EMP_NOTICE_NO = #{empNoticeNo} -->
+<!-- 	</update> -->
+	
+<!-- 	<delete id="deleteNotice" parameterType="int"> -->
+<!-- 		delete from emp_notice -->
+<!-- 		where emp_notice_no = #{empNoticeNo} -->
+<!-- 	</delete> -->
+	
+<!-- 	<delete id="deleteOldAttachment" parameterType="int"> -->
+<!-- 		delete from attachment -->
+<!-- 		where -->
+<!-- 			attachment_group_no = ${attachmentGroupNo} -->
+<!-- 	</delete> -->
+	
+<!-- 	<update id="deleteOldAttachGroupNo" parameterType="int"> -->
+<!-- 		update attachment_group -->
+<!-- 		set -->
+<!-- 			attachment_group_del = 'Y' -->
+<!-- 		where -->
+<!-- 			attachment_group_no = ${attachmentGroupNo} -->
+<!-- 	</update> -->
+</mapper>

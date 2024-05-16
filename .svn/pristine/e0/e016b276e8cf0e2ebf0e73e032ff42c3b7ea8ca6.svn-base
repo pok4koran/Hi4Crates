@@ -1,0 +1,10 @@
+package kr.or.ddit.service;
+
+import kr.or.ddit.vo.MeetingPersonVO;
+import kr.or.ddit.vo.MeetingVO;
+
+public interface IDoctorMeetingService {
+	public int insertMeetingRecord(MeetingVO meeting);
+	public boolean recordingMeeting(MeetingVO meetingVO);
+	public boolean insertMeetingPerson(MeetingPersonVO meetingPersonVO);
+}

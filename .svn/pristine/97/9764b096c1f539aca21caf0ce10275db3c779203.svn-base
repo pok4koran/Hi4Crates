@@ -1,0 +1,99 @@
+package kr.or.ddit.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.mapper.IPhysicalMapper;
+import kr.or.ddit.service.IPhysicalService;
+import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.OrderVO;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public class PhysicalServiceImpl implements IPhysicalService {
+
+	@Inject
+	private IPhysicalMapper physicalMapper;
+	
+	@Override
+	public List<MemberVO> getPhysicalWaitingList() {
+		log.info("[서비스][getPhysicalWaitingList] 실행!");
+		return physicalMapper.selectPhysicalWaitingList();
+	}
+
+	@Override
+	public MemberVO getPhysicalOrder(
+			int memNo
+			) {
+		log.info("[서비스][getPhysicalOrder] 실행!");
+		MemberVO memberVO = new MemberVO();
+		memberVO = physicalMapper.selectPhysicalOrder(memNo);
+		return memberVO;
+	}
+
+	@Override
+	public String getDoctorsName(
+			MemberVO memOrderInfo
+			) {
+		log.info("[서비스][getDoctorsName] 실행!");
+//		List<OrderVO> orderList = memOrderInfo.getOrderList();
+		// chartNo 구하는 걸로 바꾸기
+		int chartNo = memOrderInfo.getOrderVO().getChartNo();
+//		log.info("[서비스][getDoctorsName] orderList?" + orderList);
+		log.info("[서비스][getDoctorsName] chartNo?" + chartNo);
+		
+		String docName = "";
+		
+//		if (orderList != null && !orderList.isEmpty()) {
+		if (chartNo != 0) {
+//			int empNo = orderList.get(0).getEmpNo();
+//			int orderNo = orderList.get(0).getOrderNo();
+//			log.info("[서비스][getDoctorsName] empNo: " + empNo + " | orderNo: " + orderNo);
+//			memOrderInfo.setEmpNo(empNo);
+//			memOrderInfo.setOrderNo(orderNo);
+//			MemberVO memberVO = physicalMapper.selectDocName(memOrderInfo);
+			docName = physicalMapper.selectDocName(chartNo);
+//			docName = memberVO.getDocName();
+			log.info("[서비스][getDoctorsName] docName: " + docName);
+			return docName;
+		} else {
+			log.error("[서비스][getDoctorsName] orderList가 null입니다.");
+			return null;
+		}
+	}
+
+	@Override
+	public List<MemberVO> getBodyCodes(
+			int chartNo
+			) {
+		log.info("[서비스][getBodyCodes] 실행!");
+//		List<String> bodyCodes = new ArrayList<String>();
+		List<MemberVO> bodyCodes = physicalMapper.selectBodyCodes(chartNo);
+		log.info("[서비스][getBodyCodes] bodyCodes: " + bodyCodes);
+		return bodyCodes;
+	}
+
+//	@Override
+//	public List<String> getBodyCommonCodes() {
+//		log.info("[서비스][getBodyCommonCodes] 실행!");
+//		List<String> BodyCommonCodes = new ArrayList<String>();
+//		BodyCommonCodes = physicalMapper.selectBodyCommonCodes();
+//		log.info("[서비스][getBodyCommonCodes] BodyCommonCodes: " + BodyCommonCodes);
+//		return BodyCommonCodes;
+//	}
+	
+//	@Override
+//	public List<String> getBodyCommonNames() {
+//		log.info("[서비스][getBodyCommonNames] 실행!");
+//		List<String> BodyCommonNames = new ArrayList<String>();
+//		BodyCommonNames = physicalMapper.selectBodyCommonNames();
+//		log.info("[서비스][getBodyCommonNames] getBodyCommonNames: " + BodyCommonNames);
+//		return BodyCommonNames;
+//	}
+
+}

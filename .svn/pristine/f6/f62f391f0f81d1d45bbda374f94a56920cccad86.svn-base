@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IStatisticsMapper">
+	<select id="manCount" parameterType="MemberVO" resultType="Integer">
+		SELECT COUNT(*)
+		FROM Member m
+			INNER JOIN Patient p ON m.mem_no = p.mem_no
+			INNER JOIN Receipt r ON p.patnt_no = r.patnt_no
+		WHERE mem_gender = '남성'
+			AND EXTRACT(YEAR FROM r.receipt_date) = #{statisticsYear}
+			AND EXTRACT(MONTH FROM r.receipt_date) = #{statisticsMonth}
+	</select>
+	
+	<select id="wCount" parameterType="MemberVO" resultType="Integer">
+		SELECT COUNT(*)
+		FROM Member m
+			INNER JOIN Patient p ON m.mem_no = p.mem_no
+			INNER JOIN Receipt r ON p.patnt_no = r.patnt_no
+		WHERE mem_gender = '여성'
+			AND EXTRACT(YEAR FROM r.receipt_date) = #{statisticsYear}
+			AND EXTRACT(MONTH FROM r.receipt_date) = #{statisticsMonth}
+	</select>
+	
+	
+</mapper>

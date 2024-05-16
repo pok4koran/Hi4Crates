@@ -1,0 +1,14 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.vo.PatientNoticeVO;
+
+public interface IPatientNoticeMapper {
+
+	public List<PatientNoticeVO> list();
+
+	public ServiceResult insertNotice(PatientNoticeVO noticeVO);
+
+}

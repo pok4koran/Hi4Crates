@@ -1,0 +1,19 @@
+package kr.or.ddit.mapper;
+
+import java.util.List;
+
+import kr.or.ddit.vo.ClinicReservationVO;
+import kr.or.ddit.vo.CounselVO;
+import kr.or.ddit.vo.MemberVO;
+
+public interface IPatientMypageMapper {
+
+	List<ClinicReservationVO> list(int memNo);
+	MemberVO selectOne(String memNo);
+	int updateAccount(MemberVO memberVO);
+	MemberVO checkPw();
+	int changePw(MemberVO memberVO);
+	int deleteAccount(MemberVO memberVO);
+	List<CounselVO> cList(int patntNo);
+
+}

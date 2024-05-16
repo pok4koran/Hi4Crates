@@ -1,0 +1,23 @@
+package kr.or.ddit.service;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import kr.or.ddit.ServiceResult;
+import kr.or.ddit.vo.PaginationVO;
+import kr.or.ddit.vo.PatientNoticeVO;
+
+public interface IPatientNoticeService {
+
+	public int getPatntNoticeCount(PaginationVO<PatientNoticeVO> pagingVO);
+	public List<PatientNoticeVO> getPatntNoticeList(PaginationVO<PatientNoticeVO> pagingVO);
+
+	public ServiceResult insertNotice(HttpServletRequest req, PatientNoticeVO noticeVO);
+	
+//	public ServiceResult postPatntNotice(HttpServletRequest req, PatntNoticeVO patntNoticeVO);
+//	public PatntNoticeVO selectPatntNoticeDetail(int patntNoticeNo);
+//	public ServiceResult updatePatntNotice(HttpServletRequest req, PatntNoticeVO pubNoticeVO);
+//	public ServiceResult deletePatntNotice(int patntNoticeNo, int attachmentGroupNo);
+	
+}

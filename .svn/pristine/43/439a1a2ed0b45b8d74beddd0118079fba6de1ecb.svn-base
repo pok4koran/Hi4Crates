@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IDoctorMeetingMapper">
+
+	<insert id="insertMeetingRecord" parameterType="meetingVO">
+		<selectKey keyProperty="meetingNo" order="BEFORE" resultType="int">
+        	SELECT meeting_seq.nextval AS meetingNo FROM DUAL
+    	</selectKey>
+		INSERT INTO meeting (
+		    meeting_no
+		    , meeting_date
+		    , meeting_start_time
+		    , meeting_starter
+		) VALUES (
+		    #{meetingNo}
+		    , #{meetingDate}
+		    , #{meetingStarttime}
+		    , #{meetingStarter}
+		)
+	</insert>
+	
+	<update id="recordingMeeting" parameterType="meetingVO">
+		UPDATE meeting
+		SET
+		    meeting_end_time = #{meetingEndtime} 
+		WHERE meeting_no = #{meetingNo}
+	</update>
+	
+	<insert id="insertMeetingPerson" parameterType="meetingPersonVO">
+		INSERT INTO meeting_person (
+			meeting_person_no
+			, emp_no
+			, meeting_no
+		) VALUES (
+			meeting_person_seq.nextval
+			, #{empNo}
+			, #{meetingNo}
+		)
+	</insert>
+
+</mapper>

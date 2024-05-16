@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IPatientNoticeMapper">
+	
+	<select id="list" resultType= "pNoticeVO">
+		SELECT
+		    PATNT_NOTICE_NO,
+		    PATNT_NOTICE_TITLE,
+		    PATNT_NOTICE_WRITER,
+		    PATNT_NOTICE_DATE,
+		    PATNT_NOTICE_CONTENT,
+		    PATNT_NOTICE_HIT,
+		    PATNT_NOTICE_FIX,
+		    ATTACHMENT_GROUP_NO
+		FROM
+		    PATNT_NOTICE
+	</select>
+	
+</mapper>

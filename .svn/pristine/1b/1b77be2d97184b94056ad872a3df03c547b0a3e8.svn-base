@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IRadiationMapper">
+		
+	<resultMap type="memberVO" id="orderMap">
+		<id property="orderName" column="code_name"/>
+		<id property="bodyCode" column="body_code"/>
+		<id property="chartDate" column="chart_date"/>
+		<id property="chartRecord" column="chart_record"/>
+		<id property="memName" column="mem_name"/>
+		<id property="memGender" column="mem_gender"/>
+		<id property="memAge" column="mem_age"/>
+		<id property="docName" column="emp_name"/>
+	</resultMap>
+	
+
+	<select id="getCommentList" resultType="commentVO">
+		select 
+			comment_no
+			, comment_content
+			, ROW_NUMBER() OVER(ORDER BY comment_sequence) comment_sequence
+		from mic_comment
+	</select>
+	
+	<select id="getRadiationRoomList" resultType="radiationRoomVO">
+		select
+			r.roc_no
+			, r.roc_name
+			, r.roc_status
+			, c.code_name as roc_status_name
+		from roc r, common_code c
+		where r.roc_status = c.code_no
+	</select>
+	
+	<select id="getRadiationRoomInfo" parameterType="int" resultType="radiationRoomVO">
+		select
+			r.roc_no
+			, r.roc_name
+			, r.roc_status
+			, c.code_name as roc_status_name
+		from roc r, common_code c
+		where r.roc_status = c.code_no
+		and roc_no = #{roomNo}
+	</select>
+	
+	<select id="getEqList" resultType="equipmentVO">
+		SELECT 
+		    m.eq_no
+		    , m.eq_name
+		    , m.eq_company
+		    , m.eq_model, 
+		    loc.code_name AS eq_loc_name 
+		    , status.code_name AS eq_status_name
+		FROM 
+		    medical_equip m
+		    JOIN common_code loc ON m.eq_loc = loc.code_no
+		    JOIN common_code status ON m.eq_status = status.code_no
+		WHERE 
+		    m.eq_loc IN ('LOC010', 'LOC011')
+		order by eq_no asc
+	</select>
+	
+	<select id="getEqInfo" parameterType="int" resultType="equipmentVO">
+		SELECT 
+		    m.eq_no
+		    , m.eq_name
+		    , m.eq_company
+		    , m.eq_model
+		    , loc.code_name AS eq_loc_name
+		    , status.code_name AS eq_status_name
+		    , eq.eq_description_content as eq_description_content
+		FROM 
+		    medical_equip m
+		    JOIN common_code loc ON m.eq_loc = loc.code_no
+		    JOIN common_code status ON m.eq_status = status.code_no
+		    JOIN equipment_description eq ON m.eq_no = eq.eq_no
+		WHERE 
+		    m.eq_loc IN ('LOC010', 'LOC011') and m.eq_no = #{eqNo}
+	</select>
+	
+	<!-- 공통코드 이름으로 공통코드 가져오기 -->
+	<select id="getCommonCode" parameterType="string" resultType="string">
+		select
+			code_no
+		from common_code
+		where code_name = #{codeName}
+	</select>
+	
+	<!-- 장비 update 쿼리 다시 짜기  -->
+	<update id="updateEqInfo" parameterType="equipmentVO">
+		update medical_equip
+		set
+			eq_name = #{eqName}
+			, eq_company = #{eqCompany}
+			, eq_loc = #{eqLoc}
+			, eq_model = #{eqModel}
+			, eq_status = #{eqStatus}
+		where eq_no = #{eqNo}
+	</update>
+	
+	<update id="updateEqDescription" parameterType="equipmentVO">
+		update equipment_description
+		set
+			eq_description_content = #{eqDescriptioncontent}
+		where eq_no = ${eqNo}
+	</update>
+	
+	<insert id="requestRepair" parameterType="repairRequestVO">
+		insert into equip_repair_request (
+			repair_no
+			, eq_no
+			, repair_person
+			, repair_date
+			, repair_reason
+		) values (
+			100000, #{eqNo}, #{repairPerson}, sysdate, #{repairReason}
+		)
+	</insert>
+	
+	<!-- 코멘트 순번 관련 수정하기 -->
+	<insert id="insertComment" parameterType="commentVO">
+		<selectKey keyProperty="commentNo" resultType="int" order="BEFORE">
+			select MIC_COMMENT_SEQ.nextval from dual
+		</selectKey>
+		insert into mic_comment (
+			comment_no
+			, comment_content
+			, comment_sequence
+		) values (
+			#{commentNo}, #{commentContent}, (select max(comment_sequence) + 1 from mic_comment) 
+		)
+	</insert>
+	
+	<delete id="deleteComment" parameterType="int">
+		delete from mic_comment
+		where comment_no = #{commentNo}
+	</delete>
+	
+	<!-- 대기 순서 정렬하기 -->
+	<select id="radiationWaitingList" resultType="memberVO">
+		select 
+			m.mem_no
+			, m.mem_name
+			, m.mem_age
+			, m.mem_gender
+			, c.code_name
+			, cc.code_name as ccode_name
+			, ccc.code_name as order_name
+		from member m, patient p, receipt r, history h, chart ch, "ORDER" o, common_code c, common_code cc, common_code ccc
+		where m.mem_no = p.mem_no
+		    and p.patnt_no = r.patnt_no
+		    and h.receipt_no  = r.receipt_no
+		    and r.receipt_no = ch.receipt_no
+		    and ch.chart_no = o.chart_no
+		    and (o.order_code = 'OD001' OR o.order_code = 'OD002')
+		    and c.code_no = h.history_loc
+		    and cc.code_no = h.history_status
+		    and ccc.code_no = o.order_code
+	</select>
+		
+	<select id="getPatntOrder" resultMap="orderMap">
+		select 
+		m.mem_no
+		, c.code_name
+		, o.body_code
+		, ch.chart_date
+		, ch.chart_record
+		, m.mem_name, m.mem_gender
+		, m.mem_age, mm.mem_name as emp_name
+		from "ORDER" o, chart ch, patient p, member m, member mm, emp e, common_code c
+		where o.chart_no = ch.chart_no
+		    and ch.patnt_no = p.patnt_no
+		    and p.mem_no = m.mem_no
+		    and o.emp_no = e.emp_no
+		    and e.mem_no = mm.mem_no
+		    and (o.order_code = 'OD001' OR o.order_code = 'OD002')
+		    and o.order_code = c.code_no
+		    and m.mem_no = #{memNo}
+	</select>
+	
+	<select id="updateComment" parameterType="commentVO">
+		update mic_comment
+		set
+			comment_content = #{commentContent}
+		where comment_no = #{commentNo}
+	</select>
+	
+	<delete id="deleteEquipment" parameterType="int">
+		delete
+		from medical_equip
+		where
+			eq_no = #{eqNo}
+	</delete>
+</mapper>

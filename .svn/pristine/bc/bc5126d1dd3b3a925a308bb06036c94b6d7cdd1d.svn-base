@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ICounselMapper">
+
+	<resultMap type="counselVO" id="counselList">
+		<id property="counselNo" column="counsel_no"/>
+		<result property="counselTitle" column="counsel_title"/>
+		<result property="counselQuestion" column="counsel_question"/>
+		<result property="counselDate" column="counsel_date"/>
+		<result property="counselAnswer" column="counsel_answer"/>
+		<result property="memName" column="mem_name"/>
+		<result property="empName" column="emp_name"/>
+		<result property="memEmail" column="mem_email"/>
+		<result property="careerName" column="CAREER_NAME"/>
+		
+	</resultMap>
+	
+
+	<select id="counselOne" resultMap="counselList">
+		SELECT
+			counsel_title,
+			counsel_question,
+			counsel_date,
+			counsel_answer,
+			m.mem_name,
+			em.mem_name emp_name,
+			em.mem_email,
+			d.career_name
+		FROM
+			counsel c, patient p, member m, emp e, member em, doctor_career d
+		where counsel_no=1
+			and c.patnt_no = p.patnt_no
+			and p.mem_no = m.mem_no
+			and e.mem_no = em.mem_no
+			and c.emp_no = e.emp_no
+			and c.emp_no = d.emp_no
+	</select>
+
+</mapper>
